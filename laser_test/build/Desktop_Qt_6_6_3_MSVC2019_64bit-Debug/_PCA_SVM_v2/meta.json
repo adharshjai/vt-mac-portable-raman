@@ -1,0 +1,29 @@
+{
+  "classes": [
+    "r6g",
+    "methylene_blue",
+    "adenine",
+    "di_water"
+  ],
+  "feature_dim": 1958,
+  "preprocessing": "v4 (raw-dark -> drop30 -> rolling_min_baseline(15,15) -> min_max_norm)",
+  "n_components": 20,
+  "explained_variance_total": 0.6702585816383362,
+  "best_C": 0.1,
+  "best_gamma": "scale",
+  "cv_accuracy": 0.996875,
+  "test_accuracy": 1.0,
+  "train_accuracy": 0.9968652037617555,
+  "confidence_threshold": 0.8,
+  "recon_threshold": 55.233497619628906,
+  "maha_threshold": 11.237105584300732,
+  "raw_min_ptp": 100.0,
+  "raw_min_std": 15.0,
+  "split": {
+    "train": 0.7,
+    "val": 0.1,
+    "test": 0.2,
+    "note": "70/10/20 matching CNN & ViT. Val held out but not used by SVM (GridSearchCV does its own internal CV)."
+  },
+  "timestamp": "2026-05-25 11:14:22"
+}

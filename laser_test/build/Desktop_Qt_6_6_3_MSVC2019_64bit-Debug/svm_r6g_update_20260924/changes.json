@@ -1,0 +1,19 @@
+{
+  "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\model_replacements_20260921\\SVM4_component_summary_complete.py",
+  "source_sha256": "50e71680e68e50551ee2418f1b807b4d2a9da7d4e66a58f846e2901ce8beb791",
+  "changes": [
+    {
+      "before": "\"r6g\": os.path.join(DATA_DIR, \"training_spectra_r6g_minmax.npy\")",
+      "after": "\"r6g\": os.path.join(DATA_ROOT, \"pure_only_20260923\", \"data_r6g_20260922\", \"training_spectra_r6g_minmax.npy\")"
+    },
+    {
+      "before": "\"r6g\": os.path.join(DATA_DIR, \"training_spectra_r6g_baseline_raw.npy\")",
+      "after": "\"r6g\": os.path.join(DATA_ROOT, \"pure_only_20260923\", \"data_r6g_20260922\", \"training_spectra_r6g_baseline_raw.npy\")"
+    },
+    {
+      "before": "OUTPUT_DIR = os.path.join(DATA_ROOT, \"_PCA_SVM_v7_target_only_pca3\")",
+      "after": "OUTPUT_DIR = os.path.join(DATA_ROOT, \"_PCA_SVM_r6g20260922_results\")"
+    }
+  ],
+  "validation": "Only three path expressions differ; all other source text is identical. Training not run."
+}

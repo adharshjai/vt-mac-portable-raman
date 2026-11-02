@@ -1,0 +1,2378 @@
+{
+  "scan": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611",
+  "dark": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\dark_measurements\\dark_20260922_165331_762.txt",
+  "dark_sha256": "540685665de40e4e8bbee487f30c66695f3c49323d4f47813574b9bc687eb3b0",
+  "preprocessing": "Existing CNN functions: raw-dark, drop 90, rolling minimum 15, average baseline 15, min-max",
+  "preprocessing_source_sha256": "c8b34e5bb74a620ac8991be066e18260677350938e5796c17d7c8583846c86ce",
+  "accepted_count": 119,
+  "points": [
+    {
+      "point_id": 1,
+      "phase": "Z",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0001.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 30133.0,
+      "dark_subtracted_ptp": 25409.0,
+      "dark_subtracted_std": 7976.554862548868,
+      "baseline_corrected_max": 1370.800048828125,
+      "baseline_corrected_median": 122.03333282470703,
+      "xyz_steps": [
+        0,
+        0,
+        142271
+      ],
+      "training_row": 0
+    },
+    {
+      "point_id": 2,
+      "phase": "Z",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0002.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 27899.0,
+      "dark_subtracted_ptp": 23301.0,
+      "dark_subtracted_std": 7400.475673742434,
+      "baseline_corrected_max": 1079.86669921875,
+      "baseline_corrected_median": 122.9000015258789,
+      "xyz_steps": [
+        0,
+        0,
+        145742
+      ],
+      "training_row": 1
+    },
+    {
+      "point_id": 3,
+      "phase": "Z",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0003.json",
+      "accepted": false,
+      "reasons": [
+        "ADC saturation before dark subtraction"
+      ],
+      "full_scale_pixels": 610,
+      "raw_max": 65535.0,
+      "dark_subtracted_ptp": 61248.0,
+      "dark_subtracted_std": 25485.090218697416,
+      "baseline_corrected_max": 2537.13330078125,
+      "baseline_corrected_median": 271.4000244140625,
+      "xyz_steps": [
+        0,
+        0,
+        149214
+      ]
+    },
+    {
+      "point_id": 4,
+      "phase": "Z",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0004.json",
+      "accepted": false,
+      "reasons": [
+        "ADC saturation before dark subtraction"
+      ],
+      "full_scale_pixels": 412,
+      "raw_max": 65535.0,
+      "dark_subtracted_ptp": 61220.0,
+      "dark_subtracted_std": 23957.876711798737,
+      "baseline_corrected_max": 1505.5333251953125,
+      "baseline_corrected_median": 249.06666564941406,
+      "xyz_steps": [
+        0,
+        0,
+        152684
+      ]
+    },
+    {
+      "point_id": 5,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0005.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18968.0,
+      "dark_subtracted_ptp": 14206.0,
+      "dark_subtracted_std": 4390.018362455212,
+      "baseline_corrected_max": 723.3333129882812,
+      "baseline_corrected_median": 103.16667175292969,
+      "xyz_steps": [
+        69399,
+        72880,
+        145740
+      ],
+      "training_row": 2
+    },
+    {
+      "point_id": 6,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0006.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18114.0,
+      "dark_subtracted_ptp": 13399.0,
+      "dark_subtracted_std": 4046.7087751341865,
+      "baseline_corrected_max": 861.0,
+      "baseline_corrected_median": 100.56666564941406,
+      "xyz_steps": [
+        69399,
+        76348,
+        145740
+      ],
+      "training_row": 3
+    },
+    {
+      "point_id": 7,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0007.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 17483.0,
+      "dark_subtracted_ptp": 12733.0,
+      "dark_subtracted_std": 3854.4910745069164,
+      "baseline_corrected_max": 759.933349609375,
+      "baseline_corrected_median": 97.0,
+      "xyz_steps": [
+        69399,
+        79819,
+        145740
+      ],
+      "training_row": 4
+    },
+    {
+      "point_id": 8,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0008.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18905.0,
+      "dark_subtracted_ptp": 14327.0,
+      "dark_subtracted_std": 4364.483860450301,
+      "baseline_corrected_max": 796.933349609375,
+      "baseline_corrected_median": 97.73332977294922,
+      "xyz_steps": [
+        69399,
+        83290,
+        145740
+      ],
+      "training_row": 5
+    },
+    {
+      "point_id": 9,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0009.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18326.0,
+      "dark_subtracted_ptp": 13650.0,
+      "dark_subtracted_std": 4124.326422167655,
+      "baseline_corrected_max": 789.5333251953125,
+      "baseline_corrected_median": 97.53333282470703,
+      "xyz_steps": [
+        69399,
+        86759,
+        145740
+      ],
+      "training_row": 6
+    },
+    {
+      "point_id": 10,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0010.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 27322.0,
+      "dark_subtracted_ptp": 22433.0,
+      "dark_subtracted_std": 7057.411453111312,
+      "baseline_corrected_max": 1136.0,
+      "baseline_corrected_median": 119.23333740234375,
+      "xyz_steps": [
+        69399,
+        90231,
+        145740
+      ],
+      "training_row": 7
+    },
+    {
+      "point_id": 11,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0011.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 26639.0,
+      "dark_subtracted_ptp": 21881.0,
+      "dark_subtracted_std": 6877.044444661309,
+      "baseline_corrected_max": 1165.7332763671875,
+      "baseline_corrected_median": 118.0999984741211,
+      "xyz_steps": [
+        69399,
+        93700,
+        145740
+      ],
+      "training_row": 8
+    },
+    {
+      "point_id": 12,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0012.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 23496.0,
+      "dark_subtracted_ptp": 18867.0,
+      "dark_subtracted_std": 5846.416914529548,
+      "baseline_corrected_max": 1040.4666748046875,
+      "baseline_corrected_median": 111.69999694824219,
+      "xyz_steps": [
+        69399,
+        97170,
+        145740
+      ],
+      "training_row": 9
+    },
+    {
+      "point_id": 13,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0013.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 29428.0,
+      "dark_subtracted_ptp": 24675.0,
+      "dark_subtracted_std": 7718.134292310637,
+      "baseline_corrected_max": 1189.199951171875,
+      "baseline_corrected_median": 126.5999984741211,
+      "xyz_steps": [
+        69399,
+        100640,
+        145740
+      ],
+      "training_row": 10
+    },
+    {
+      "point_id": 14,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0014.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 24100.0,
+      "dark_subtracted_ptp": 19436.0,
+      "dark_subtracted_std": 6143.221047812867,
+      "baseline_corrected_max": 1003.8666381835938,
+      "baseline_corrected_median": 112.33333587646484,
+      "xyz_steps": [
+        69399,
+        104110,
+        145740
+      ],
+      "training_row": 11
+    },
+    {
+      "point_id": 15,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0015.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19056.0,
+      "dark_subtracted_ptp": 14458.0,
+      "dark_subtracted_std": 4414.736990036607,
+      "baseline_corrected_max": 832.4666748046875,
+      "baseline_corrected_median": 104.0,
+      "xyz_steps": [
+        72870,
+        104106,
+        145740
+      ],
+      "training_row": 12
+    },
+    {
+      "point_id": 16,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0016.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20394.0,
+      "dark_subtracted_ptp": 15632.0,
+      "dark_subtracted_std": 4808.563668161459,
+      "baseline_corrected_max": 782.2666625976562,
+      "baseline_corrected_median": 109.30000305175781,
+      "xyz_steps": [
+        72869,
+        100632,
+        145740
+      ],
+      "training_row": 13
+    },
+    {
+      "point_id": 17,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0017.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21319.0,
+      "dark_subtracted_ptp": 16518.0,
+      "dark_subtracted_std": 5113.807768727016,
+      "baseline_corrected_max": 852.5999755859375,
+      "baseline_corrected_median": 107.83333587646484,
+      "xyz_steps": [
+        72869,
+        97162,
+        145740
+      ],
+      "training_row": 14
+    },
+    {
+      "point_id": 18,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0018.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20825.0,
+      "dark_subtracted_ptp": 16336.0,
+      "dark_subtracted_std": 4988.49453076909,
+      "baseline_corrected_max": 898.8666381835938,
+      "baseline_corrected_median": 108.16666412353516,
+      "xyz_steps": [
+        72869,
+        93692,
+        145740
+      ],
+      "training_row": 15
+    },
+    {
+      "point_id": 19,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0019.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21003.0,
+      "dark_subtracted_ptp": 16408.0,
+      "dark_subtracted_std": 5068.391434998588,
+      "baseline_corrected_max": 836.066650390625,
+      "baseline_corrected_median": 105.06666564941406,
+      "xyz_steps": [
+        72869,
+        90222,
+        145740
+      ],
+      "training_row": 16
+    },
+    {
+      "point_id": 20,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0020.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 25362.0,
+      "dark_subtracted_ptp": 16360.0,
+      "dark_subtracted_std": 4984.791511499555,
+      "baseline_corrected_max": 937.2666625976562,
+      "baseline_corrected_median": 104.43333435058594,
+      "xyz_steps": [
+        72869,
+        86753,
+        145740
+      ],
+      "training_row": 17
+    },
+    {
+      "point_id": 21,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0021.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21940.0,
+      "dark_subtracted_ptp": 17250.0,
+      "dark_subtracted_std": 5251.382941724677,
+      "baseline_corrected_max": 892.2000122070312,
+      "baseline_corrected_median": 103.80000305175781,
+      "xyz_steps": [
+        72869,
+        83283,
+        145740
+      ],
+      "training_row": 18
+    },
+    {
+      "point_id": 22,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0022.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21173.0,
+      "dark_subtracted_ptp": 16139.0,
+      "dark_subtracted_std": 4963.032319433024,
+      "baseline_corrected_max": 855.5333251953125,
+      "baseline_corrected_median": 105.23333740234375,
+      "xyz_steps": [
+        72869,
+        79813,
+        145740
+      ],
+      "training_row": 19
+    },
+    {
+      "point_id": 23,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0023.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 22336.0,
+      "dark_subtracted_ptp": 14249.0,
+      "dark_subtracted_std": 4326.982644712339,
+      "baseline_corrected_max": 766.7333374023438,
+      "baseline_corrected_median": 101.13333129882812,
+      "xyz_steps": [
+        72869,
+        76342,
+        145740
+      ],
+      "training_row": 20
+    },
+    {
+      "point_id": 24,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0024.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20191.0,
+      "dark_subtracted_ptp": 15493.0,
+      "dark_subtracted_std": 4774.136390645726,
+      "baseline_corrected_max": 910.5999755859375,
+      "baseline_corrected_median": 102.0,
+      "xyz_steps": [
+        72869,
+        72871,
+        145740
+      ],
+      "training_row": 21
+    },
+    {
+      "point_id": 25,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0025.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18785.0,
+      "dark_subtracted_ptp": 14174.0,
+      "dark_subtracted_std": 4368.195157628853,
+      "baseline_corrected_max": 730.0,
+      "baseline_corrected_median": 100.36666870117188,
+      "xyz_steps": [
+        72869,
+        69401,
+        145740
+      ],
+      "training_row": 22
+    },
+    {
+      "point_id": 26,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0026.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 35899.0,
+      "dark_subtracted_ptp": 18733.0,
+      "dark_subtracted_std": 5764.249058806239,
+      "baseline_corrected_max": 943.1333618164062,
+      "baseline_corrected_median": 106.06666564941406,
+      "xyz_steps": [
+        76341,
+        69406,
+        145740
+      ],
+      "training_row": 23
+    },
+    {
+      "point_id": 27,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0027.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 25887.0,
+      "dark_subtracted_ptp": 21297.0,
+      "dark_subtracted_std": 6707.077857799205,
+      "baseline_corrected_max": 1122.6666259765625,
+      "baseline_corrected_median": 116.96666717529297,
+      "xyz_steps": [
+        76339,
+        72879,
+        145740
+      ],
+      "training_row": 24
+    },
+    {
+      "point_id": 28,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0028.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 30441.0,
+      "dark_subtracted_ptp": 22971.0,
+      "dark_subtracted_std": 7229.924838408701,
+      "baseline_corrected_max": 1020.5999755859375,
+      "baseline_corrected_median": 118.83333587646484,
+      "xyz_steps": [
+        76339,
+        76349,
+        145740
+      ],
+      "training_row": 25
+    },
+    {
+      "point_id": 29,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0029.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 25297.0,
+      "dark_subtracted_ptp": 18042.0,
+      "dark_subtracted_std": 5560.331196496529,
+      "baseline_corrected_max": 971.7999877929688,
+      "baseline_corrected_median": 109.96666717529297,
+      "xyz_steps": [
+        76339,
+        79819,
+        145740
+      ],
+      "training_row": 26
+    },
+    {
+      "point_id": 30,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0030.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21074.0,
+      "dark_subtracted_ptp": 16368.0,
+      "dark_subtracted_std": 5011.674881795861,
+      "baseline_corrected_max": 967.5333251953125,
+      "baseline_corrected_median": 104.30000305175781,
+      "xyz_steps": [
+        76339,
+        83290,
+        145740
+      ],
+      "training_row": 27
+    },
+    {
+      "point_id": 31,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0031.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20780.0,
+      "dark_subtracted_ptp": 16176.0,
+      "dark_subtracted_std": 5013.690060469772,
+      "baseline_corrected_max": 975.3333129882812,
+      "baseline_corrected_median": 106.93333435058594,
+      "xyz_steps": [
+        76339,
+        86759,
+        145740
+      ],
+      "training_row": 28
+    },
+    {
+      "point_id": 32,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0032.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 22775.0,
+      "dark_subtracted_ptp": 18024.0,
+      "dark_subtracted_std": 5561.516739740966,
+      "baseline_corrected_max": 1069.0,
+      "baseline_corrected_median": 109.33333587646484,
+      "xyz_steps": [
+        76339,
+        90231,
+        145740
+      ],
+      "training_row": 29
+    },
+    {
+      "point_id": 33,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0033.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 22342.0,
+      "dark_subtracted_ptp": 15827.0,
+      "dark_subtracted_std": 4822.180265332769,
+      "baseline_corrected_max": 833.7999877929688,
+      "baseline_corrected_median": 101.03333282470703,
+      "xyz_steps": [
+        76339,
+        93700,
+        145740
+      ],
+      "training_row": 30
+    },
+    {
+      "point_id": 34,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0034.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19806.0,
+      "dark_subtracted_ptp": 15207.0,
+      "dark_subtracted_std": 4648.088066191526,
+      "baseline_corrected_max": 752.5333251953125,
+      "baseline_corrected_median": 103.76666259765625,
+      "xyz_steps": [
+        76339,
+        97170,
+        145740
+      ],
+      "training_row": 31
+    },
+    {
+      "point_id": 35,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0035.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 23976.0,
+      "dark_subtracted_ptp": 19459.0,
+      "dark_subtracted_std": 6050.118445895243,
+      "baseline_corrected_max": 7164.93310546875,
+      "baseline_corrected_median": 117.83333587646484,
+      "xyz_steps": [
+        76339,
+        100640,
+        145740
+      ],
+      "training_row": 32
+    },
+    {
+      "point_id": 36,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0036.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 23033.0,
+      "dark_subtracted_ptp": 18468.0,
+      "dark_subtracted_std": 5668.628718831957,
+      "baseline_corrected_max": 833.5999755859375,
+      "baseline_corrected_median": 111.23333740234375,
+      "xyz_steps": [
+        76339,
+        104110,
+        145740
+      ],
+      "training_row": 33
+    },
+    {
+      "point_id": 37,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0037.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21364.0,
+      "dark_subtracted_ptp": 16554.0,
+      "dark_subtracted_std": 5095.842663142863,
+      "baseline_corrected_max": 770.0,
+      "baseline_corrected_median": 105.86666870117188,
+      "xyz_steps": [
+        79812,
+        104106,
+        145740
+      ],
+      "training_row": 34
+    },
+    {
+      "point_id": 38,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0038.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 24252.0,
+      "dark_subtracted_ptp": 19519.0,
+      "dark_subtracted_std": 5988.502360452336,
+      "baseline_corrected_max": 1137.7332763671875,
+      "baseline_corrected_median": 112.66666412353516,
+      "xyz_steps": [
+        79809,
+        100632,
+        145740
+      ],
+      "training_row": 35
+    },
+    {
+      "point_id": 39,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0039.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20190.0,
+      "dark_subtracted_ptp": 15609.0,
+      "dark_subtracted_std": 4783.612846180686,
+      "baseline_corrected_max": 862.5333251953125,
+      "baseline_corrected_median": 106.80000305175781,
+      "xyz_steps": [
+        79809,
+        97162,
+        145740
+      ],
+      "training_row": 36
+    },
+    {
+      "point_id": 40,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0040.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21187.0,
+      "dark_subtracted_ptp": 16563.0,
+      "dark_subtracted_std": 5082.500595446651,
+      "baseline_corrected_max": 942.7999877929688,
+      "baseline_corrected_median": 105.63333129882812,
+      "xyz_steps": [
+        79809,
+        93692,
+        145740
+      ],
+      "training_row": 37
+    },
+    {
+      "point_id": 41,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0041.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18927.0,
+      "dark_subtracted_ptp": 14243.0,
+      "dark_subtracted_std": 4371.409486572595,
+      "baseline_corrected_max": 875.5333251953125,
+      "baseline_corrected_median": 103.23333740234375,
+      "xyz_steps": [
+        79809,
+        90222,
+        145740
+      ],
+      "training_row": 38
+    },
+    {
+      "point_id": 42,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0042.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19094.0,
+      "dark_subtracted_ptp": 14441.0,
+      "dark_subtracted_std": 4415.125852612147,
+      "baseline_corrected_max": 786.7999877929688,
+      "baseline_corrected_median": 100.66666412353516,
+      "xyz_steps": [
+        79809,
+        86753,
+        145740
+      ],
+      "training_row": 39
+    },
+    {
+      "point_id": 43,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0043.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21596.0,
+      "dark_subtracted_ptp": 16986.0,
+      "dark_subtracted_std": 5050.296919273749,
+      "baseline_corrected_max": 874.5333251953125,
+      "baseline_corrected_median": 106.13333129882812,
+      "xyz_steps": [
+        79809,
+        83283,
+        145740
+      ],
+      "training_row": 40
+    },
+    {
+      "point_id": 44,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0044.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 30847.0,
+      "dark_subtracted_ptp": 26309.0,
+      "dark_subtracted_std": 8311.807571866855,
+      "baseline_corrected_max": 1339.7332763671875,
+      "baseline_corrected_median": 130.0,
+      "xyz_steps": [
+        79809,
+        79813,
+        145740
+      ],
+      "training_row": 41
+    },
+    {
+      "point_id": 45,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0045.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 23927.0,
+      "dark_subtracted_ptp": 19355.0,
+      "dark_subtracted_std": 6118.690285120137,
+      "baseline_corrected_max": 938.8666381835938,
+      "baseline_corrected_median": 113.30000305175781,
+      "xyz_steps": [
+        79809,
+        76342,
+        145740
+      ],
+      "training_row": 42
+    },
+    {
+      "point_id": 46,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0046.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 28646.0,
+      "dark_subtracted_ptp": 17754.0,
+      "dark_subtracted_std": 5450.5170301728585,
+      "baseline_corrected_max": 957.3333129882812,
+      "baseline_corrected_median": 111.73333740234375,
+      "xyz_steps": [
+        79809,
+        72871,
+        145740
+      ],
+      "training_row": 43
+    },
+    {
+      "point_id": 47,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0047.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21454.0,
+      "dark_subtracted_ptp": 14603.0,
+      "dark_subtracted_std": 4472.037277771298,
+      "baseline_corrected_max": 838.4000244140625,
+      "baseline_corrected_median": 101.9000015258789,
+      "xyz_steps": [
+        79809,
+        69403,
+        145740
+      ],
+      "training_row": 44
+    },
+    {
+      "point_id": 48,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0048.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 33699.0,
+      "dark_subtracted_ptp": 29048.0,
+      "dark_subtracted_std": 9217.753827917173,
+      "baseline_corrected_max": 1227.4666748046875,
+      "baseline_corrected_median": 133.5333251953125,
+      "xyz_steps": [
+        83282,
+        69406,
+        145740
+      ],
+      "training_row": 45
+    },
+    {
+      "point_id": 49,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0049.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20480.0,
+      "dark_subtracted_ptp": 15811.0,
+      "dark_subtracted_std": 4902.235855733074,
+      "baseline_corrected_max": 890.5333251953125,
+      "baseline_corrected_median": 107.83333587646484,
+      "xyz_steps": [
+        83279,
+        72879,
+        145740
+      ],
+      "training_row": 46
+    },
+    {
+      "point_id": 50,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0050.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19408.0,
+      "dark_subtracted_ptp": 14829.0,
+      "dark_subtracted_std": 4561.14715439909,
+      "baseline_corrected_max": 832.5333251953125,
+      "baseline_corrected_median": 104.9000015258789,
+      "xyz_steps": [
+        83279,
+        76349,
+        145740
+      ],
+      "training_row": 47
+    },
+    {
+      "point_id": 51,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0051.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 26186.0,
+      "dark_subtracted_ptp": 14917.0,
+      "dark_subtracted_std": 4567.344083020776,
+      "baseline_corrected_max": 852.066650390625,
+      "baseline_corrected_median": 98.26666259765625,
+      "xyz_steps": [
+        83279,
+        79819,
+        145740
+      ],
+      "training_row": 48
+    },
+    {
+      "point_id": 52,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0052.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20340.0,
+      "dark_subtracted_ptp": 15724.0,
+      "dark_subtracted_std": 4836.497774771928,
+      "baseline_corrected_max": 876.2666625976562,
+      "baseline_corrected_median": 100.53333282470703,
+      "xyz_steps": [
+        83279,
+        83290,
+        145740
+      ],
+      "training_row": 49
+    },
+    {
+      "point_id": 53,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0053.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19924.0,
+      "dark_subtracted_ptp": 15191.0,
+      "dark_subtracted_std": 4641.620287609176,
+      "baseline_corrected_max": 708.3333129882812,
+      "baseline_corrected_median": 105.66667175292969,
+      "xyz_steps": [
+        83279,
+        86759,
+        145740
+      ],
+      "training_row": 50
+    },
+    {
+      "point_id": 54,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0054.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20610.0,
+      "dark_subtracted_ptp": 15862.0,
+      "dark_subtracted_std": 4900.186689509582,
+      "baseline_corrected_max": 835.5333251953125,
+      "baseline_corrected_median": 104.0,
+      "xyz_steps": [
+        83279,
+        90231,
+        145740
+      ],
+      "training_row": 51
+    },
+    {
+      "point_id": 55,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0055.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18607.0,
+      "dark_subtracted_ptp": 13926.0,
+      "dark_subtracted_std": 4241.075351238602,
+      "baseline_corrected_max": 808.1333618164062,
+      "baseline_corrected_median": 102.43333435058594,
+      "xyz_steps": [
+        83279,
+        93700,
+        145740
+      ],
+      "training_row": 52
+    },
+    {
+      "point_id": 56,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0056.json",
+      "accepted": false,
+      "reasons": [
+        "ADC saturation before dark subtraction"
+      ],
+      "full_scale_pixels": 261,
+      "raw_max": 65535.0,
+      "dark_subtracted_ptp": 61245.0,
+      "dark_subtracted_std": 23016.684660732124,
+      "baseline_corrected_max": 1872.199951171875,
+      "baseline_corrected_median": 250.06666564941406,
+      "xyz_steps": [
+        83279,
+        97170,
+        145740
+      ]
+    },
+    {
+      "point_id": 57,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0057.json",
+      "accepted": false,
+      "reasons": [
+        "ADC saturation before dark subtraction"
+      ],
+      "full_scale_pixels": 556,
+      "raw_max": 65535.0,
+      "dark_subtracted_ptp": 61197.0,
+      "dark_subtracted_std": 25195.24918646405,
+      "baseline_corrected_max": 2537.13330078125,
+      "baseline_corrected_median": 274.86663818359375,
+      "xyz_steps": [
+        83279,
+        100640,
+        145740
+      ]
+    },
+    {
+      "point_id": 58,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0058.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 56966.0,
+      "dark_subtracted_ptp": 52126.0,
+      "dark_subtracted_std": 17319.4835375819,
+      "baseline_corrected_max": 2106.666748046875,
+      "baseline_corrected_median": 203.0,
+      "xyz_steps": [
+        83279,
+        104110,
+        145740
+      ],
+      "training_row": 53
+    },
+    {
+      "point_id": 59,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0059.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 23206.0,
+      "dark_subtracted_ptp": 18713.0,
+      "dark_subtracted_std": 5792.347174068585,
+      "baseline_corrected_max": 1122.5999755859375,
+      "baseline_corrected_median": 112.4000015258789,
+      "xyz_steps": [
+        86752,
+        104106,
+        145740
+      ],
+      "training_row": 54
+    },
+    {
+      "point_id": 60,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0060.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19861.0,
+      "dark_subtracted_ptp": 15056.0,
+      "dark_subtracted_std": 4629.5255251703065,
+      "baseline_corrected_max": 763.4666748046875,
+      "baseline_corrected_median": 106.13333129882812,
+      "xyz_steps": [
+        86749,
+        100632,
+        145740
+      ],
+      "training_row": 55
+    },
+    {
+      "point_id": 61,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0061.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19138.0,
+      "dark_subtracted_ptp": 14428.0,
+      "dark_subtracted_std": 4403.572739224441,
+      "baseline_corrected_max": 800.933349609375,
+      "baseline_corrected_median": 102.5,
+      "xyz_steps": [
+        86749,
+        97162,
+        145740
+      ],
+      "training_row": 56
+    },
+    {
+      "point_id": 62,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0062.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21036.0,
+      "dark_subtracted_ptp": 16258.0,
+      "dark_subtracted_std": 4969.838201264961,
+      "baseline_corrected_max": 839.4666748046875,
+      "baseline_corrected_median": 102.83333587646484,
+      "xyz_steps": [
+        86749,
+        93692,
+        145740
+      ],
+      "training_row": 57
+    },
+    {
+      "point_id": 63,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0063.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18866.0,
+      "dark_subtracted_ptp": 14131.0,
+      "dark_subtracted_std": 4324.59421627437,
+      "baseline_corrected_max": 827.7333374023438,
+      "baseline_corrected_median": 99.86666870117188,
+      "xyz_steps": [
+        86749,
+        90222,
+        145740
+      ],
+      "training_row": 58
+    },
+    {
+      "point_id": 64,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0064.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19362.0,
+      "dark_subtracted_ptp": 14667.0,
+      "dark_subtracted_std": 4441.355467779144,
+      "baseline_corrected_max": 804.066650390625,
+      "baseline_corrected_median": 104.39999389648438,
+      "xyz_steps": [
+        86749,
+        86753,
+        145740
+      ],
+      "training_row": 59
+    },
+    {
+      "point_id": 65,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0065.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 17950.0,
+      "dark_subtracted_ptp": 13324.0,
+      "dark_subtracted_std": 4024.2186141348684,
+      "baseline_corrected_max": 703.2000122070312,
+      "baseline_corrected_median": 102.13333129882812,
+      "xyz_steps": [
+        86749,
+        83283,
+        145740
+      ],
+      "training_row": 60
+    },
+    {
+      "point_id": 66,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0066.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 31825.0,
+      "dark_subtracted_ptp": 18556.0,
+      "dark_subtracted_std": 5754.5971388275275,
+      "baseline_corrected_max": 997.5999755859375,
+      "baseline_corrected_median": 111.66666412353516,
+      "xyz_steps": [
+        86749,
+        79813,
+        145740
+      ],
+      "training_row": 61
+    },
+    {
+      "point_id": 67,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0067.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 28194.0,
+      "dark_subtracted_ptp": 23476.0,
+      "dark_subtracted_std": 7309.628904138179,
+      "baseline_corrected_max": 1320.4666748046875,
+      "baseline_corrected_median": 123.36666870117188,
+      "xyz_steps": [
+        86749,
+        76342,
+        145740
+      ],
+      "training_row": 62
+    },
+    {
+      "point_id": 68,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0068.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18822.0,
+      "dark_subtracted_ptp": 14105.0,
+      "dark_subtracted_std": 4304.594102891581,
+      "baseline_corrected_max": 801.933349609375,
+      "baseline_corrected_median": 100.0,
+      "xyz_steps": [
+        86749,
+        72871,
+        145740
+      ],
+      "training_row": 63
+    },
+    {
+      "point_id": 69,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0069.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18827.0,
+      "dark_subtracted_ptp": 14125.0,
+      "dark_subtracted_std": 4289.344101396027,
+      "baseline_corrected_max": 753.5999755859375,
+      "baseline_corrected_median": 100.03333282470703,
+      "xyz_steps": [
+        86749,
+        69403,
+        145740
+      ],
+      "training_row": 64
+    },
+    {
+      "point_id": 70,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0070.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18949.0,
+      "dark_subtracted_ptp": 14294.0,
+      "dark_subtracted_std": 4349.398528719209,
+      "baseline_corrected_max": 817.2666625976562,
+      "baseline_corrected_median": 100.83333587646484,
+      "xyz_steps": [
+        90222,
+        69406,
+        145740
+      ],
+      "training_row": 65
+    },
+    {
+      "point_id": 71,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0071.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 22108.0,
+      "dark_subtracted_ptp": 17393.0,
+      "dark_subtracted_std": 5185.226632752466,
+      "baseline_corrected_max": 853.2666625976562,
+      "baseline_corrected_median": 103.4000015258789,
+      "xyz_steps": [
+        90219,
+        72879,
+        145740
+      ],
+      "training_row": 66
+    },
+    {
+      "point_id": 72,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0072.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20113.0,
+      "dark_subtracted_ptp": 15264.0,
+      "dark_subtracted_std": 4705.260198686986,
+      "baseline_corrected_max": 773.5333251953125,
+      "baseline_corrected_median": 105.4000015258789,
+      "xyz_steps": [
+        90219,
+        76349,
+        145740
+      ],
+      "training_row": 67
+    },
+    {
+      "point_id": 73,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0073.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20379.0,
+      "dark_subtracted_ptp": 14117.0,
+      "dark_subtracted_std": 4307.940755593242,
+      "baseline_corrected_max": 710.5333251953125,
+      "baseline_corrected_median": 101.03333282470703,
+      "xyz_steps": [
+        90219,
+        79819,
+        145740
+      ],
+      "training_row": 68
+    },
+    {
+      "point_id": 74,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0074.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20353.0,
+      "dark_subtracted_ptp": 15709.0,
+      "dark_subtracted_std": 4801.786947297177,
+      "baseline_corrected_max": 730.5999755859375,
+      "baseline_corrected_median": 101.96666717529297,
+      "xyz_steps": [
+        90219,
+        83290,
+        145740
+      ],
+      "training_row": 69
+    },
+    {
+      "point_id": 75,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0075.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20310.0,
+      "dark_subtracted_ptp": 15624.0,
+      "dark_subtracted_std": 4778.445412730664,
+      "baseline_corrected_max": 962.8666381835938,
+      "baseline_corrected_median": 101.4000015258789,
+      "xyz_steps": [
+        90219,
+        86760,
+        145740
+      ],
+      "training_row": 70
+    },
+    {
+      "point_id": 76,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0076.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 17898.0,
+      "dark_subtracted_ptp": 13199.0,
+      "dark_subtracted_std": 4032.6894749749845,
+      "baseline_corrected_max": 741.3333129882812,
+      "baseline_corrected_median": 98.73332977294922,
+      "xyz_steps": [
+        90219,
+        90231,
+        145740
+      ],
+      "training_row": 71
+    },
+    {
+      "point_id": 77,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0077.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18832.0,
+      "dark_subtracted_ptp": 14217.0,
+      "dark_subtracted_std": 4349.76614944317,
+      "baseline_corrected_max": 794.066650390625,
+      "baseline_corrected_median": 103.5,
+      "xyz_steps": [
+        90219,
+        93700,
+        145740
+      ],
+      "training_row": 72
+    },
+    {
+      "point_id": 78,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0078.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19409.0,
+      "dark_subtracted_ptp": 14672.0,
+      "dark_subtracted_std": 4505.731361719588,
+      "baseline_corrected_max": 797.0,
+      "baseline_corrected_median": 103.86666870117188,
+      "xyz_steps": [
+        90219,
+        97170,
+        145740
+      ],
+      "training_row": 73
+    },
+    {
+      "point_id": 79,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0079.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20802.0,
+      "dark_subtracted_ptp": 15000.0,
+      "dark_subtracted_std": 4591.887299896439,
+      "baseline_corrected_max": 851.4000244140625,
+      "baseline_corrected_median": 102.0999984741211,
+      "xyz_steps": [
+        90219,
+        100640,
+        145740
+      ],
+      "training_row": 74
+    },
+    {
+      "point_id": 80,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0080.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 37702.0,
+      "dark_subtracted_ptp": 32906.0,
+      "dark_subtracted_std": 10410.703268760832,
+      "baseline_corrected_max": 1477.4000244140625,
+      "baseline_corrected_median": 137.8000030517578,
+      "xyz_steps": [
+        90219,
+        104110,
+        145740
+      ],
+      "training_row": 75
+    },
+    {
+      "point_id": 81,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0081.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18438.0,
+      "dark_subtracted_ptp": 13684.0,
+      "dark_subtracted_std": 4199.241278375419,
+      "baseline_corrected_max": 756.5999755859375,
+      "baseline_corrected_median": 98.36666870117188,
+      "xyz_steps": [
+        93692,
+        104106,
+        145740
+      ],
+      "training_row": 76
+    },
+    {
+      "point_id": 82,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0082.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 31561.0,
+      "dark_subtracted_ptp": 26776.0,
+      "dark_subtracted_std": 8716.000385130592,
+      "baseline_corrected_max": 1471.6666259765625,
+      "baseline_corrected_median": 134.89999389648438,
+      "xyz_steps": [
+        93689,
+        100632,
+        145740
+      ],
+      "training_row": 77
+    },
+    {
+      "point_id": 83,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0083.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20348.0,
+      "dark_subtracted_ptp": 15534.0,
+      "dark_subtracted_std": 4813.438669667861,
+      "baseline_corrected_max": 788.8666381835938,
+      "baseline_corrected_median": 101.66666412353516,
+      "xyz_steps": [
+        93689,
+        97162,
+        145740
+      ],
+      "training_row": 78
+    },
+    {
+      "point_id": 84,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0084.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20307.0,
+      "dark_subtracted_ptp": 15628.0,
+      "dark_subtracted_std": 4843.767623723715,
+      "baseline_corrected_max": 794.5333251953125,
+      "baseline_corrected_median": 103.73332977294922,
+      "xyz_steps": [
+        93689,
+        93692,
+        145740
+      ],
+      "training_row": 79
+    },
+    {
+      "point_id": 85,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0085.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19526.0,
+      "dark_subtracted_ptp": 14774.0,
+      "dark_subtracted_std": 4567.535116717704,
+      "baseline_corrected_max": 755.7999877929688,
+      "baseline_corrected_median": 104.33332824707031,
+      "xyz_steps": [
+        93689,
+        90222,
+        145740
+      ],
+      "training_row": 80
+    },
+    {
+      "point_id": 86,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0086.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 29887.0,
+      "dark_subtracted_ptp": 25231.0,
+      "dark_subtracted_std": 7965.297547967325,
+      "baseline_corrected_max": 1260.5333251953125,
+      "baseline_corrected_median": 125.16666412353516,
+      "xyz_steps": [
+        93689,
+        86753,
+        145740
+      ],
+      "training_row": 81
+    },
+    {
+      "point_id": 87,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0087.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20566.0,
+      "dark_subtracted_ptp": 15961.0,
+      "dark_subtracted_std": 4933.0153938445,
+      "baseline_corrected_max": 771.066650390625,
+      "baseline_corrected_median": 104.80000305175781,
+      "xyz_steps": [
+        93689,
+        83283,
+        145740
+      ],
+      "training_row": 82
+    },
+    {
+      "point_id": 88,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0088.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 24181.0,
+      "dark_subtracted_ptp": 18910.0,
+      "dark_subtracted_std": 5856.976450327723,
+      "baseline_corrected_max": 972.2000122070312,
+      "baseline_corrected_median": 106.33333587646484,
+      "xyz_steps": [
+        93689,
+        79813,
+        145740
+      ],
+      "training_row": 83
+    },
+    {
+      "point_id": 89,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0089.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 25989.0,
+      "dark_subtracted_ptp": 21355.0,
+      "dark_subtracted_std": 6703.755727289411,
+      "baseline_corrected_max": 1028.0,
+      "baseline_corrected_median": 110.43333435058594,
+      "xyz_steps": [
+        93689,
+        76342,
+        145740
+      ],
+      "training_row": 84
+    },
+    {
+      "point_id": 90,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0090.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19766.0,
+      "dark_subtracted_ptp": 15094.0,
+      "dark_subtracted_std": 4605.012597371502,
+      "baseline_corrected_max": 829.2666625976562,
+      "baseline_corrected_median": 100.53333282470703,
+      "xyz_steps": [
+        93689,
+        72871,
+        145740
+      ],
+      "training_row": 85
+    },
+    {
+      "point_id": 91,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0091.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 22528.0,
+      "dark_subtracted_ptp": 17786.0,
+      "dark_subtracted_std": 5501.869072212683,
+      "baseline_corrected_max": 942.0,
+      "baseline_corrected_median": 110.30000305175781,
+      "xyz_steps": [
+        93689,
+        69401,
+        145740
+      ],
+      "training_row": 86
+    },
+    {
+      "point_id": 92,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0092.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19660.0,
+      "dark_subtracted_ptp": 14956.0,
+      "dark_subtracted_std": 4518.800667259672,
+      "baseline_corrected_max": 901.0,
+      "baseline_corrected_median": 99.76666259765625,
+      "xyz_steps": [
+        97161,
+        69406,
+        145740
+      ],
+      "training_row": 87
+    },
+    {
+      "point_id": 93,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0093.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20060.0,
+      "dark_subtracted_ptp": 15419.0,
+      "dark_subtracted_std": 4671.833045660582,
+      "baseline_corrected_max": 797.7333374023438,
+      "baseline_corrected_median": 104.83333587646484,
+      "xyz_steps": [
+        97159,
+        72879,
+        145740
+      ],
+      "training_row": 88
+    },
+    {
+      "point_id": 94,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0094.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20089.0,
+      "dark_subtracted_ptp": 15452.0,
+      "dark_subtracted_std": 4627.658337581464,
+      "baseline_corrected_max": 782.4000244140625,
+      "baseline_corrected_median": 100.5,
+      "xyz_steps": [
+        97159,
+        76349,
+        145740
+      ],
+      "training_row": 89
+    },
+    {
+      "point_id": 95,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0095.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21361.0,
+      "dark_subtracted_ptp": 15954.0,
+      "dark_subtracted_std": 4913.493486588153,
+      "baseline_corrected_max": 882.5999755859375,
+      "baseline_corrected_median": 106.73333740234375,
+      "xyz_steps": [
+        97159,
+        79819,
+        145740
+      ],
+      "training_row": 90
+    },
+    {
+      "point_id": 96,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0096.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 16985.0,
+      "dark_subtracted_ptp": 12391.0,
+      "dark_subtracted_std": 3759.449559383377,
+      "baseline_corrected_max": 661.4000244140625,
+      "baseline_corrected_median": 94.66666412353516,
+      "xyz_steps": [
+        97159,
+        83290,
+        145740
+      ],
+      "training_row": 91
+    },
+    {
+      "point_id": 97,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0097.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 28845.0,
+      "dark_subtracted_ptp": 24111.0,
+      "dark_subtracted_std": 7720.779293880924,
+      "baseline_corrected_max": 1194.933349609375,
+      "baseline_corrected_median": 123.96666717529297,
+      "xyz_steps": [
+        97159,
+        86760,
+        145740
+      ],
+      "training_row": 92
+    },
+    {
+      "point_id": 98,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0098.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 29459.0,
+      "dark_subtracted_ptp": 24701.0,
+      "dark_subtracted_std": 7894.024422624491,
+      "baseline_corrected_max": 1152.86669921875,
+      "baseline_corrected_median": 129.43333435058594,
+      "xyz_steps": [
+        97159,
+        90231,
+        145740
+      ],
+      "training_row": 93
+    },
+    {
+      "point_id": 99,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0099.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19507.0,
+      "dark_subtracted_ptp": 14796.0,
+      "dark_subtracted_std": 4526.589420038844,
+      "baseline_corrected_max": 810.1333618164062,
+      "baseline_corrected_median": 106.26666259765625,
+      "xyz_steps": [
+        97159,
+        93700,
+        145740
+      ],
+      "training_row": 94
+    },
+    {
+      "point_id": 100,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0100.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 24810.0,
+      "dark_subtracted_ptp": 20157.0,
+      "dark_subtracted_std": 6195.048350370417,
+      "baseline_corrected_max": 978.2000122070312,
+      "baseline_corrected_median": 113.56666564941406,
+      "xyz_steps": [
+        97159,
+        97170,
+        145740
+      ],
+      "training_row": 95
+    },
+    {
+      "point_id": 101,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0101.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 17418.0,
+      "dark_subtracted_ptp": 12593.0,
+      "dark_subtracted_std": 3861.976061631594,
+      "baseline_corrected_max": 686.4666748046875,
+      "baseline_corrected_median": 100.23333740234375,
+      "xyz_steps": [
+        97159,
+        100640,
+        145740
+      ],
+      "training_row": 96
+    },
+    {
+      "point_id": 102,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0102.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20131.0,
+      "dark_subtracted_ptp": 15411.0,
+      "dark_subtracted_std": 4750.051965805081,
+      "baseline_corrected_max": 972.066650390625,
+      "baseline_corrected_median": 104.0999984741211,
+      "xyz_steps": [
+        97159,
+        104110,
+        145740
+      ],
+      "training_row": 97
+    },
+    {
+      "point_id": 103,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0103.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18735.0,
+      "dark_subtracted_ptp": 14111.0,
+      "dark_subtracted_std": 4335.582175533116,
+      "baseline_corrected_max": 764.933349609375,
+      "baseline_corrected_median": 97.83333587646484,
+      "xyz_steps": [
+        100631,
+        104106,
+        145740
+      ],
+      "training_row": 98
+    },
+    {
+      "point_id": 104,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0104.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18334.0,
+      "dark_subtracted_ptp": 13566.0,
+      "dark_subtracted_std": 4191.218474839646,
+      "baseline_corrected_max": 655.7333374023438,
+      "baseline_corrected_median": 101.5,
+      "xyz_steps": [
+        100629,
+        100632,
+        145740
+      ],
+      "training_row": 99
+    },
+    {
+      "point_id": 105,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0105.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19717.0,
+      "dark_subtracted_ptp": 15027.0,
+      "dark_subtracted_std": 4648.459215366889,
+      "baseline_corrected_max": 844.1333618164062,
+      "baseline_corrected_median": 105.56666564941406,
+      "xyz_steps": [
+        100629,
+        97162,
+        145740
+      ],
+      "training_row": 100
+    },
+    {
+      "point_id": 106,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0106.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19879.0,
+      "dark_subtracted_ptp": 15160.0,
+      "dark_subtracted_std": 4708.309155695591,
+      "baseline_corrected_max": 870.7333374023438,
+      "baseline_corrected_median": 106.36666870117188,
+      "xyz_steps": [
+        100629,
+        93692,
+        145740
+      ],
+      "training_row": 101
+    },
+    {
+      "point_id": 107,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0107.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20561.0,
+      "dark_subtracted_ptp": 15888.0,
+      "dark_subtracted_std": 4927.315300293065,
+      "baseline_corrected_max": 840.3333129882812,
+      "baseline_corrected_median": 104.56666564941406,
+      "xyz_steps": [
+        100629,
+        90222,
+        145740
+      ],
+      "training_row": 102
+    },
+    {
+      "point_id": 108,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0108.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 17516.0,
+      "dark_subtracted_ptp": 12827.0,
+      "dark_subtracted_std": 3928.5308290681633,
+      "baseline_corrected_max": 693.933349609375,
+      "baseline_corrected_median": 97.43333435058594,
+      "xyz_steps": [
+        100629,
+        86753,
+        145740
+      ],
+      "training_row": 103
+    },
+    {
+      "point_id": 109,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0109.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 23351.0,
+      "dark_subtracted_ptp": 18624.0,
+      "dark_subtracted_std": 5760.654109673178,
+      "baseline_corrected_max": 945.6666870117188,
+      "baseline_corrected_median": 115.56666564941406,
+      "xyz_steps": [
+        100629,
+        83283,
+        145740
+      ],
+      "training_row": 104
+    },
+    {
+      "point_id": 110,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0110.json",
+      "accepted": false,
+      "reasons": [
+        "ADC saturation before dark subtraction"
+      ],
+      "full_scale_pixels": 252,
+      "raw_max": 65535.0,
+      "dark_subtracted_ptp": 61241.0,
+      "dark_subtracted_std": 22571.17852529273,
+      "baseline_corrected_max": 1837.5999755859375,
+      "baseline_corrected_median": 244.5,
+      "xyz_steps": [
+        100629,
+        79813,
+        145740
+      ]
+    },
+    {
+      "point_id": 111,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0111.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 41601.0,
+      "dark_subtracted_ptp": 36923.0,
+      "dark_subtracted_std": 12132.26580411958,
+      "baseline_corrected_max": 1987.3333740234375,
+      "baseline_corrected_median": 160.39999389648438,
+      "xyz_steps": [
+        100629,
+        76342,
+        145740
+      ],
+      "training_row": 105
+    },
+    {
+      "point_id": 112,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0112.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19256.0,
+      "dark_subtracted_ptp": 14419.0,
+      "dark_subtracted_std": 4511.557300788821,
+      "baseline_corrected_max": 735.066650390625,
+      "baseline_corrected_median": 100.83333587646484,
+      "xyz_steps": [
+        100629,
+        72871,
+        145740
+      ],
+      "training_row": 106
+    },
+    {
+      "point_id": 113,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0113.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19614.0,
+      "dark_subtracted_ptp": 14915.0,
+      "dark_subtracted_std": 4576.771227164868,
+      "baseline_corrected_max": 738.933349609375,
+      "baseline_corrected_median": 98.23333740234375,
+      "xyz_steps": [
+        100629,
+        69401,
+        145740
+      ],
+      "training_row": 107
+    },
+    {
+      "point_id": 114,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0114.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 17349.0,
+      "dark_subtracted_ptp": 12683.0,
+      "dark_subtracted_std": 3805.047981612162,
+      "baseline_corrected_max": 751.1333618164062,
+      "baseline_corrected_median": 96.0,
+      "xyz_steps": [
+        104101,
+        69406,
+        145740
+      ],
+      "training_row": 108
+    },
+    {
+      "point_id": 115,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0115.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18917.0,
+      "dark_subtracted_ptp": 14385.0,
+      "dark_subtracted_std": 4390.395627400768,
+      "baseline_corrected_max": 719.4000244140625,
+      "baseline_corrected_median": 99.5999984741211,
+      "xyz_steps": [
+        104099,
+        72879,
+        145740
+      ],
+      "training_row": 109
+    },
+    {
+      "point_id": 116,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0116.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 21416.0,
+      "dark_subtracted_ptp": 16802.0,
+      "dark_subtracted_std": 5257.338835321576,
+      "baseline_corrected_max": 880.0,
+      "baseline_corrected_median": 106.66666412353516,
+      "xyz_steps": [
+        104099,
+        76349,
+        145740
+      ],
+      "training_row": 110
+    },
+    {
+      "point_id": 117,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0117.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 20190.0,
+      "dark_subtracted_ptp": 15460.0,
+      "dark_subtracted_std": 4807.573978471004,
+      "baseline_corrected_max": 787.066650390625,
+      "baseline_corrected_median": 106.80000305175781,
+      "xyz_steps": [
+        104099,
+        79819,
+        145740
+      ],
+      "training_row": 111
+    },
+    {
+      "point_id": 118,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0118.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 22911.0,
+      "dark_subtracted_ptp": 18252.0,
+      "dark_subtracted_std": 5651.299290322251,
+      "baseline_corrected_max": 1010.4666748046875,
+      "baseline_corrected_median": 108.5,
+      "xyz_steps": [
+        104099,
+        83290,
+        145740
+      ],
+      "training_row": 112
+    },
+    {
+      "point_id": 119,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0119.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 17995.0,
+      "dark_subtracted_ptp": 13264.0,
+      "dark_subtracted_std": 4032.8884761846825,
+      "baseline_corrected_max": 787.4666748046875,
+      "baseline_corrected_median": 98.0999984741211,
+      "xyz_steps": [
+        104099,
+        86760,
+        145740
+      ],
+      "training_row": 113
+    },
+    {
+      "point_id": 120,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0120.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 19387.0,
+      "dark_subtracted_ptp": 14603.0,
+      "dark_subtracted_std": 4464.225567714849,
+      "baseline_corrected_max": 789.4666748046875,
+      "baseline_corrected_median": 100.66666412353516,
+      "xyz_steps": [
+        104099,
+        90231,
+        145740
+      ],
+      "training_row": 114
+    },
+    {
+      "point_id": 121,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0121.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18353.0,
+      "dark_subtracted_ptp": 13787.0,
+      "dark_subtracted_std": 4249.090207011585,
+      "baseline_corrected_max": 853.7333374023438,
+      "baseline_corrected_median": 100.46666717529297,
+      "xyz_steps": [
+        104099,
+        93700,
+        145740
+      ],
+      "training_row": 115
+    },
+    {
+      "point_id": 122,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0122.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 18383.0,
+      "dark_subtracted_ptp": 13658.0,
+      "dark_subtracted_std": 4191.136180261478,
+      "baseline_corrected_max": 737.3333129882812,
+      "baseline_corrected_median": 100.93333435058594,
+      "xyz_steps": [
+        104099,
+        97170,
+        145740
+      ],
+      "training_row": 116
+    },
+    {
+      "point_id": 123,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0123.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 24274.0,
+      "dark_subtracted_ptp": 19508.0,
+      "dark_subtracted_std": 6164.5117379417,
+      "baseline_corrected_max": 1048.5333251953125,
+      "baseline_corrected_median": 110.0,
+      "xyz_steps": [
+        104099,
+        100640,
+        145740
+      ],
+      "training_row": 117
+    },
+    {
+      "point_id": 124,
+      "phase": "XY",
+      "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\2d_scan_20260922_164646_611\\point_0124.json",
+      "accepted": true,
+      "reasons": [],
+      "full_scale_pixels": 0,
+      "raw_max": 23812.0,
+      "dark_subtracted_ptp": 19077.0,
+      "dark_subtracted_std": 5954.288223009738,
+      "baseline_corrected_max": 836.7333374023438,
+      "baseline_corrected_median": 111.5,
+      "xyz_steps": [
+        104099,
+        104110,
+        145740
+      ],
+      "training_row": 118
+    }
+  ],
+  "isolated_gaussian_peak_retention_by_fwhm_pixels": {
+    "5": 0.9995798036597421,
+    "10": 0.9288810508638644,
+    "15": 0.7337735655256457,
+    "30": 0.30180672533121194
+  },
+  "warning": "119 quality-screened candidates, not independently verified peak-quality labels. Do not claim independent test accuracy."
+}

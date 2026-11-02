@@ -1,0 +1,65 @@
+{
+  "database": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\pure_only_20260923\\data_r6g_20260922",
+  "database_rows": 118,
+  "selected_database_rows_1based": [
+    95,
+    56,
+    67,
+    66,
+    61,
+    100
+  ],
+  "baseline_corrected_max_range": [
+    3585.466552734375,
+    5473.93310546875
+  ],
+  "scan": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\1d_y_scan_20260921_152840_289\\laser_log_combined.txt",
+  "dark": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\dark_measurements\\dark_20260921_153016_700.txt",
+  "peak_windows": [
+    {
+      "window": [
+        400,
+        480
+      ],
+      "database_median_max_cm1": 442.4572981,
+      "scan_point_max_cm1": {
+        "4": 437.2560561,
+        "5": 437.2560561,
+        "9": 437.2560561,
+        "10": 434.6527314
+      }
+    },
+    {
+      "window": [
+        1350,
+        1450
+      ],
+      "database_median_max_cm1": 1395.227538,
+      "scan_point_max_cm1": {
+        "4": 1387.411245,
+        "5": 1391.322003,
+        "9": 1389.367277,
+        "10": 1391.322003
+      }
+    },
+    {
+      "window": [
+        1570,
+        1660
+      ],
+      "database_median_max_cm1": 1622.082745,
+      "scan_point_max_cm1": {
+        "4": 1614.871632,
+        "5": 1614.871632,
+        "9": 1614.871632,
+        "10": 1614.871632
+      }
+    }
+  ],
+  "notes": [
+    "Concentration labels unavailable in these arrays.",
+    "Scan points selected for prior MB response, not assumed ground truth.",
+    "Database spectra are preprocessed, not original detector spectra.",
+    "Plots show 300\u20131800 cm-1; stored data cover the full retained axis."
+  ]
+}

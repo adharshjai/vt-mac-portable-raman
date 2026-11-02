@@ -1,0 +1,2 @@
+model,n_test,n_mixture,target_macro_f1,target_macro_roc_auc,r6g_recall,mixture_exact_match,target_exact_match,all_label_exact_match,benchmark_threshold
+PCA-SVM,473,248,0.9877139814890654,0.998199347001238,0.9482071713147411,0.9435483870967742,0.9640591966173362,,0.5

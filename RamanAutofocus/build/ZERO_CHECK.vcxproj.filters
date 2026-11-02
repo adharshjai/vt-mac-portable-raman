@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\School\2025 Spring\MDE\Raman Code\RamanAutofocus\build\CMakeFiles\db226e916d84b9fbc898adbaa6fe35c8\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{97B6A20B-DF52-3B5C-9575-302FEDF81100}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

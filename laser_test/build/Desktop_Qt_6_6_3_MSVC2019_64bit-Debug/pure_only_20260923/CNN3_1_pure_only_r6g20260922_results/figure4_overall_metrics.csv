@@ -1,0 +1,2 @@
+model,n_test,n_mixture,target_macro_f1,target_macro_roc_auc,r6g_recall,mixture_exact_match,target_exact_match,all_label_exact_match,benchmark_threshold
+CNN,96,0,1.0,1.0,1.0,nan,1.0,1.0,0.5

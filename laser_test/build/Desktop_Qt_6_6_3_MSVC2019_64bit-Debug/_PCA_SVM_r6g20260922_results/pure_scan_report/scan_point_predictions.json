@@ -1,0 +1,177 @@
+{
+  "mode": "pure",
+  "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\1d_y_scan_20260921_152840_289\\laser_log_combined.txt",
+  "dark": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\dark_measurements\\dark_20260921_153016_700.txt",
+  "confidence_threshold": 0.8,
+  "points": [
+    {
+      "index": 0,
+      "point_id": 1,
+      "y_mm": 0.0,
+      "label": "r6g",
+      "reason": "",
+      "scores": {
+        "r6g": 0.8801428859487423,
+        "methylene_blue": 0.06462420877182024,
+        "adenine": 0.01978462418315836,
+        "di_water": 0.03544828109627903
+      }
+    },
+    {
+      "index": 1,
+      "point_id": 2,
+      "y_mm": 2.00014409221902,
+      "label": "r6g",
+      "reason": "",
+      "scores": {
+        "r6g": 0.9623665420864399,
+        "methylene_blue": 0.012446974767537998,
+        "adenine": 0.009815108281527358,
+        "di_water": 0.015371374864494369
+      }
+    },
+    {
+      "index": 2,
+      "point_id": 3,
+      "y_mm": 4.000172910662824,
+      "label": "UNKNOWN",
+      "reason": "Background-class response; material not identified",
+      "scores": {
+        "r6g": 0.060477292923767925,
+        "methylene_blue": 0.030714102799453358,
+        "adenine": 0.026679703819778803,
+        "di_water": 0.8821289004569998
+      }
+    },
+    {
+      "index": 3,
+      "point_id": 4,
+      "y_mm": 6.000144092219021,
+      "label": "methylene_blue",
+      "reason": "",
+      "scores": {
+        "r6g": 0.015265812179450543,
+        "methylene_blue": 0.9454584683950689,
+        "adenine": 0.02368909037452757,
+        "di_water": 0.015586629050953312
+      }
+    },
+    {
+      "index": 4,
+      "point_id": 5,
+      "y_mm": 8.000115273775217,
+      "label": "methylene_blue",
+      "reason": "",
+      "scores": {
+        "r6g": 0.016244788695922677,
+        "methylene_blue": 0.9429893983925363,
+        "adenine": 0.025723360716697338,
+        "di_water": 0.015042452194843925
+      }
+    },
+    {
+      "index": 5,
+      "point_id": 6,
+      "y_mm": 10.000115273775217,
+      "label": "r6g",
+      "reason": "",
+      "scores": {
+        "r6g": 0.906102222911365,
+        "methylene_blue": 0.049828686358940104,
+        "adenine": 0.012498559983723047,
+        "di_water": 0.031570530745972054
+      }
+    },
+    {
+      "index": 6,
+      "point_id": 7,
+      "y_mm": 12.000115273775217,
+      "label": "r6g",
+      "reason": "",
+      "scores": {
+        "r6g": 0.9422966847488224,
+        "methylene_blue": 0.025332010590075924,
+        "adenine": 0.0075808086036281966,
+        "di_water": 0.02479049605747329
+      }
+    },
+    {
+      "index": 7,
+      "point_id": 8,
+      "y_mm": 14.000115273775217,
+      "label": "UNKNOWN",
+      "reason": "Background-class response; material not identified",
+      "scores": {
+        "r6g": 0.05228427439121235,
+        "methylene_blue": 0.01936261602852331,
+        "adenine": 0.01720187019311063,
+        "di_water": 0.9111512393871537
+      }
+    },
+    {
+      "index": 8,
+      "point_id": 9,
+      "y_mm": 16.000115273775215,
+      "label": "methylene_blue",
+      "reason": "",
+      "scores": {
+        "r6g": 0.01573362125942425,
+        "methylene_blue": 0.938859359967604,
+        "adenine": 0.026318937189103497,
+        "di_water": 0.019088081583868276
+      }
+    },
+    {
+      "index": 9,
+      "point_id": 10,
+      "y_mm": 18.000115273775215,
+      "label": "methylene_blue",
+      "reason": "",
+      "scores": {
+        "r6g": 0.015765369108169964,
+        "methylene_blue": 0.9405872830729918,
+        "adenine": 0.026454421908929385,
+        "di_water": 0.017192925909908674
+      }
+    },
+    {
+      "index": 10,
+      "point_id": 11,
+      "y_mm": 20.000115273775215,
+      "label": "UNKNOWN",
+      "reason": "Background-class response; material not identified",
+      "scores": {
+        "r6g": 0.061110016678266786,
+        "methylene_blue": 0.03099157977423171,
+        "adenine": 0.02690706082936625,
+        "di_water": 0.8809913427181355
+      }
+    },
+    {
+      "index": 11,
+      "point_id": 12,
+      "y_mm": 22.000115273775215,
+      "label": "UNKNOWN",
+      "reason": "Background-class response; material not identified",
+      "scores": {
+        "r6g": 0.06274945802278153,
+        "methylene_blue": 0.032003083376145915,
+        "adenine": 0.027765962816026588,
+        "di_water": 0.877481495785046
+      }
+    },
+    {
+      "index": 12,
+      "point_id": 13,
+      "y_mm": 24.00014409221902,
+      "label": "UNKNOWN",
+      "reason": "Background-class response; material not identified",
+      "scores": {
+        "r6g": 0.05370893096052151,
+        "methylene_blue": 0.026767370574706212,
+        "adenine": 0.02335215894525936,
+        "di_water": 0.8961715395195128
+      }
+    }
+  ]
+}

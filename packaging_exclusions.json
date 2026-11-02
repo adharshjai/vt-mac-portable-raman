@@ -1,0 +1,838 @@
+{
+  "excluded": [
+    {
+      "path": "laser_test/.venv_figure4/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/tmp/",
+      "reason": "packaging scratch/output"
+    },
+    {
+      "path": "laser_test/CMakeLists.txt.user",
+      "reason": "machine-specific IDE settings"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/.cache/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/.venv/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/__pycache__/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/config.json",
+      "reason": "private configuration or authentication state"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/launcher.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/packaging/build/",
+      "reason": "rebuildable launcher bundle"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_4959bf81/ipc/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_4959bf81/controller.lock",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_4959bf81/qt.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_556a7264/ipc/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_556a7264/controller.lock",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_556a7264/qt.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_a9a5a11b/ipc/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_a9a5a11b/controller.lock",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_a9a5a11b/qt.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_d8009e6c/ipc/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_d8009e6c/controller.lock",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/Bluesky_Bridge/test_outputs/mock_qt_d8009e6c/qt.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/Globus_Bridge/.venv/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/Globus_Bridge/__pycache__/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/Globus_Bridge/config.json",
+      "reason": "private configuration or authentication state"
+    },
+    {
+      "path": "laser_test/Globus_Bridge/launcher.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/Globus_Bridge/packaging/build/",
+      "reason": "rebuildable launcher bundle"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/.cmake/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/.qt/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/.qtc/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/.qtc_clangd/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/CMakeFiles/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/laser_test_autogen/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/CMakeCache.txt",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/Makefile",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/cmake_install.cmake",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/laser_test.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/laser_test.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/Testing/Temporary/LastTest.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/handshake_v2/backend/SampleApl.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/handshake_v2/motor/RamanAutofocus.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/handshake_v2/motor/RamanAutofocus.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/figure4_benchmark/__pycache__/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/hardware/SampleApl/obj_handshake/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/hardware/motor/build/CMakeFiles/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/hardware/motor/build/CMakeCache.txt",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/hardware/motor/build/Makefile",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/hardware/motor/build/cmake_install.cmake",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/.git/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/.packaging_local/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/third_party/intersect-architecture/Makefile",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/third_party/intersect-architecture/sos/data/erdm/Makefile",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/third_party/intersect-architecture/sos/data/schema-xsl/Makefile",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/third_party/intersect-python-sdk/docker-compose.yml",
+      "reason": "vendor example/test contains credential-like strings; runtime SDK source retained"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/third_party/intersect-python-sdk/uv.lock",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/third_party/intersect-python-sdk/.github/workflows/ci.yml",
+      "reason": "vendor example/test contains credential-like strings; runtime SDK source retained"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/third_party/intersect-python-sdk/docs/Makefile",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/third_party/intersect-python-sdk/examples/1_hello_world_minio/hello_client.py",
+      "reason": "vendor example/test contains credential-like strings; runtime SDK source retained"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/third_party/intersect-python-sdk/examples/1_hello_world_minio/hello_service.py",
+      "reason": "vendor example/test contains credential-like strings; runtime SDK source retained"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/third_party/intersect-python-sdk/tests/integration/test_return_type_mismatch.py",
+      "reason": "vendor example/test contains credential-like strings; runtime SDK source retained"
+    },
+    {
+      "path": "laser_test/intersect bridge + Physical device/third_party/intersect-python-sdk/tests/integration/test_service.py",
+      "reason": "vendor example/test contains credential-like strings; runtime SDK source retained"
+    },
+    {
+      "path": "laser_test/intersect_bridge/.venv/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/__pycache__/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/config.json",
+      "reason": "private configuration or authentication state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_mock/.qt/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_mock/CMakeFiles/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_mock/mock_backend_autogen/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_mock/mock_motor_autogen/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_mock/raman_intersect_autogen/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_mock/CMakeCache.txt",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_mock/Makefile",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_mock/cmake_install.cmake",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_mock/bin/ipc/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_mock/bin/controller.lock",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_qt/.qt/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_qt/CMakeFiles/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_qt/raman_intersect_autogen/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_qt/CMakeCache.txt",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_qt/Makefile",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_qt/cmake_install.cmake",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect_bridge/build_qt/bin/ipc/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/intersect_bridge/packaging/build/",
+      "reason": "rebuildable launcher bundle"
+    },
+    {
+      "path": "laser_test/intersect_bridge/runtime/mock_qt.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect_bridge/runtime/launcher/docker-desktop.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect_bridge/runtime/launcher/qt.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/intersect_bridge/runtime/launcher/service.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/.qt/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/tests/build/CMakeFiles/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "laser_test/tests/build/CMakeCache.txt",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/Makefile",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/cmake_install.cmake",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/handshake_tests.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/handshake_tests.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/motor_path_test.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/motor_path_test.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/serialization_cli_test.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/handshake_v2/backend/SampleApl.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/handshake_v2/backend/SampleApl.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/handshake_v2/motor/RamanAutofocus.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "laser_test/tests/build/handshake_v2/motor/RamanAutofocus.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/.vs/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "RamanAutofocus/CMakeLists.txt.user",
+      "reason": "machine-specific IDE settings"
+    },
+    {
+      "path": "RamanAutofocus/build/CMakeFiles/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "RamanAutofocus/build/CMakeCache.txt",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/cmake_install.cmake",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Debug/KDC101Test.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Debug/LibTest.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Debug/RamanAutofocus.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/.cmake/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/.qtc/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/.qtc_clangd/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/CMakeFiles/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/CMakeCache.txt",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/Makefile",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/cmake_install.cmake",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/RamanAutofocus/CMakeFiles/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/RamanAutofocus/KDC101Test.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/RamanAutofocus/KDC101Test.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/RamanAutofocus/LibTest.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/RamanAutofocus/LibTest.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/RamanAutofocus/Makefile",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/RamanAutofocus/RamanAutofocus.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/RamanAutofocus/RamanAutofocus.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/RamanAutofocus/cmake_install.cmake",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/Testing/Temporary/LastTest.log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/MotorControl.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/demo.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/test.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/vc143.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.tlog/CL.command.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.tlog/CL.read.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.tlog/CL.write.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.tlog/Cl.items.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.tlog/CustomBuild.command.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.tlog/CustomBuild.read.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.tlog/CustomBuild.write.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.tlog/link.command.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.tlog/link.read.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.tlog/link.secondary.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/KDC101Test.dir/Debug/KDC101Test.tlog/link.write.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/MotorControl.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/demo.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/libtest.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/vc143.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.tlog/CL.command.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.tlog/CL.read.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.tlog/CL.write.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.tlog/Cl.items.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.tlog/CustomBuild.command.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.tlog/CustomBuild.read.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.tlog/CustomBuild.write.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.tlog/link.command.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.tlog/link.read.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.tlog/link.secondary.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/LibTest.dir/Debug/LibTest.tlog/link.write.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/MotorControl.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocusTest.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/demo.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/test.obj",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/vc143.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.tlog/CL.command.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.tlog/CL.read.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.tlog/CL.write.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.tlog/Cl.items.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.tlog/CustomBuild.command.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.tlog/CustomBuild.read.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.tlog/CustomBuild.write.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.tlog/link.command.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.tlog/link.read.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.tlog/link.secondary.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/RamanAutofocus.dir/Debug/RamanAutofocus.tlog/link.write.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/x64/Debug/ALL_BUILD/ALL_BUILD.tlog/CustomBuild.command.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/x64/Debug/ALL_BUILD/ALL_BUILD.tlog/CustomBuild.read.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/x64/Debug/ALL_BUILD/ALL_BUILD.tlog/CustomBuild.write.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.tlog/CustomBuild.command.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.tlog/CustomBuild.read.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/build/x64/Debug/ZERO_CHECK/ZERO_CHECK.tlog/CustomBuild.write.1.tlog",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/.cmake/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/CMakeFiles/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/.ninja_deps",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/.ninja_log",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/CMakeCache.txt",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/build.ninja",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/cmake_install.cmake",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/RamanAutofocus/CMakeFiles/",
+      "reason": "environment/cache/session state"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/RamanAutofocus/KDC101Test.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/RamanAutofocus/KDC101Test.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/RamanAutofocus/LibTest.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/RamanAutofocus/LibTest.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/RamanAutofocus/RamanAutofocus.ilk",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/RamanAutofocus/RamanAutofocus.pdb",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/RamanAutofocus/cmake_install.cmake",
+      "reason": "build/cache/log"
+    },
+    {
+      "path": "RamanAutofocus/out/build/x64-debug/Testing/Temporary/LastTest.log",
+      "reason": "build/cache/log"
+    }
+  ],
+  "read_errors": [
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\_CNN_raman_v3_mixture\\scan_analysis\\cnn_spatial_20260921_171216_qf3xprn1",
+      "error": "PermissionError"
+    },
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\_CNN_raman_v3_mixture\\scan_analysis\\laser_log_combined_20260921_163907_9gkkne1c",
+      "error": "PermissionError"
+    },
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\_PCA_SVM_r6g20260922_results\\scan_analysis\\svm_spatial_20260924_112738_6etipsyt",
+      "error": "PermissionError"
+    },
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\_PCA_SVM_v7_target_only_pca3\\scan_analysis\\laser_log_combined_20260921_163545_yg9_9v8x",
+      "error": "PermissionError"
+    },
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\_PCA_SVM_v7_target_only_pca3\\scan_analysis\\svm_spatial_20260921_170239_wfy762ul",
+      "error": "PermissionError"
+    },
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\_ViT1D_raman_v2_mixture\\scan_analysis\\vit1d_spatial_20260921_171250_gvb74950",
+      "error": "PermissionError"
+    },
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\pure_only_20260923\\CNN3_1_pure_only_r6g20260922_results\\scan_analysis\\cnn_spatial_20260923_145754_zrxk3729",
+      "error": "PermissionError"
+    },
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\pure_only_20260923\\CNN3_1_pure_only_results\\scan_analysis\\cnn_spatial_20260923_142124_9_xdtflo",
+      "error": "PermissionError"
+    },
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\pure_only_20260923\\r6g_threshold_v3\\results\\scan_analysis\\vit1d_spatial_20260923_164816_2zmdtcyf",
+      "error": "PermissionError"
+    },
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\pure_only_20260923\\r6g_threshold_v3\\results\\scan_analysis\\vit1d_spatial_20260923_165632_djnzbhpv",
+      "error": "PermissionError"
+    },
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\pure_only_20260923\\shift_robust_v2\\CNN3_1_pure_only_results\\scan_analysis\\cnn_spatial_20260923_153535_wqlv652q",
+      "error": "PermissionError"
+    },
+    {
+      "path": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\pure_only_20260923\\shift_robust_v2\\Transformer5_1_pure_only_results\\scan_analysis\\vit1d_spatial_20260923_154234_93vgv9ta",
+      "error": "PermissionError"
+    }
+  ]
+}

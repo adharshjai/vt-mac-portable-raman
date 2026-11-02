@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Mac-native port of laser_test/hardware/SampleApl (PORT_SPEC.md section 4).
+       Framework-dependent build: `dotnet publish -c Release -o bin/publish`.
+       No apphost is generated so the bash launcher `SampleApl` (exec dotnet SampleApl.dll) can
+       sit next to SampleApl.dll under the name the controller launches. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <AssemblyName>SampleApl</AssemblyName>
+    <RootNamespace>SampleApl</RootNamespace>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <UseAppHost>false</UseAppHost>
+    <SelfContained>false</SelfContained>
+    <PublishSingleFile>false</PublishSingleFile>
+    <RollForward>Major</RollForward>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- lib/wrrusb2a.dll carries an ARM64 machine tag (tools/retag_assembly.py); it is IL-only. -->
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Hamamatsu's unmodified managed library (public API only; see tools/wrrusb2a_api.txt). -->
+    <Reference Include="wrrusb2a">
+      <HintPath>..\lib\wrrusb2a.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <!-- Stand-in for .NET Framework 2.0 System.Windows.Forms with the identity wrrusb2a.dll binds to. -->
+    <Reference Include="System.Windows.Forms">
+      <HintPath>..\stubs\System.Windows.Forms\bin\Release\net9.0\System.Windows.Forms.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Launcher script: lands next to SampleApl.dll in the output and in bin/publish. -->
+    <None Include="SampleApl" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <!-- The Windows-API shim (built by ../shim) is picked up when it exists at build time. -->
+    <None Include="..\shim\libwinusb_shim.dylib" Link="libwinusb_shim.dylib"
+          Condition="Exists('..\shim\libwinusb_shim.dylib')"
+          CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="MakeLauncherExecutable" AfterTargets="Publish" Condition="'$(OS)' != 'Windows_NT'">
+    <Exec Command="chmod +x &quot;$(PublishDir)SampleApl&quot;" />
+  </Target>
+  <Target Name="MakeLauncherExecutableInOutput" AfterTargets="Build" Condition="'$(OS)' != 'Windows_NT' And Exists('$(OutDir)SampleApl')">
+    <Exec Command="chmod +x &quot;$(OutDir)SampleApl&quot;" />
+  </Target>
+</Project>

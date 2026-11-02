@@ -1,0 +1,4 @@
+model,target,precision,recall,f1,roc_auc,tp,fp,fn,tn,positive_support,n_test,benchmark_threshold
+CNN,r6g,1.0,1.0,1.0,1.0,23,0,0,71,23,94,0.5
+CNN,methylene_blue,1.0,1.0,1.0,1.0,25,0,0,69,25,94,0.5
+CNN,adenine,0.9565217391304348,1.0,0.9777777777777777,1.0,22,1,0,71,22,94,0.5

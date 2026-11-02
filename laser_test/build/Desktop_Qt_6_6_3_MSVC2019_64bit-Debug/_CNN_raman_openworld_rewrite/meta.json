@@ -1,0 +1,18 @@
+{
+  "classes": [
+    "r6g",
+    "methylene_blue"
+  ],
+  "target_len": 2018,
+  "drop_n": 30,
+  "do_baseline": true,
+  "group_size": 6,
+  "thresholds": {
+    "conf_min": 0.8183013051748276,
+    "margin_min": 0.6366026103496552,
+    "dist_max": 0.5689240843057632,
+    "energy_min": 0.8832065016031265
+  },
+  "unknown_cal_files": [],
+  "timestamp": "2026-04-09 14:06:30"
+}

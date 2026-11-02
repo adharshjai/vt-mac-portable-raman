@@ -1,0 +1,7 @@
+{
+  "source": "C:\\Users\\Jeremy666\\.codex\\attachments\\6b32857f-87e3-413b-9a1b-aee9a89a782a\\pasted-text.txt",
+  "source_sha256": "f243647b9a6b0319041ee1895cbf2643a99a50d477c994577e37e9d21b03e73f",
+  "preserved": "All source text before Step 6, including all training, PCA figures, evaluation and model saving.",
+  "changed": "Step 6 scan analysis uses existing scaler -> PCA -> pure SVM, confidence threshold from original config, background -> UNKNOWN.",
+  "verification": "Syntax checked; inference tested using existing saved models; full training not rerun."
+}

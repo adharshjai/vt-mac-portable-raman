@@ -1,0 +1,29 @@
+
+======================================================================
+SCAN DISTRIBUTION SUMMARY
+Pure-class assignment: top-1 score >= 0.60; top-two margin >= 0.15.
+Position notes: spectrum index starts at 0; point ID starts at 1.
+Single-class predictions do not prove chemical purity. This model cannot validate mixtures.
+UNKNOWN means background-class response or insufficient confidence; it does not identify foil or water.
+background_score is the original di_water model channel, not an unknown-class probability.
+The CSV retains the original di_water score for traceability; it is not a detected component.
+High softmax scores can still be wrong on new scans; compare with recorded sample positions.
+This scan was inspected during development; use a new independent scan for final validation.
+  r6g: indices=[0, 1, 5, 6]; point IDs=[1, 2, 6, 7]
+  UNKNOWN: indices=[2, 7, 10, 11, 12]; point IDs=[3, 8, 11, 12, 13]
+  methylene_blue: indices=[3, 4, 8, 9]; point IDs=[4, 5, 9, 10]
+Point details:
+  Index 00 / point 01: Y=0.000 mm; r6g; 
+  Index 01 / point 02: Y=2.000 mm; r6g; 
+  Index 02 / point 03: Y=4.000 mm; UNKNOWN; Background-class response; material not identified
+  Index 03 / point 04: Y=6.000 mm; methylene_blue; 
+  Index 04 / point 05: Y=8.000 mm; methylene_blue; 
+  Index 05 / point 06: Y=10.000 mm; r6g; 
+  Index 06 / point 07: Y=12.000 mm; r6g; 
+  Index 07 / point 08: Y=14.000 mm; UNKNOWN; Background-class response; material not identified
+  Index 08 / point 09: Y=16.000 mm; methylene_blue; 
+  Index 09 / point 10: Y=18.000 mm; methylene_blue; 
+  Index 10 / point 11: Y=20.000 mm; UNKNOWN; Background-class response; material not identified
+  Index 11 / point 12: Y=22.000 mm; UNKNOWN; Background-class response; material not identified
+  Index 12 / point 13: Y=24.000 mm; UNKNOWN; Background-class response; material not identified
+======================================================================

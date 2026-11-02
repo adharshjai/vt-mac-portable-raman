@@ -1,0 +1,9 @@
+{
+  "_comment": "Mac-native RamanAutofocus motor configuration (PORT_SPEC.md section 3). transport: auto (default: an axis with an explicit serial_ports path uses pyserial, otherwise pyftdi over libusb, which is the only way to reach a KDC101 on macOS because its FTDI chip carries Thorlabs' custom product id 0403:FAF0 that Apple's FTDI driver does not bind), pyftdi, serial (pyserial on serial_ports or /dev/cu.usbserial-<serial>, e.g. with FTDI's own VCP driver or /dev/ttyUSB* on Linux) or simulate; env RAMAN_MOTOR_SIMULATE=1 always selects the simulator. serials: Thorlabs KDC101 serial numbers per axis (= the USB/FTDI serial-number string). steps_per_mm: encoder counts per mm (34700 for the Z825B actuators). travel_limits_steps: min/max encoder counts used by the 1D 0..24 mm limit check; the Windows build reads them from the Kinesis settings database, here they are configured (867500 = 25 mm). serial_ports: optional explicit serial-port path per axis for the pyserial transport (null = none). baudrate: APT serial speed.",
+  "transport": "auto",
+  "serials": {"X": "27266528", "Y": "27266445", "Z": "27266446"},
+  "steps_per_mm": {"X": 34700, "Y": 34700, "Z": 34700},
+  "travel_limits_steps": {"min": 0, "max": 867500},
+  "serial_ports": {"X": null, "Y": null, "Z": null},
+  "baudrate": 115200
+}

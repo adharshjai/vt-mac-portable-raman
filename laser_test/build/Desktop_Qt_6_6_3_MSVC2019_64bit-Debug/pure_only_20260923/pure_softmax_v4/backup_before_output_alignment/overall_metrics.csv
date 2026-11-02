@@ -1,0 +1,2 @@
+﻿model,test_count,target_macro_f1,accuracy,accepted_fraction,accepted_accuracy,mixture_exact_match,selection
+ViT-1D pure softmax v4,96,1.0,1.0,1.0,1.0,N/A: pure-only model/data,minimum validation cross-entropy

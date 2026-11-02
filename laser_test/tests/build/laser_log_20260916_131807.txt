@@ -1,0 +1,12 @@
+[2026-09-16 13:14:48.002] [Backend process started]
+[2026-09-16 13:14:48.590] [Point saved] run=ec2e4ec9-4681-4387-9136-6407737e567d point=1 pixels=2048 elapsed_ms=342
+[2026-09-16 13:14:49.048] [Point saved] run=ec2e4ec9-4681-4387-9136-6407737e567d point=2 pixels=2048 elapsed_ms=290
+[2026-09-16 13:14:49.533] [Point saved] run=ec2e4ec9-4681-4387-9136-6407737e567d point=3 pixels=2048 elapsed_ms=324
+[2026-09-16 13:14:49.580] [Scan failed] Cannot publish saved-point ACK
+[2026-09-16 13:14:51.792] [Backend process started]
+[2026-09-16 13:14:54.056] [Scan failed] Cannot publish pause heartbeat
+[2026-09-16 13:18:03.528] [Backend process started]
+[2026-09-16 13:18:04.059] [Point saved] run=abdd5277-16fc-4559-9fb3-b7cdb090a2a5 point=1 pixels=2048 elapsed_ms=268
+[2026-09-16 13:18:04.541] [Point saved] run=abdd5277-16fc-4559-9fb3-b7cdb090a2a5 point=2 pixels=2048 elapsed_ms=310
+[2026-09-16 13:18:05.034] [Point saved] run=abdd5277-16fc-4559-9fb3-b7cdb090a2a5 point=3 pixels=2048 elapsed_ms=294
+[2026-09-16 13:18:07.300] [Backend process started]

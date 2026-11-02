@@ -1,0 +1,2 @@
+model,n_test,threshold,target_macro_f1,r6g_recall,target_exact_match,mixture_exact_match,n_mixture,warning
+ViT-1D,96,0.4,0.6646505376344086,1.0,0.2604166666666667,,0,Pure-only spectrum split; same-scan dependence; mixed samples unvalidated

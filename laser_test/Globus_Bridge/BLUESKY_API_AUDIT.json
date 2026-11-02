@@ -1,0 +1,14 @@
+{
+  "package_versions": {
+    "bluesky": "1.15.1",
+    "ophyd": "1.11.2",
+    "event-model": "1.24.0"
+  },
+  "module_file": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\Bluesky_Bridge\\bridge.py",
+  "QtScan_Triggerable": true,
+  "QtScan_Stoppable": true,
+  "PointReading_Readable": true,
+  "PointReading_Triggerable": true,
+  "hardware_started": false,
+  "no_hardware_tests": "13 passed"
+}

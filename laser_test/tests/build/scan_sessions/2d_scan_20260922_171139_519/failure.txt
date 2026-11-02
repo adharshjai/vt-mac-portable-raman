@@ -1,0 +1,1 @@
+Cannot read capture result (attempt 3/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_eb3b2012-08ef-44a2-bfc1-bc3f5c2baa99/capture_results/08d10268-39ec-46b0-8946-1c52f48465c5_1.txt

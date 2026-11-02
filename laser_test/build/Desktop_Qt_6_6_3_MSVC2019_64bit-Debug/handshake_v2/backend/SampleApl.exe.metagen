@@ -1,0 +1,27 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly SampleApl, Version=1.0.*, Culture=Invariant Language (Invariant Country): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly wrrusb2a, Version=1.0.*, Culture=Invariant Language (Invariant Country): 
+	hash=None, flags=None
+Class GlobalData: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Properties:
+    Int32 SomeGlobalValue 'get set' : 
+    System.Collections.Concurrent.ConcurrentQueue`1[System.UInt16[]] DataQueue 'get ' : 
+  Methods:
+    get_DataQueue(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_SomeGlobalValue(): PrivateScope, Public, Static, HideBySig, SpecialName
+    set_SomeGlobalValue(Int32): PrivateScope, Public, Static, HideBySig, SpecialName
+Class DataSaver: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    Boolean stopSaver IsVolatile : Public
+  Methods:
+    SaveData(UInt16[]): PrivateScope, Public, HideBySig

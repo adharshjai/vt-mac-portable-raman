@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+runs/
+test_outputs/
+*.log
+.app.lock
+.cache/
+packaging/
+*.exe

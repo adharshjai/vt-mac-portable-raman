@@ -1,0 +1,5 @@
+﻿target,TP,FP,FN,TN,precision,recall,f1,roc_auc,support
+r6g,25,0,0,71,1.0,1.0,1.0,1.0,25
+methylene_blue,25,0,0,71,1.0,1.0,1.0,1.0,25
+adenine,22,0,0,74,1.0,1.0,1.0,1.0,22
+di_water,24,0,0,72,1.0,1.0,1.0,1.0,24

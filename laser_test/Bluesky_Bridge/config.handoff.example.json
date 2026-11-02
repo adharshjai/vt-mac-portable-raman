@@ -1,0 +1,8 @@
+{
+  "intersect_bridge_dir": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\intersect_bridge",
+  "output_dir": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\Bluesky_Bridge\\runs",
+  "default_scan_mode": "1d-y",
+  "scan_timeout_seconds": 1800,
+  "poll_seconds": 0.2,
+  "dark_file_override": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\intersect_bridge\\build_qt\\bin\\dark_measurements\\dark_20260929_111309_067.txt"
+}

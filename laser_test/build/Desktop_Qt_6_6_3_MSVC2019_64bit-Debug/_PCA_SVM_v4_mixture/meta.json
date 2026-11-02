@@ -1,0 +1,30 @@
+{
+  "classes": [
+    "r6g",
+    "methylene_blue",
+    "adenine",
+    "di_water"
+  ],
+  "feature_dim": 1958,
+  "n_components": 20,
+  "peak_feature_dim": 37,
+  "explained_variance_total": 0.6378262042999268,
+  "best_C": 0.1,
+  "best_gamma": "scale",
+  "cv_accuracy": 0.996875,
+  "test_accuracy_pure": 1.0,
+  "confidence_threshold": 0.8,
+  "mixture_threshold": 0.15,
+  "ovr_threshold": 0.5,
+  "ovr_final_threshold": 0.4,
+  "recon_threshold": 64.39154052734375,
+  "maha_threshold": 12.196024536117065,
+  "n_synthetic_binary": 1200,
+  "n_synthetic_ternary": 400,
+  "split": {
+    "train": 0.7,
+    "val": 0.1,
+    "test": 0.2
+  },
+  "timestamp": "2026-05-25 11:36:50"
+}

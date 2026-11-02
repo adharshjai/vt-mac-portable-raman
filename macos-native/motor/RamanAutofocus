@@ -1,0 +1,9 @@
+#!/bin/bash
+# Launcher for the Mac-native motor program (PORT_SPEC.md section 1/3).
+# The Qt controller starts it as  handshake_v2/motor/RamanAutofocus <sessionDir> <sessionId> [1d-x|1d-y]
+# with this folder as working directory; the real program is exec'ed with the same cwd and
+# arguments.  macos-native/build_macos.sh replaces @PYTHON@ with the absolute interpreter path
+# (no PATH assumptions when started from a GUI app); until then python3 is used.
+PYTHON="@PYTHON@"
+case "$PYTHON" in @*) PYTHON=python3 ;; esac
+exec "$PYTHON" "$(dirname "$0")/raman_autofocus.py" "$@"

@@ -1,0 +1,31 @@
+{
+  "classes": [
+    "r6g",
+    "methylene_blue"
+  ],
+  "target_len": 2018,
+  "drop_n": 30,
+  "do_baseline": true,
+  "baseline_window": 15,
+  "baseline_smooth": 15,
+  "preprocessing": "v5 (raw-dark -> drop30 -> rolling_min_baseline(15,15) -> min_max_norm)",
+  "split": {
+    "outer_train": 0.8,
+    "outer_test": 0.2,
+    "internal_val_frac_of_train": 0.125,
+    "note": "Outer 80/20 matches PCA-SVM. Internal val carved from train pool only."
+  },
+  "thresholds": {
+    "conf_min": 0.6908394396305084,
+    "margin_min": 0.3816788822412491,
+    "dist_max": 0.6646982848644256,
+    "energy_min": 0.5909409642219543
+  },
+  "raw_min_ptp": 100.0,
+  "raw_min_std": 15.0,
+  "infer_temperature": 1.6,
+  "min_accept_blocks": 3,
+  "min_accept_ratio": 0.2,
+  "min_class_consensus": 0.75,
+  "timestamp": "2026-04-30 00:13:22"
+}

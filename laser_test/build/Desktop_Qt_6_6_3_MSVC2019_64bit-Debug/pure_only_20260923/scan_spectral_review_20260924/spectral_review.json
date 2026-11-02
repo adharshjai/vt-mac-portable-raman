@@ -1,0 +1,189 @@
+{
+  "scan": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\1d_y_scan_20260921_152840_289\\laser_log_combined.txt",
+  "dark": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\dark_measurements\\dark_20260921_153016_700.txt",
+  "note": "Correlations to database medians, 300-1800 cm-1, no shift fitting; not chemical ground truth. Noise estimate is descriptive.",
+  "points": [
+    {
+      "point": 1,
+      "y_mm": 0.0,
+      "corrected_max": 1996.4666748046875,
+      "noise_estimate": 144.11424623279876,
+      "max_to_noise": 13.853360975705638,
+      "correlations": {
+        "r6g": 0.8429649181276164,
+        "methylene_blue": 0.2630703281537126,
+        "adenine": 0.0861865656576535,
+        "di_water": 0.12820970474874185,
+        "old_r6g": 0.31075718340792574
+      }
+    },
+    {
+      "point": 2,
+      "y_mm": 2.00014409221902,
+      "corrected_max": 1031.5333251953125,
+      "noise_estimate": 93.0242690028237,
+      "max_to_noise": 11.088862468395218,
+      "correlations": {
+        "r6g": 0.7694036163947467,
+        "methylene_blue": 0.2545312249500939,
+        "adenine": 0.06766898003205354,
+        "di_water": 0.11660428144006087,
+        "old_r6g": 0.1961941983053682
+      }
+    },
+    {
+      "point": 3,
+      "y_mm": 4.000172910662824,
+      "corrected_max": 191.46665954589844,
+      "noise_estimate": 37.8107664390704,
+      "max_to_noise": 5.0638132356939805,
+      "correlations": {
+        "r6g": 0.13208687128967142,
+        "methylene_blue": 0.06884566092753024,
+        "adenine": 0.017947775227029495,
+        "di_water": -0.013949075547329843,
+        "old_r6g": 0.09598123463010225
+      }
+    },
+    {
+      "point": 4,
+      "y_mm": 6.000144092219021,
+      "corrected_max": 3571.39990234375,
+      "noise_estimate": 136.84561582296888,
+      "max_to_noise": 26.09802207301922,
+      "correlations": {
+        "r6g": 0.25603080301455394,
+        "methylene_blue": 0.7272698456543407,
+        "adenine": -0.05116628798767095,
+        "di_water": 0.06856734903209875,
+        "old_r6g": 0.007831851342422497
+      }
+    },
+    {
+      "point": 5,
+      "y_mm": 8.000115273775217,
+      "corrected_max": 3032.60009765625,
+      "noise_estimate": 125.66315241387792,
+      "max_to_noise": 24.132771137781333,
+      "correlations": {
+        "r6g": 0.2490488777391382,
+        "methylene_blue": 0.7241405530514512,
+        "adenine": -0.06819037883197421,
+        "di_water": 0.055787385668185765,
+        "old_r6g": 0.0204350962519354
+      }
+    },
+    {
+      "point": 6,
+      "y_mm": 10.000115273775217,
+      "corrected_max": 1904.933349609375,
+      "noise_estimate": 154.87734896785872,
+      "max_to_noise": 12.299625234447296,
+      "correlations": {
+        "r6g": 0.8646936745590865,
+        "methylene_blue": 0.2872732759090455,
+        "adenine": 0.08953937168256643,
+        "di_water": 0.1617260643369308,
+        "old_r6g": 0.33027923516967633
+      }
+    },
+    {
+      "point": 7,
+      "y_mm": 12.000115273775217,
+      "corrected_max": 1754.933349609375,
+      "noise_estimate": 139.11711081604747,
+      "max_to_noise": 12.614791518563793,
+      "correlations": {
+        "r6g": 0.8557034899274085,
+        "methylene_blue": 0.2774056362254728,
+        "adenine": 0.07390922700785169,
+        "di_water": 0.14398336347564417,
+        "old_r6g": 0.3242264089055288
+      }
+    },
+    {
+      "point": 8,
+      "y_mm": 14.000115273775217,
+      "corrected_max": 242.73333740234375,
+      "noise_estimate": 37.775821715818104,
+      "max_to_noise": 6.425626932178751,
+      "correlations": {
+        "r6g": 0.16250781473911202,
+        "methylene_blue": 0.08017356590940529,
+        "adenine": -0.06248814699879623,
+        "di_water": 0.01825682878961471,
+        "old_r6g": -0.056280025132953014
+      }
+    },
+    {
+      "point": 9,
+      "y_mm": 16.000115273775215,
+      "corrected_max": 3809.86669921875,
+      "noise_estimate": 131.4291197321866,
+      "max_to_noise": 28.98799525540553,
+      "correlations": {
+        "r6g": 0.16211396760723296,
+        "methylene_blue": 0.7205436297054649,
+        "adenine": -0.07480262693636071,
+        "di_water": 0.06147778587158133,
+        "old_r6g": -0.008095354504268971
+      }
+    },
+    {
+      "point": 10,
+      "y_mm": 18.000115273775215,
+      "corrected_max": 3325.7333984375,
+      "noise_estimate": 113.29251242586754,
+      "max_to_noise": 29.355279772912432,
+      "correlations": {
+        "r6g": 0.2082960388278463,
+        "methylene_blue": 0.7144856666356962,
+        "adenine": -0.07052349328617769,
+        "di_water": 0.06085204501932073,
+        "old_r6g": 0.015554881240581506
+      }
+    },
+    {
+      "point": 11,
+      "y_mm": 20.000115273775215,
+      "corrected_max": 190.39999389648438,
+      "noise_estimate": 36.51779568206636,
+      "max_to_noise": 5.213896138588358,
+      "correlations": {
+        "r6g": 0.10884621130505323,
+        "methylene_blue": 0.046861563145120404,
+        "adenine": -0.018724407251648003,
+        "di_water": -0.06042608568809244,
+        "old_r6g": -0.0004893734731945683
+      }
+    },
+    {
+      "point": 12,
+      "y_mm": 22.000115273775215,
+      "corrected_max": 187.39999389648438,
+      "noise_estimate": 35.92372338927556,
+      "max_to_noise": 5.216608308269893,
+      "correlations": {
+        "r6g": 0.15103840738049804,
+        "methylene_blue": 0.023259231551043338,
+        "adenine": -0.000743464629445331,
+        "di_water": -0.018279536343738474,
+        "old_r6g": -0.0001026340157001437
+      }
+    },
+    {
+      "point": 13,
+      "y_mm": 24.00014409221902,
+      "corrected_max": 215.0,
+      "noise_estimate": 34.10656578681809,
+      "max_to_noise": 6.303771577116561,
+      "correlations": {
+        "r6g": -0.028579973113998083,
+        "methylene_blue": -0.017427059461105572,
+        "adenine": -0.007028151109293337,
+        "di_water": -0.05920659802690013,
+        "old_r6g": -0.038979815718351844
+      }
+    }
+  ]
+}

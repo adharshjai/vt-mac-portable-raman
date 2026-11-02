@@ -1,0 +1,11 @@
+{
+  "project": "Bluesky_Bridge",
+  "unit_tests": "13 passed",
+  "gui_simulation": "13 points; live plot, point table and saved records passed",
+  "qt_mock_integration": "13 points through copied SDK-free Qt, backend and motor emulators; PCA-SVM and Bluesky documents passed",
+  "exe_launcher": "Opened and rendered the GUI in preview mode",
+  "real_hardware_tested": false,
+  "original_intersect_source_and_config": "SHA256 unchanged",
+  "qt_mock_report": "test_outputs/mock_qt_4959bf81/test_report.json",
+  "gui_preview": "test_outputs/gui_simulation.png"
+}

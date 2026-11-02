@@ -1,0 +1,34 @@
+# ---- Vendor binaries: not redistributable, install from the vendor instead ----
+# Hamamatsu C13560 USB library (from the module's CD, RamanSpectrumViewer_x64/): copy it to
+# laser_test/hardware/DLL/ and run macos-native/tools/retag_assembly.py for the Mac build.
+wrrusb2a.dll
+# Thorlabs Kinesis SDK binaries (install Kinesis; the headers stay in the tree)
+Thorlabs.MotionControl.*.dll
+ThorLabs.MotionControl.*.dll
+Thorlabs.MotionControl.*.lib
+
+# ---- Regenerable build outputs (macos-native/build_macos.sh recreates all of them) ----
+/build-macos-qt6.12/
+/build-macos-flat/
+/deploy-macos/
+/laser_test/tests/build-macos/
+/macos-native/e2e/build/
+/laser_test/hardware/SampleApl/obj_*/
+/laser_test/build-win-x64/
+/RamanAutofocus/build-win-x64/
+macos-native/backend/shim/libwinusb_shim.dylib
+macos-native/backend/shim/shim_selftest
+macos-native/backend/shim/*.o
+macos-native/**/bin/
+macos-native/**/obj/
+__pycache__/
+*.pyc
+.venv/
+.venv_*/
+
+# ---- Editor / OS noise ----
+.DS_Store
+Thumbs.db
+*.swp
+CMakeLists.txt.user
+controller.lock

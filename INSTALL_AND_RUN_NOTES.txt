@@ -1,0 +1,87 @@
+﻿Portable Raman full project handoff - 2026-10-27
+====================================================
+
+This is a hand-off snapshot of source code, existing models and experimental data, not an unzip-and-run installer.
+Known limitation: 12 old scan_analysis subdirectories could not be included because of read permissions; see the packaging exclusion list for the paths.
+Therefore this package is not a gap-free backup of the entire disk directory; do not delete the original directory on the strength of it.
+This packaging did not modify the original project, models or experimental data, and did not start the laser, motors or network services or upload any data.
+
+1. Directory layout
+laser_test/                 Qt controller, Python/Notebooks, models, databases, dark, historical scans and the various bridge projects.
+RamanAutofocus/             The motor project under Downloads that is actually invoked at present; the old hardware/motor cannot be used in its place.
+Python_dependencies/        Dependency notes split per project; the original requirements files are also kept in each project.
+INSTALL_AND_RUN_NOTES.txt   This document.
+file_manifest_SHA256.json   Size, SHA-256 and source-verification information for every source file.
+packaging_exclusions.json   Excluded environments, caches, private configurations, logs and access problems.
+
+2. What you must know first
+- The original project contains several historical model versions; do not treat all the Notebooks as runs of the same experiment.
+- build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug contains important source code and data; it must not be deleted as a whole.
+- The original absolute paths have been kept as a snapshot; the recipient must change them to their own paths and cannot run directly under the old user name.
+- Dependency environments are excluded. The bridge EXEs originally depended on a .venv in the same directory, so merely double-clicking an EXE must not be taken as a successful installation.
+- The existing EXE/DLL files are kept for reference; the Debug programs may depend on the debug runtime libraries. Rebuilding from source is recommended.
+- The readable original scans, models and historical results within the selected scope are kept. They contain personal machine paths and project-author information; this is not an anonymized dataset.
+- Private config.json files, credential stores, environment-variable files and IDE user settings are not distributed with the package.
+- In the third-party INTERSECT SDK, 6 example/test/CI files that contain credential-format strings are excluded; the main SDK code is kept, see the exclusion list for details.
+- The licenses of the third-party SDKs, DLLs and source code remain in force; sharing and use should comply with their respective licenses. Drivers/SDKs should be installed through the vendors' channels.
+
+3. Windows / Qt / motor / Raman backend
+The Qt project examined uses Widgets and Charts; the original build environment was Qt 6.6.3, MSVC2019 x64.
+Prepare the matching Qt components, the Visual Studio C++ build tools and CMake; the SampleApl project also uses C++/CLI and .NET Framework 4.7.2,
+which require the corresponding targeting pack/C++/CLI components. The specific configuration in the vcxproj is authoritative; do not mix x86/x64.
+Install the Hamamatsu module driver and a compatible SDK; install Thorlabs Kinesis and verify the KDC101 device model and serial number.
+Do not run any program to probe the hardware connection: first complete the source-code path configuration below and receive laboratory safety training.
+
+In Qt Creator, open laser_test/CMakeLists.txt, select the correct Kit for this machine, and create a new build directory.
+Do not copy and reuse the old CMakeCache.txt or CMakeLists.txt.user. This package has excluded these machine-specific caches.
+For the motor project, open RamanAutofocus/CMakeLists.txt; its subdirectory CMakeLists.txt uses
+THORLABS_SDK_PATH, which defaults to C:/Program Files/Thorlabs/Kinesis; adjust it to the recipient's installation location.
+Build the RamanAutofocus target; do not run KDC101Test or LibTest as the main program.
+The Raman backend project is laser_test/hardware/SampleApl/SampleApl.vcxproj.
+The Qt controller expects the backend at "Qt EXE directory/handshake_v2/backend/SampleApl.exe",
+and compatible vendor DLLs and runtime libraries must be deployed there. Do not copy only the EXE and ignore its dependencies.
+
+Confirmed paths that must be adjusted (change them only in the recipient's copy; do not modify the shared originals):
+- laser_test/main.cpp: kPythonScriptPath -> the local cnn_1.py.
+- laser_test/main.cpp: ramanDir -> the directory containing the locally rebuilt RamanAutofocus.exe.
+- laser_test/main.cpp: mappingLogPath -> a writable local log location.
+- laser_test/build_handshake.cmd, rebuild_raman_autofocus.cmd: Visual Studio, Qt, CMake and motor-project paths.
+- Python/Notebooks: absolute paths of the training database, real test files, dark, model directories and output directories.
+- Bridge code/launch scripts/generated Qt code: EXE, model, dark, Qt, SDK and local mailbox paths.
+Beyond the confirmed items above, the package may contain other absolute paths; before running, search for Jeremy666, Downloads, OneDrive, C:/ and C:\.
+The full snapshot keeps historical code; this does not mean every historical script has passed testing on the new computer.
+
+4. Python
+Refer to Python_dependencies/README.txt to set up separate virtual environments for the different projects.
+Prefer using the existing trained models for offline analysis; RETRAIN=False is only a switch in some of the scripts, so check the actual implementation before running.
+Do not run every Notebook with Run All, and do not overwrite old experimental results just because the output directories are the same.
+Three newer analysis entry points, for orientation (not a unified launcher for all historical versions):
+- build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/svm_r6g_update_20260924/SVM4_full_PCA_SVM_new_analysis.py
+- build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/pure_only_20260923/shift_robust_v2/CNN3_1_shift_robust.py
+- build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/pure_only_20260923/pure_softmax_v4/Transformer5_1_pure_softmax.py
+The Qt "Analyze Latest" is currently configured to cnn_1.py; this is not the same as automatically running the three newer models above.
+The new pure-class Transformer is not a mixture-detection model; UNKNOWN does not mean that tin foil or water has been identified.
+This package contains pickle/joblib/torch and other models; load only from trusted sources, since deserializing a model may execute code.
+
+5. Bridge projects (optional)
+Complete the offline analysis first, then, following each project's README, install the dependencies separately and recreate the .venv.
+INTERSECT, Bluesky and Globus are different functions; do not send scan commands to the same device at the same time.
+In directories that contain a .example.json, you can copy the template to config.json and then fill in your own paths and credentials.
+A config.handoff.example.json generated from the current configuration is also provided, with sensitive fields replaced by CHANGE_ME;
+these templates are not currently runnable configurations, and the paths still need to be changed. Do not copy over someone else's account, token or password.
+Globus login and any real transfer are decided and performed by the recipient personally. This package does not include a login state.
+
+6. Recommended first-run order
+First statically check files/dependencies -> read saved scans offline -> load trusted models for analysis -> run simulation tests that explicitly involve no hardware ->
+have trained personnel verify the drivers, device serial numbers, laser protection and travel before carrying out on-site hardware tests.
+A test script name containing test does not guarantee that it will not touch the hardware, especially the motor project's test programs; the source code must be read before running them.
+In the original code, scan Stop does not mean Laser OFF; do not assume that stopping a scan turns off the laser.
+The 1D path is 0-24 mm after homing the selected axis, at 2 mm intervals, 13 points; for the 2D/Z paths, read the current source code to confirm the safety clearance.
+Starting the controller may launch the device backend; the first debugging should be done under controlled conditions, and do not run the old EXE directly.
+
+7. Hand-off and verification
+The ZIP's CRC, file count and per-file SHA-256 were verified at creation time; the source code has not been altered.
+This does not mean it has been verified to run on the classmate's computer or on the real instrument. No physical testing was done during packaging.
+It is recommended to upload the ZIP to OneDrive and use a share link for the designated recipient; do not share the original project's entire synced folder.
+The recipient should extract to a short, writable local path, keeping laser_test and RamanAutofocus as two sibling directories.
+If read_errors in the packaging exclusion list is non-empty, first confirm whether those omissions affect the required experiments before claiming a complete hand-off.

@@ -1,0 +1,44 @@
+{
+  "created_at": "2026-08-27 11:21:48",
+  "elapsed_seconds": 96.66885209083557,
+  "config": {
+    "seed": 42,
+    "train_ratio": 0.7,
+    "val_ratio": 0.1,
+    "test_ratio": 0.2,
+    "n_binary_per_combo": 200,
+    "n_ternary_per_combo": 100,
+    "n_low_r6g_mb": 300,
+    "low_r6g_ratios": [
+      0.01,
+      0.02,
+      0.05,
+      0.1,
+      0.2
+    ],
+    "noise_std_ratio": 0.01,
+    "threshold": 0.5,
+    "pca_components": 20,
+    "batch_size": 32,
+    "cnn_epochs": 80,
+    "vit_epochs": 100,
+    "early_stop_patience": 16
+  },
+  "data_files": {
+    "training_spectra_r6g_baseline_raw.npy": "42b37aae5e11ff69258903ddb3ffc6fc994ebb33c89086e6aaf6a4eb6e6bbec6",
+    "training_spectra_methylene_blue_baseline_raw.npy": "9fd57397ad049c4be4d5ac594341d7d523da17a27b18315cb6eb2e00636dbb1c",
+    "training_spectra_adenine_baseline_raw.npy": "a862ded54dfa7bf4fd0d8878fa63f0d1dff3d3981b285881da1e0e946289abb1",
+    "training_spectra_di_water_baseline_raw.npy": "1e0377b8ed6af58bba53223b05c664c2a9f50e36831a44d085ad332a248f13ee"
+  },
+  "dataset_sha256": "ef1d72d2007278a17c187df874b22ef402f03275d5669922d41fb5291e6da9a0",
+  "split_manifest_sha256": "dc743d29fa957d18e3eb3886375d7ffb93a9870ca094a51f15016b2fa6c83c65",
+  "python": "3.12.13",
+  "numpy": "2.5.2",
+  "scikit_learn": "1.9.0",
+  "torch": "2.13.0+cpu",
+  "device": "cpu",
+  "models": [
+    "PCA-SVM"
+  ],
+  "benchmark_threshold_note": "All benchmark target probabilities are binarized at 0.50. The 0.40/0.25 real-scan reporting rule is separate."
+}

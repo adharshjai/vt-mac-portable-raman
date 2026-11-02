@@ -1,0 +1,2 @@
+model,n_test,threshold,target_macro_f1,r6g_recall,target_exact_match,mixture_exact_match,n_mixture,warning
+ViT-1D,96,"{""r6g"": 0.5398603677749634, ""methylene_blue"": 0.4, ""adenine"": 0.4, ""di_water"": 0.4}",0.7929262189761278,0.96,0.4479166666666667,,0,Pure-only spectrum split; same-scan dependence; mixed samples unvalidated

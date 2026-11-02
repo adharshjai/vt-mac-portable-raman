@@ -1,0 +1,21 @@
+{
+  "classes": [
+    "r6g",
+    "methylene_blue"
+  ],
+  "target_len": 2018,
+  "drop_n": 30,
+  "do_baseline": true,
+  "group_size": 6,
+  "min_conf_threshold": 0.9,
+  "min_margin_threshold": 0.8,
+  "min_accepted_blocks": 3,
+  "min_accepted_ratio": 0.2,
+  "min_class_consensus": 0.75,
+  "thresholds": {
+    "conf_threshold": 0.9626632869243622,
+    "margin_threshold": 0.9253265738487244,
+    "dist_threshold": 0.6087978303432464
+  },
+  "timestamp": "2026-04-09 13:45:29"
+}

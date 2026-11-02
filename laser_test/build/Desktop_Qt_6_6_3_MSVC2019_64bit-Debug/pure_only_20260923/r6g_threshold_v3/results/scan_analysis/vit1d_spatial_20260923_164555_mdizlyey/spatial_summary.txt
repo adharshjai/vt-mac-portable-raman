@@ -1,0 +1,29 @@
+
+======================================================================
+SCAN DISTRIBUTION SUMMARY
+Multiple target responses detected at some points; separation is not established.
+Some positions also show multiple target responses.
+Point thresholds: {'r6g': 0.5398603677749634, 'methylene_blue': 0.4, 'adenine': 0.4, 'di_water': 0.4}; weak R6G rule disabled.
+Position notes: spectrum index starts at 0; point ID starts at 1.
+  adenine + r6g co-detection candidate: indices=[0, 1, 11]; point IDs=[1, 2, 12]
+  adenine only: indices=[2, 5, 6, 7, 10, 12]; point IDs=[3, 6, 7, 8, 11, 13]
+  methylene_blue only: indices=[3, 4, 8, 9]; point IDs=[4, 5, 9, 10]
+Point details:
+  Index 00 / point 01: Y=0.000 mm; adenine + r6g co-detection candidate; 
+  Index 01 / point 02: Y=2.000 mm; adenine + r6g co-detection candidate; 
+  Index 02 / point 03: Y=4.000 mm; adenine only; 
+  Index 03 / point 04: Y=6.000 mm; methylene_blue only; 
+  Index 04 / point 05: Y=8.000 mm; methylene_blue only; 
+  Index 05 / point 06: Y=10.000 mm; adenine only; 
+  Index 06 / point 07: Y=12.000 mm; adenine only; 
+  Index 07 / point 08: Y=14.000 mm; adenine only; 
+  Index 08 / point 09: Y=16.000 mm; methylene_blue only; 
+  Index 09 / point 10: Y=18.000 mm; methylene_blue only; 
+  Index 10 / point 11: Y=20.000 mm; adenine only; 
+  Index 11 / point 12: Y=22.000 mm; adenine + r6g co-detection candidate; 
+  Index 12 / point 13: Y=24.000 mm; adenine only; 
+Note: 'only' means only one target exceeded the threshold, not proof of chemical purity.
+R6G scores within 0.001 of its threshold are sensitive to small changes; inspect per_point_scores.csv.
+Co-detection does not by itself confirm a physical mixture. Compare with the known sample layout.
+Y coordinates use verified sidecars and the existing 34700 steps/mm calibration.
+======================================================================

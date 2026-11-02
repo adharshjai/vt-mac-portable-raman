@@ -1,0 +1,17 @@
+{
+  "classes": [
+    "r6g",
+    "methylene_blue"
+  ],
+  "target_len": 2018,
+  "drop_n": 30,
+  "n_components": 20,
+  "explained_variance_total": 0.9033082127571106,
+  "best_C": 0.1,
+  "best_gamma": "scale",
+  "cv_accuracy": 1.0,
+  "test_accuracy": 1.0,
+  "train_accuracy": 1.0,
+  "confidence_threshold": 0.8,
+  "timestamp": "2026-04-30 00:35:39"
+}

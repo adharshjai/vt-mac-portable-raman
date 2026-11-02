@@ -1,0 +1,36 @@
+cmake_minimum_required(VERSION 3.16)
+project(HandshakeTests LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Charts)
+# The emulators and the test binary are plain executables on every platform: the controller
+# under test looks for handshake_v2/backend/SampleApl and handshake_v2/motor/RamanAutofocus
+# (SampleApl.exe / RamanAutofocus.exe on Windows) next to its own executable.
+add_executable(mock_backend mock_backend.cpp)
+target_link_libraries(mock_backend PRIVATE Qt6::Core)
+set_target_properties(mock_backend PROPERTIES OUTPUT_NAME SampleApl MACOSX_BUNDLE FALSE
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/handshake_v2/backend")
+add_executable(mock_motor mock_motor.cpp)
+set_target_properties(mock_motor PROPERTIES OUTPUT_NAME RamanAutofocus MACOSX_BUNDLE FALSE
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/handshake_v2/motor")
+add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/main.moc"
+    COMMAND Qt6::moc "${CMAKE_CURRENT_SOURCE_DIR}/../main.cpp" -o "${CMAKE_BINARY_DIR}/main.moc"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/../main.cpp")
+add_executable(handshake_tests handshake_tests.cpp "${CMAKE_BINARY_DIR}/main.moc")
+target_compile_definitions(handshake_tests PRIVATE HANDSHAKE_TESTING)
+if(MSVC)
+    target_compile_options(handshake_tests PRIVATE /utf-8)
+endif()
+set_target_properties(handshake_tests PROPERTIES MACOSX_BUNDLE FALSE)
+target_include_directories(handshake_tests PRIVATE "${CMAKE_BINARY_DIR}")
+target_link_libraries(handshake_tests PRIVATE Qt6::Widgets Qt6::Charts)
+add_dependencies(handshake_tests mock_backend mock_motor)
+if(WIN32)
+    # Compiles the Windows motor program (RamanAutofocusTest.cpp: wmain, Kinesis C API) against
+    # motor_sdk_stub.h, so this test exists only on Windows.
+    add_executable(motor_path_test motor_path_test.cpp)
+    target_compile_definitions(motor_path_test PRIVATE MOTOR_PATH_TESTING)
+    if(MSVC)
+        target_compile_options(motor_path_test PRIVATE /utf-8)
+    endif()
+    target_link_libraries(motor_path_test PRIVATE Qt6::Core)
+endif()

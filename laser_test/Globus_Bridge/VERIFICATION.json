@@ -1,0 +1,15 @@
+{
+  "project": "Globus_Bridge",
+  "globus_sdk_version": "4.10.0",
+  "sdk_http_contract_tests": "10 passed; real SDK with mocked HTTP",
+  "gui_http_test": "passed; real SDK, mocked submit/status HTTP",
+  "exe_launcher": "opened and rendered offline GUI",
+  "live_authentication_tested": false,
+  "live_transfer_tested": false,
+  "live_test_status": "Awaiting human Globus login and consent",
+  "selected_live_demo": "Official tutorial file only, Collection 1 to Collection 2",
+  "bluesky_sdk": "bluesky 1.15.1 / ophyd 1.11.2",
+  "bluesky_no_hardware_tests": "13 passed again",
+  "bluesky_protocol_check": "Triggerable, Readable, Stoppable passed",
+  "original_instrument_code_changed": false
+}

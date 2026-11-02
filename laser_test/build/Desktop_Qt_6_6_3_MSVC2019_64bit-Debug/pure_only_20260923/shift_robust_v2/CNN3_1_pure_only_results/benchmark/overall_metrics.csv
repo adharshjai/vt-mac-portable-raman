@@ -1,0 +1,2 @@
+model,n_test,threshold,target_macro_f1,r6g_recall,target_exact_match,mixture_exact_match,n_mixture,warning
+CNN,96,0.4,0.9934640522875817,1.0,0.9895833333333334,,0,Pure-only spectrum split; same-scan dependence; mixed samples unvalidated

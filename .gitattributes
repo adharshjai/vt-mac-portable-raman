@@ -1,0 +1,3 @@
+# Keep every file byte-identical on every platform: the hand-off manifest (file_manifest_SHA256.json)
+# and the Windows sources depend on their original CRLF/LF line endings.
+* -text

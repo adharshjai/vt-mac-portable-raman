@@ -1,0 +1,101 @@
+{
+  "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\1d_y_scan_20260921_152840_289",
+  "dark": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\dark_measurements\\dark_20260921_153016_700.txt",
+  "candidate_point_ids": [
+    4,
+    5,
+    9,
+    10
+  ],
+  "no_concentrations_provided": true,
+  "peak_windows": [
+    {
+      "window": [
+        405,
+        475
+      ],
+      "training_median_max_cm1": 442.4572981,
+      "candidates": [
+        {
+          "point_id": 4,
+          "window_max_cm1": 437.2560561
+        },
+        {
+          "point_id": 5,
+          "window_max_cm1": 437.2560561
+        },
+        {
+          "point_id": 9,
+          "window_max_cm1": 437.2560561
+        },
+        {
+          "point_id": 10,
+          "window_max_cm1": 434.6527314
+        }
+      ]
+    },
+    {
+      "window": [
+        1360,
+        1430
+      ],
+      "training_median_max_cm1": 1395.227538,
+      "candidates": [
+        {
+          "point_id": 4,
+          "window_max_cm1": 1387.411245
+        },
+        {
+          "point_id": 5,
+          "window_max_cm1": 1391.322003
+        },
+        {
+          "point_id": 9,
+          "window_max_cm1": 1389.367277
+        },
+        {
+          "point_id": 10,
+          "window_max_cm1": 1391.322003
+        }
+      ]
+    },
+    {
+      "window": [
+        1580,
+        1660
+      ],
+      "training_median_max_cm1": 1622.082745,
+      "candidates": [
+        {
+          "point_id": 4,
+          "window_max_cm1": 1614.871632
+        },
+        {
+          "point_id": 5,
+          "window_max_cm1": 1614.871632
+        },
+        {
+          "point_id": 9,
+          "window_max_cm1": 1614.871632
+        },
+        {
+          "point_id": 10,
+          "window_max_cm1": 1614.871632
+        }
+      ]
+    }
+  ],
+  "max_training_MB_correlation": {
+    "4": 0.8528115749359131,
+    "5": 0.8465703129768372,
+    "9": 0.8363328576087952,
+    "10": 0.8325008749961853
+  },
+  "training_baseline_peak_median": 4150.033203125,
+  "candidate_baseline_peak_counts": {
+    "4": 3571.39990234375,
+    "5": 3032.60009765625,
+    "9": 3809.86669921875,
+    "10": 3325.7333984375
+  }
+}

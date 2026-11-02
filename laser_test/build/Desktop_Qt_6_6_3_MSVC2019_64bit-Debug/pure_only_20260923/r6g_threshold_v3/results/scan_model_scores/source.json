@@ -1,0 +1,11 @@
+{
+  "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\1d_y_scan_20260921_152840_289\\laser_log_combined.txt",
+  "model": "ViT-1D",
+  "thresholds": {
+    "r6g": 0.5398603677749634,
+    "methylene_blue": 0.4,
+    "adenine": 0.4,
+    "di_water": 0.4
+  },
+  "checkpoint": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\pure_only_20260923\\shift_robust_v2\\Transformer5_1_pure_only_results\\models\\vit1d_shift_robust.pt"
+}

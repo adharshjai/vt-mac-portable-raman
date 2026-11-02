@@ -1,0 +1,10 @@
+{
+  "client_id": "61338d24-54d5-408f-a10d-66c06b59f6d2",
+  "client_id_note": "Official Globus SDK tutorial native client; use your own native client for a deployed application.",
+  "source_collection": "6c54cade-bde5-45c1-bdea-f4bd71dba2cc",
+  "destination_collection": "31ce9ba0-176d-45a5-add3-f37d233ba47d",
+  "source_path": "/share/godata/file1.txt",
+  "destination_path": "",
+  "recursive": false,
+  "last_record": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\Globus_Bridge\\records\\live_20261026_152942_3e2aee1c\\record.json"
+}

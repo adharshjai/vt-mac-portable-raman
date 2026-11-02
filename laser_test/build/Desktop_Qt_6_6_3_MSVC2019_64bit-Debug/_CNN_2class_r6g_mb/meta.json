@@ -1,0 +1,10 @@
+{
+  "classes": [
+    "r6g",
+    "methylene_blue"
+  ],
+  "target_len": 2018,
+  "drop_n": 30,
+  "confidence_threshold": 0.8,
+  "timestamp": "2026-04-09 13:26:24"
+}

@@ -1,0 +1,558 @@
+[2026-09-16 13:14:48.002] [Backend process started]
+[2026-09-16 13:14:48.590] [Point saved] run=ec2e4ec9-4681-4387-9136-6407737e567d point=1 pixels=2048 elapsed_ms=342
+[2026-09-16 13:14:49.048] [Point saved] run=ec2e4ec9-4681-4387-9136-6407737e567d point=2 pixels=2048 elapsed_ms=290
+[2026-09-16 13:14:49.533] [Point saved] run=ec2e4ec9-4681-4387-9136-6407737e567d point=3 pixels=2048 elapsed_ms=324
+[2026-09-16 13:14:49.580] [Scan failed] Cannot publish saved-point ACK
+[2026-09-16 13:14:51.792] [Backend process started]
+[2026-09-16 13:14:54.056] [Scan failed] Cannot publish pause heartbeat
+[2026-09-16 13:18:03.528] [Backend process started]
+[2026-09-16 13:18:04.059] [Point saved] run=abdd5277-16fc-4559-9fb3-b7cdb090a2a5 point=1 pixels=2048 elapsed_ms=268
+[2026-09-16 13:18:04.541] [Point saved] run=abdd5277-16fc-4559-9fb3-b7cdb090a2a5 point=2 pixels=2048 elapsed_ms=310
+[2026-09-16 13:18:05.034] [Point saved] run=abdd5277-16fc-4559-9fb3-b7cdb090a2a5 point=3 pixels=2048 elapsed_ms=294
+[2026-09-16 13:18:07.300] [Backend process started]
+[2026-09-16 13:18:07.763] [Point saved] run=ce96034f-6780-43c4-8769-857f4f11b29b point=1 pixels=2048 elapsed_ms=275
+[2026-09-16 13:18:08.446] [Point saved] run=ce96034f-6780-43c4-8769-857f4f11b29b point=2 pixels=2048 elapsed_ms=268
+[2026-09-16 13:18:08.902] [Point saved] run=ce96034f-6780-43c4-8769-857f4f11b29b point=3 pixels=2048 elapsed_ms=284
+[2026-09-16 13:18:11.133] [Backend process started]
+[2026-09-16 13:18:11.512] [Scan failed] Backend capture failed: CAPTURE c4be0010-77e9-434c-b325-5cc7dcf84a6e_1 FAIL -1
+END c4be0010-77e9-434c-b325-5cc7dcf84a6e_1
+[2026-09-16 13:18:13.657] [Backend process started]
+[2026-09-16 13:18:14.362] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-16 13:18:16.789] [Backend process started]
+[2026-09-16 13:18:17.618] [Scan failed] Malformed or mismatched capture result
+[2026-09-16 13:18:19.810] [Backend process started]
+[2026-09-16 13:18:21.776] [Scan failed] Capture timed out (15 s); no blind retry and no success ACK
+[2026-09-16 13:18:24.926] [Backend process started]
+[2026-09-16 13:18:25.677] [Capture discarded from scan] Scan stopped; raw backend result retained: 5784d99d-04a5-4df9-831e-3403598ffd05_1
+[2026-09-16 13:18:27.879] [Backend process started]
+[2026-09-16 13:18:28.562] [Point saved] run=3dda121d-eb11-47ca-9462-9941fbe5b048 point=1 pixels=2048 elapsed_ms=364
+[2026-09-16 13:18:29.064] [Point saved] run=3dda121d-eb11-47ca-9462-9941fbe5b048 point=2 pixels=2048 elapsed_ms=295
+[2026-09-16 13:18:29.568] [Point saved] run=3dda121d-eb11-47ca-9462-9941fbe5b048 point=3 pixels=2048 elapsed_ms=306
+[2026-09-16 13:40:41.964] [Backend process started]
+[2026-09-16 13:40:42.566] [Point saved] run=1bc394be-619f-4d86-af51-d548b6254c45 point=1 pixels=2048 elapsed_ms=320
+[2026-09-16 13:40:43.039] [Point saved] run=1bc394be-619f-4d86-af51-d548b6254c45 point=2 pixels=2048 elapsed_ms=304
+[2026-09-16 13:40:43.548] [Point saved] run=1bc394be-619f-4d86-af51-d548b6254c45 point=3 pixels=2048 elapsed_ms=314
+[2026-09-16 13:40:45.774] [Backend process started]
+[2026-09-16 13:40:46.283] [Point saved] run=c9d2f7bf-6055-4333-8875-44edb1b07f3b point=1 pixels=2048 elapsed_ms=349
+[2026-09-16 13:40:46.939] [Point saved] run=c9d2f7bf-6055-4333-8875-44edb1b07f3b point=2 pixels=2048 elapsed_ms=288
+[2026-09-16 13:40:47.459] [Point saved] run=c9d2f7bf-6055-4333-8875-44edb1b07f3b point=3 pixels=2048 elapsed_ms=310
+[2026-09-16 13:40:49.692] [Backend process started]
+[2026-09-16 13:40:50.070] [Scan failed] Backend capture failed: CAPTURE af04a171-f2e8-44be-a0a4-b66740f76f13_1 FAIL -1
+END af04a171-f2e8-44be-a0a4-b66740f76f13_1
+[2026-09-16 13:40:54.684] [Backend process started]
+[2026-09-16 13:40:55.122] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-16 13:40:59.763] [Backend process started]
+[2026-09-16 13:41:00.142] [Scan failed] Malformed or mismatched capture result
+[2026-09-16 13:41:04.813] [Backend process started]
+[2026-09-16 13:41:06.517] [Scan failed] Capture timed out (15 s); no blind retry and no success ACK
+[2026-09-16 13:41:12.180] [Backend process started]
+[2026-09-16 13:41:14.985] [Capture discarded from scan] Scan stopped; raw backend result retained: fedf7212-5e8b-468b-9f28-bfed09a5b7e8_1
+[2026-09-16 13:41:17.151] [Backend process started]
+[2026-09-16 13:41:17.568] [Point saved] run=5c9e7fc3-3192-449d-95fa-bd77337e79e0 point=1 pixels=2048 elapsed_ms=272
+[2026-09-16 13:41:17.996] [Point saved] run=5c9e7fc3-3192-449d-95fa-bd77337e79e0 point=2 pixels=2048 elapsed_ms=269
+[2026-09-16 13:41:18.455] [Point saved] run=5c9e7fc3-3192-449d-95fa-bd77337e79e0 point=3 pixels=2048 elapsed_ms=307
+[2026-09-16 13:42:55.834] [Backend process started]
+[2026-09-16 13:42:56.366] [Point saved] run=ab90175a-8621-499e-9594-7cf6e17b1e1f point=1 pixels=2048 elapsed_ms=318
+[2026-09-16 13:42:56.814] [Point saved] run=ab90175a-8621-499e-9594-7cf6e17b1e1f point=2 pixels=2048 elapsed_ms=289
+[2026-09-16 13:42:57.290] [Point saved] run=ab90175a-8621-499e-9594-7cf6e17b1e1f point=3 pixels=2048 elapsed_ms=323
+[2026-09-16 13:42:59.516] [Backend process started]
+[2026-09-16 13:42:59.988] [Point saved] run=3ef80598-b65c-4879-9ebc-2b37b717036e point=1 pixels=2048 elapsed_ms=306
+[2026-09-16 13:43:00.690] [Point saved] run=3ef80598-b65c-4879-9ebc-2b37b717036e point=2 pixels=2048 elapsed_ms=285
+[2026-09-16 13:43:01.137] [Point saved] run=3ef80598-b65c-4879-9ebc-2b37b717036e point=3 pixels=2048 elapsed_ms=289
+[2026-09-16 13:43:03.371] [Backend process started]
+[2026-09-16 13:43:03.761] [Scan failed] Backend capture failed: CAPTURE a8da9eca-c3d6-4b7a-a455-58ae9552353f_1 FAIL -1
+END a8da9eca-c3d6-4b7a-a455-58ae9552353f_1
+[2026-09-16 13:43:08.380] [Backend process started]
+[2026-09-16 13:43:08.904] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-16 13:43:13.534] [Backend process started]
+[2026-09-16 13:43:13.939] [Scan failed] Malformed or mismatched capture result
+[2026-09-16 13:43:18.557] [Backend process started]
+[2026-09-16 13:43:20.540] [Scan failed] Capture timed out (15 s); no blind retry and no success ACK
+[2026-09-16 13:43:26.195] [Backend process started]
+[2026-09-16 13:43:29.027] [Capture discarded from scan] Scan stopped; raw backend result retained: ac4215de-9474-4c8c-baf7-0c5283b9d713_1
+[2026-09-16 13:43:31.138] [Backend process started]
+[2026-09-16 13:43:31.584] [Point saved] run=86fdb30c-156a-4f93-a665-6580aa27802d point=1 pixels=2048 elapsed_ms=292
+[2026-09-16 13:43:31.975] [Point saved] run=86fdb30c-156a-4f93-a665-6580aa27802d point=2 pixels=2048 elapsed_ms=249
+[2026-09-16 13:43:32.403] [Point saved] run=86fdb30c-156a-4f93-a665-6580aa27802d point=3 pixels=2048 elapsed_ms=241
+[2026-09-16 14:06:31.416] [Backend process started]
+[2026-09-16 14:06:32.183] [Point saved] run=b9964c26-9f18-4aa3-93fb-49a57cc65ed0 point=1 pixels=2048 elapsed_ms=385
+[2026-09-16 14:06:32.687] [Point saved] run=b9964c26-9f18-4aa3-93fb-49a57cc65ed0 point=2 pixels=2048 elapsed_ms=316
+[2026-09-16 14:06:33.214] [Point saved] run=b9964c26-9f18-4aa3-93fb-49a57cc65ed0 point=3 pixels=2048 elapsed_ms=354
+[2026-09-16 14:06:35.611] [Backend process started]
+[2026-09-16 14:06:36.392] [Point saved] run=d516a4fb-564c-4172-a179-6b47eb4409ac point=1 pixels=2048 elapsed_ms=549
+[2026-09-16 14:06:37.142] [Point saved] run=d516a4fb-564c-4172-a179-6b47eb4409ac point=2 pixels=2048 elapsed_ms=573
+[2026-09-16 14:06:37.918] [Point saved] run=d516a4fb-564c-4172-a179-6b47eb4409ac point=3 pixels=2048 elapsed_ms=610
+[2026-09-16 14:06:40.176] [Backend process started]
+[2026-09-16 14:06:41.302] [Point saved] run=ab1c8932-2b0b-43d8-8d3d-8c26a85006ce point=1 pixels=2048 elapsed_ms=783
+[2026-09-16 14:06:42.188] [Point saved] run=ab1c8932-2b0b-43d8-8d3d-8c26a85006ce point=2 pixels=2048 elapsed_ms=473
+[2026-09-16 14:06:42.779] [Point saved] run=ab1c8932-2b0b-43d8-8d3d-8c26a85006ce point=3 pixels=2048 elapsed_ms=407
+[2026-09-16 14:06:45.010] [Backend process started]
+[2026-09-16 14:06:46.152] [Scan failed] Backend capture failed: CAPTURE cefb64aa-03c4-41b7-bc95-3358327ebfbb_1 FAIL -1
+END cefb64aa-03c4-41b7-bc95-3358327ebfbb_1
+[2026-09-16 14:06:50.796] [Backend process started]
+[2026-09-16 14:06:51.359] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-16 14:06:56.012] [Backend process started]
+[2026-09-16 14:06:57.135] [Scan failed] Malformed or mismatched capture result
+[2026-09-16 14:07:01.939] [Backend process started]
+[2026-09-16 14:07:03.996] [Scan failed] Capture timed out (15 s); no blind retry and no success ACK
+[2026-09-16 14:07:09.703] [Backend process started]
+[2026-09-16 14:07:10.576] [Scan failed] Backend capture failed: CAPTURE 58f5f998-19fa-4c1a-ab8b-7570c56c873b_1 FAIL -1
+END 58f5f998-19fa-4c1a-ab8b-7570c56c873b_1
+[2026-09-16 14:07:15.242] [Backend process started]
+[2026-09-16 14:07:18.715] [Capture discarded from scan] Scan stopped; raw backend result retained: e87f6e82-d1d0-494a-b783-e0799c138299_1
+[2026-09-16 14:07:20.846] [Backend process started]
+[2026-09-16 14:07:21.425] [Point saved] run=cbf61664-6594-4d54-94b5-1e8cc98f4a08 point=1 pixels=2048 elapsed_ms=363
+[2026-09-16 14:07:21.994] [Point saved] run=cbf61664-6594-4d54-94b5-1e8cc98f4a08 point=2 pixels=2048 elapsed_ms=389
+[2026-09-16 14:07:22.629] [Point saved] run=cbf61664-6594-4d54-94b5-1e8cc98f4a08 point=3 pixels=2048 elapsed_ms=450
+[2026-09-16 15:10:09.795] [Backend process started]
+[2026-09-16 15:10:11.836] [Point saved] run=d36bffa2-c336-4d6c-80a5-cf0a40c6e2ce point=1 pixels=2048 elapsed_ms=331
+[2026-09-16 15:10:12.368] [Point saved] run=d36bffa2-c336-4d6c-80a5-cf0a40c6e2ce point=2 pixels=2048 elapsed_ms=314
+[2026-09-16 15:10:12.904] [Point saved] run=d36bffa2-c336-4d6c-80a5-cf0a40c6e2ce point=3 pixels=2048 elapsed_ms=344
+[2026-09-16 15:10:15.202] [Backend process started]
+[2026-09-16 15:10:17.600] [Backend process started]
+[2026-09-16 15:10:18.182] [Point saved] run=181949ad-afde-40ee-b9a5-a6412b266547 point=1 pixels=2048 elapsed_ms=422
+[2026-09-16 15:10:18.878] [Point saved] run=181949ad-afde-40ee-b9a5-a6412b266547 point=2 pixels=2048 elapsed_ms=507
+[2026-09-16 15:10:19.554] [Point saved] run=181949ad-afde-40ee-b9a5-a6412b266547 point=3 pixels=2048 elapsed_ms=444
+[2026-09-16 15:10:21.982] [Backend process started]
+[2026-09-16 15:10:22.981] [Point saved] run=169f8d2e-2a9b-405f-b245-2b125dde3353 point=1 pixels=2048 elapsed_ms=700
+[2026-09-16 15:10:23.887] [Point saved] run=169f8d2e-2a9b-405f-b245-2b125dde3353 point=2 pixels=2048 elapsed_ms=548
+[2026-09-16 15:10:24.575] [Point saved] run=169f8d2e-2a9b-405f-b245-2b125dde3353 point=3 pixels=2048 elapsed_ms=512
+[2026-09-16 15:10:26.905] [Backend process started]
+[2026-09-16 15:10:27.383] [Point saved] run=d6185bdb-5173-48ec-aa43-d33cab35e511 point=1 pixels=2048 elapsed_ms=313
+[2026-09-16 15:10:28.059] [Point saved] run=d6185bdb-5173-48ec-aa43-d33cab35e511 point=2 pixels=2048 elapsed_ms=269
+[2026-09-16 15:10:28.525] [Point saved] run=d6185bdb-5173-48ec-aa43-d33cab35e511 point=3 pixels=2048 elapsed_ms=291
+[2026-09-16 15:10:30.768] [Backend process started]
+[2026-09-16 15:10:31.104] [Scan failed] Backend capture failed: CAPTURE 104c1a4d-d067-4195-8be3-9baeba10dc86_1 FAIL -1
+END 104c1a4d-d067-4195-8be3-9baeba10dc86_1
+[2026-09-16 15:10:35.735] [Backend process started]
+[2026-09-16 15:10:36.356] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-16 15:10:41.073] [Backend process started]
+[2026-09-16 15:10:41.441] [Scan failed] Malformed or mismatched capture result
+[2026-09-16 15:10:46.181] [Backend process started]
+[2026-09-16 15:10:47.856] [Scan failed] Capture timed out (15 s); no blind retry and no success ACK
+[2026-09-16 15:10:53.469] [Backend process started]
+[2026-09-16 15:10:54.189] [Scan failed] Backend capture failed: CAPTURE 74182c3b-2e08-4545-8e45-c8d75c24c1e3_1 FAIL -1
+END 74182c3b-2e08-4545-8e45-c8d75c24c1e3_1
+[2026-09-16 15:10:58.790] [Backend process started]
+[2026-09-16 15:11:01.551] [Capture discarded from scan] Scan stopped; raw backend result retained: 7725785c-1d23-42b8-ae1a-0dab96944a0b_1
+[2026-09-16 15:11:03.629] [Backend process started]
+[2026-09-16 15:11:04.088] [Point saved] run=bc97d263-d3cb-4812-8db8-dbb5c251cf98 point=1 pixels=2048 elapsed_ms=317
+[2026-09-16 15:11:04.556] [Point saved] run=bc97d263-d3cb-4812-8db8-dbb5c251cf98 point=2 pixels=2048 elapsed_ms=287
+[2026-09-16 15:11:05.221] [Point saved] run=bc97d263-d3cb-4812-8db8-dbb5c251cf98 point=3 pixels=2048 elapsed_ms=374
+[2026-09-16 16:05:37.982] [Backend process started]
+[2026-09-16 16:05:40.095] [Point saved] run=a7ed7859-280d-41be-b1e5-a94f2cbd0641 point=1 pixels=2048 elapsed_ms=290
+[2026-09-16 16:05:40.578] [Point saved] run=a7ed7859-280d-41be-b1e5-a94f2cbd0641 point=2 pixels=2048 elapsed_ms=304
+[2026-09-16 16:05:41.062] [Point saved] run=a7ed7859-280d-41be-b1e5-a94f2cbd0641 point=3 pixels=2048 elapsed_ms=320
+[2026-09-16 16:05:43.310] [Backend process started]
+[2026-09-16 16:05:45.761] [Backend process started]
+[2026-09-16 16:05:46.428] [Point saved] run=3b68950f-05b4-490f-999e-27db1d4cf7e6 point=1 pixels=2048 elapsed_ms=400
+[2026-09-16 16:05:47.088] [Point saved] run=3b68950f-05b4-490f-999e-27db1d4cf7e6 point=2 pixels=2048 elapsed_ms=389
+[2026-09-16 16:05:47.978] [Point saved] run=3b68950f-05b4-490f-999e-27db1d4cf7e6 point=3 pixels=2048 elapsed_ms=545
+[2026-09-16 16:05:50.333] [Backend process started]
+[2026-09-16 16:05:51.128] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=1 pixels=2048 elapsed_ms=507
+[2026-09-16 16:05:51.768] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=2 pixels=2048 elapsed_ms=409
+[2026-09-16 16:05:52.347] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=3 pixels=2048 elapsed_ms=400
+[2026-09-16 16:05:52.941] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=4 pixels=2048 elapsed_ms=410
+[2026-09-16 16:05:53.630] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=5 pixels=2048 elapsed_ms=455
+[2026-09-16 16:05:54.479] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=6 pixels=2048 elapsed_ms=458
+[2026-09-16 16:05:55.220] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=7 pixels=2048 elapsed_ms=524
+[2026-09-16 16:05:55.754] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=8 pixels=2048 elapsed_ms=330
+[2026-09-16 16:05:56.297] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=9 pixels=2048 elapsed_ms=385
+[2026-09-16 16:05:56.753] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=10 pixels=2048 elapsed_ms=299
+[2026-09-16 16:05:57.371] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=11 pixels=2048 elapsed_ms=433
+[2026-09-16 16:05:58.134] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=12 pixels=2048 elapsed_ms=441
+[2026-09-16 16:05:58.772] [Point saved] run=b951ee29-9c51-4814-b82f-1f2f0c15f5e7 point=13 pixels=2048 elapsed_ms=408
+[2026-09-16 16:06:01.204] [Backend process started]
+[2026-09-16 16:06:01.922] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=1 pixels=2048 elapsed_ms=413
+[2026-09-16 16:06:02.510] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=2 pixels=2048 elapsed_ms=399
+[2026-09-16 16:06:03.136] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=3 pixels=2048 elapsed_ms=431
+[2026-09-16 16:06:03.862] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=4 pixels=2048 elapsed_ms=522
+[2026-09-16 16:06:04.758] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=5 pixels=2048 elapsed_ms=564
+[2026-09-16 16:06:05.871] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=6 pixels=2048 elapsed_ms=759
+[2026-09-16 16:06:06.910] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=7 pixels=2048 elapsed_ms=663
+[2026-09-16 16:06:07.674] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=8 pixels=2048 elapsed_ms=489
+[2026-09-16 16:06:08.552] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=9 pixels=2048 elapsed_ms=508
+[2026-09-16 16:06:09.170] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=10 pixels=2048 elapsed_ms=398
+[2026-09-16 16:06:10.103] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=11 pixels=2048 elapsed_ms=651
+[2026-09-16 16:06:10.804] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=12 pixels=2048 elapsed_ms=461
+[2026-09-16 16:06:11.702] [Point saved] run=24562611-0ef0-4832-85c4-f8a6fd95d0ec point=13 pixels=2048 elapsed_ms=560
+[2026-09-16 16:06:14.449] [Backend process started]
+[2026-09-16 16:06:15.442] [Point saved] run=b15711f1-8954-4caf-b7a9-e960e1157fc4 point=1 pixels=2048 elapsed_ms=685
+[2026-09-16 16:06:16.503] [Point saved] run=b15711f1-8954-4caf-b7a9-e960e1157fc4 point=2 pixels=2048 elapsed_ms=754
+[2026-09-16 16:06:17.592] [Point saved] run=b15711f1-8954-4caf-b7a9-e960e1157fc4 point=3 pixels=2048 elapsed_ms=690
+[2026-09-16 16:06:20.055] [Backend process started]
+[2026-09-16 16:06:20.877] [Point saved] run=4603891a-2157-44e5-a877-ca0dcdd93204 point=1 pixels=2048 elapsed_ms=458
+[2026-09-16 16:06:21.777] [Point saved] run=4603891a-2157-44e5-a877-ca0dcdd93204 point=2 pixels=2048 elapsed_ms=459
+[2026-09-16 16:06:22.440] [Point saved] run=4603891a-2157-44e5-a877-ca0dcdd93204 point=3 pixels=2048 elapsed_ms=403
+[2026-09-16 16:06:24.941] [Backend process started]
+[2026-09-16 16:06:25.459] [Scan failed] Backend capture failed: CAPTURE 01e3c6d5-e526-4c2b-9e2e-7f992ab3f67e_1 FAIL -1
+END 01e3c6d5-e526-4c2b-9e2e-7f992ab3f67e_1
+[2026-09-16 16:06:30.172] [Backend process started]
+[2026-09-16 16:06:30.838] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-16 16:06:35.486] [Backend process started]
+[2026-09-16 16:06:36.010] [Scan failed] Malformed or mismatched capture result
+[2026-09-16 16:06:40.684] [Backend process started]
+[2026-09-16 16:06:42.498] [Scan failed] Capture timed out (15 s); no blind retry and no success ACK
+[2026-09-16 16:06:48.138] [Backend process started]
+[2026-09-16 16:06:49.026] [Scan failed] Backend capture failed: CAPTURE 24312194-2df1-433f-9961-45180e0f4e4c_1 FAIL -1
+END 24312194-2df1-433f-9961-45180e0f4e4c_1
+[2026-09-16 16:06:53.666] [Backend process started]
+[2026-09-16 16:06:56.549] [Capture discarded from scan] Scan stopped; raw backend result retained: d88a932d-88be-4248-ac4a-6752d1f4b2a6_1
+[2026-09-16 16:06:58.681] [Backend process started]
+[2026-09-16 16:06:59.349] [Point saved] run=628253e3-a229-42b7-989d-8e73a4dc460c point=1 pixels=2048 elapsed_ms=417
+[2026-09-16 16:06:59.926] [Point saved] run=628253e3-a229-42b7-989d-8e73a4dc460c point=2 pixels=2048 elapsed_ms=390
+[2026-09-16 16:07:00.561] [Point saved] run=628253e3-a229-42b7-989d-8e73a4dc460c point=3 pixels=2048 elapsed_ms=424
+[2026-09-16 17:39:25.841] [Backend process started]
+[2026-09-16 17:39:28.664] [Point saved] run=44dd6f1a-444d-4822-8c2e-b6679502a0cd point=1 pixels=2048 elapsed_ms=475
+[2026-09-16 17:39:29.354] [Point saved] run=44dd6f1a-444d-4822-8c2e-b6679502a0cd point=2 pixels=2048 elapsed_ms=428
+[2026-09-16 17:39:30.032] [Point saved] run=44dd6f1a-444d-4822-8c2e-b6679502a0cd point=3 pixels=2048 elapsed_ms=424
+[2026-09-16 17:39:32.459] [Backend process started]
+[2026-09-16 17:39:34.971] [Backend process started]
+[2026-09-16 17:39:35.620] [Point saved] run=96e7fe41-df71-4634-96fb-b6145d02975f point=1 pixels=2048 elapsed_ms=390
+[2026-09-16 17:39:36.226] [Point saved] run=96e7fe41-df71-4634-96fb-b6145d02975f point=2 pixels=2048 elapsed_ms=365
+[2026-09-16 17:39:36.804] [Point saved] run=96e7fe41-df71-4634-96fb-b6145d02975f point=3 pixels=2048 elapsed_ms=365
+[2026-09-16 17:39:39.078] [Backend process started]
+[2026-09-16 17:39:39.774] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=1 pixels=2048 elapsed_ms=441
+[2026-09-16 17:39:40.364] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=2 pixels=2048 elapsed_ms=419
+[2026-09-16 17:39:40.969] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=3 pixels=2048 elapsed_ms=386
+[2026-09-16 17:39:41.530] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=4 pixels=2048 elapsed_ms=375
+[2026-09-16 17:39:42.128] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=5 pixels=2048 elapsed_ms=426
+[2026-09-16 17:39:42.724] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=6 pixels=2048 elapsed_ms=410
+[2026-09-16 17:39:43.226] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=7 pixels=2048 elapsed_ms=336
+[2026-09-16 17:39:43.773] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=8 pixels=2048 elapsed_ms=365
+[2026-09-16 17:39:44.365] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=9 pixels=2048 elapsed_ms=390
+[2026-09-16 17:39:44.912] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=10 pixels=2048 elapsed_ms=383
+[2026-09-16 17:39:45.503] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=11 pixels=2048 elapsed_ms=432
+[2026-09-16 17:39:46.211] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=12 pixels=2048 elapsed_ms=416
+[2026-09-16 17:39:47.012] [Point saved] run=3143624d-6003-437a-87c1-aa2b8757f9b8 point=13 pixels=2048 elapsed_ms=539
+[2026-09-16 17:39:50.141] [Backend process started]
+[2026-09-16 17:39:50.836] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=1 pixels=2048 elapsed_ms=429
+[2026-09-16 17:39:51.366] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=2 pixels=2048 elapsed_ms=331
+[2026-09-16 17:39:52.225] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=3 pixels=2048 elapsed_ms=470
+[2026-09-16 17:39:52.910] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=4 pixels=2048 elapsed_ms=439
+[2026-09-16 17:39:53.575] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=5 pixels=2048 elapsed_ms=428
+[2026-09-16 17:39:54.525] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=6 pixels=2048 elapsed_ms=672
+[2026-09-16 17:39:55.362] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=7 pixels=2048 elapsed_ms=525
+[2026-09-16 17:39:56.902] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=8 pixels=2048 elapsed_ms=813
+[2026-09-16 17:39:58.113] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=9 pixels=2048 elapsed_ms=533
+[2026-09-16 17:39:59.242] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=10 pixels=2048 elapsed_ms=634
+[2026-09-16 17:40:01.034] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=11 pixels=2048 elapsed_ms=533
+[2026-09-16 17:40:01.857] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=12 pixels=2048 elapsed_ms=500
+[2026-09-16 17:40:02.558] [Point saved] run=47bbe62f-d0f1-4a98-a709-9bc1cff8559b point=13 pixels=2048 elapsed_ms=451
+[2026-09-16 17:40:05.795] [Backend process started]
+[2026-09-16 17:40:07.262] [Point saved] run=7bb21155-ba3f-4435-8587-dbf7da8d1d64 point=1 pixels=2048 elapsed_ms=1056
+[2026-09-16 17:40:08.054] [Point saved] run=7bb21155-ba3f-4435-8587-dbf7da8d1d64 point=2 pixels=2048 elapsed_ms=586
+[2026-09-16 17:40:08.991] [Point saved] run=7bb21155-ba3f-4435-8587-dbf7da8d1d64 point=3 pixels=2048 elapsed_ms=534
+[2026-09-16 17:40:11.310] [Backend process started]
+[2026-09-16 17:40:11.975] [Point saved] run=1662e451-b963-4391-80f5-a796119d135f point=1 pixels=2048 elapsed_ms=381
+[2026-09-16 17:40:12.734] [Point saved] run=1662e451-b963-4391-80f5-a796119d135f point=2 pixels=2048 elapsed_ms=344
+[2026-09-16 17:40:13.302] [Point saved] run=1662e451-b963-4391-80f5-a796119d135f point=3 pixels=2048 elapsed_ms=365
+[2026-09-16 17:40:15.541] [Backend process started]
+[2026-09-16 17:40:15.981] [Scan failed] Backend capture failed: CAPTURE 759c9637-2ed7-419e-ae90-658c9dc36618_1 FAIL -1
+END 759c9637-2ed7-419e-ae90-658c9dc36618_1
+[2026-09-16 17:40:20.642] [Backend process started]
+[2026-09-16 17:40:21.145] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-16 17:40:25.781] [Backend process started]
+[2026-09-16 17:40:26.536] [Scan failed] Malformed or mismatched capture result
+[2026-09-16 17:40:31.183] [Backend process started]
+[2026-09-16 17:40:33.191] [Scan failed] Capture timed out (15 s); no blind retry and no success ACK
+[2026-09-16 17:40:38.837] [Backend process started]
+[2026-09-16 17:40:39.635] [Scan failed] Backend capture failed: CAPTURE a429b833-ef6c-4f88-abeb-4a354c06fc6b_1 FAIL -1
+END a429b833-ef6c-4f88-abeb-4a354c06fc6b_1
+[2026-09-16 17:40:44.262] [Backend process started]
+[2026-09-16 17:40:47.269] [Capture discarded from scan] Scan stopped; raw backend result retained: f264e8a0-1274-4a8f-918d-b8e3b6fe0785_1
+[2026-09-16 17:40:49.564] [Backend process started]
+[2026-09-16 17:40:50.437] [Point saved] run=d0919316-bfc1-48c1-880f-1fb84bb3d6fd point=1 pixels=2048 elapsed_ms=543
+[2026-09-16 17:40:51.159] [Point saved] run=d0919316-bfc1-48c1-880f-1fb84bb3d6fd point=2 pixels=2048 elapsed_ms=491
+[2026-09-16 17:40:51.929] [Point saved] run=d0919316-bfc1-48c1-880f-1fb84bb3d6fd point=3 pixels=2048 elapsed_ms=460
+[2026-09-18 17:39:55.519] [Backend process started]
+[2026-09-18 17:39:57.726] [Backend process started]
+[2026-09-18 17:39:59.596] [Point saved] run=1295e446-ce84-41c2-ad76-52d0b481527c point=1 pixels=2048 elapsed_ms=304
+[2026-09-18 17:40:00.029] [Point saved] run=1295e446-ce84-41c2-ad76-52d0b481527c point=2 pixels=2048 elapsed_ms=298
+[2026-09-18 17:40:00.684] [Point saved] run=1295e446-ce84-41c2-ad76-52d0b481527c point=3 pixels=2048 elapsed_ms=448
+[2026-09-18 17:40:02.970] [Backend process started]
+[2026-09-18 17:40:05.371] [Backend process started]
+[2026-09-18 17:40:05.869] [Point saved] run=6a581e45-733e-494a-bceb-4ba81fe0bd3c point=1 pixels=2048 elapsed_ms=302
+[2026-09-18 17:40:06.371] [Point saved] run=6a581e45-733e-494a-bceb-4ba81fe0bd3c point=2 pixels=2048 elapsed_ms=305
+[2026-09-18 17:40:06.884] [Point saved] run=6a581e45-733e-494a-bceb-4ba81fe0bd3c point=3 pixels=2048 elapsed_ms=310
+[2026-09-18 17:40:09.148] [Backend process started]
+[2026-09-18 17:40:09.671] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=1 pixels=2048 elapsed_ms=330
+[2026-09-18 17:40:10.169] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=2 pixels=2048 elapsed_ms=323
+[2026-09-18 17:40:10.624] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=3 pixels=2048 elapsed_ms=317
+[2026-09-18 17:40:11.103] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=4 pixels=2048 elapsed_ms=315
+[2026-09-18 17:40:11.600] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=5 pixels=2048 elapsed_ms=313
+[2026-09-18 17:40:12.122] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=6 pixels=2048 elapsed_ms=337
+[2026-09-18 17:40:12.622] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=7 pixels=2048 elapsed_ms=334
+[2026-09-18 17:40:13.094] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=8 pixels=2048 elapsed_ms=297
+[2026-09-18 17:40:13.605] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=9 pixels=2048 elapsed_ms=307
+[2026-09-18 17:40:14.106] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=10 pixels=2048 elapsed_ms=320
+[2026-09-18 17:40:14.602] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=11 pixels=2048 elapsed_ms=313
+[2026-09-18 17:40:15.103] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=12 pixels=2048 elapsed_ms=314
+[2026-09-18 17:40:15.536] [Point saved] run=962a2dfe-d0b8-425a-afd1-14b50f5427f5 point=13 pixels=2048 elapsed_ms=305
+[2026-09-18 17:40:18.247] [Backend process started]
+[2026-09-18 17:40:18.754] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=1 pixels=2048 elapsed_ms=344
+[2026-09-18 17:40:19.261] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=2 pixels=2048 elapsed_ms=313
+[2026-09-18 17:40:19.698] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=3 pixels=2048 elapsed_ms=310
+[2026-09-18 17:40:20.183] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=4 pixels=2048 elapsed_ms=295
+[2026-09-18 17:40:20.708] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=5 pixels=2048 elapsed_ms=326
+[2026-09-18 17:40:21.188] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=6 pixels=2048 elapsed_ms=309
+[2026-09-18 17:40:21.710] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=7 pixels=2048 elapsed_ms=329
+[2026-09-18 17:40:22.198] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=8 pixels=2048 elapsed_ms=311
+[2026-09-18 17:40:22.701] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=9 pixels=2048 elapsed_ms=311
+[2026-09-18 17:40:23.248] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=10 pixels=2048 elapsed_ms=360
+[2026-09-18 17:40:23.923] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=11 pixels=2048 elapsed_ms=473
+[2026-09-18 17:40:24.610] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=12 pixels=2048 elapsed_ms=407
+[2026-09-18 17:40:25.185] [Point saved] run=7845f125-2833-4e5f-bd56-5cb7ee59a73d point=13 pixels=2048 elapsed_ms=358
+[2026-09-18 17:40:28.055] [Backend process started]
+[2026-09-18 17:40:28.740] [Point saved] run=8490d4ed-b9cd-4c3f-8c85-8964643c7dfd point=1 pixels=2048 elapsed_ms=488
+[2026-09-18 17:40:29.417] [Point saved] run=8490d4ed-b9cd-4c3f-8c85-8964643c7dfd point=2 pixels=2048 elapsed_ms=476
+[2026-09-18 17:40:30.130] [Point saved] run=8490d4ed-b9cd-4c3f-8c85-8964643c7dfd point=3 pixels=2048 elapsed_ms=471
+[2026-09-18 17:40:32.396] [Backend process started]
+[2026-09-18 17:40:32.910] [Point saved] run=72e65eaa-7ac2-494f-adda-8223196f567d point=1 pixels=2048 elapsed_ms=345
+[2026-09-18 17:40:33.629] [Point saved] run=72e65eaa-7ac2-494f-adda-8223196f567d point=2 pixels=2048 elapsed_ms=337
+[2026-09-18 17:40:34.100] [Point saved] run=72e65eaa-7ac2-494f-adda-8223196f567d point=3 pixels=2048 elapsed_ms=321
+[2026-09-18 17:40:36.366] [Backend process started]
+[2026-09-18 17:40:36.686] [Scan failed] Backend capture failed: CAPTURE 92da09b2-e86c-4386-9853-f661f49403d1_1 FAIL -1
+END 92da09b2-e86c-4386-9853-f661f49403d1_1
+[2026-09-18 17:40:41.324] [Backend process started]
+[2026-09-18 17:40:41.683] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-18 17:40:46.366] [Backend process started]
+[2026-09-18 17:40:46.694] [Scan failed] Malformed or mismatched capture result
+[2026-09-18 17:40:51.327] [Backend process started]
+[2026-09-18 17:40:52.994] [Scan failed] Capture timed out (15 s); no blind retry and no success ACK
+[2026-09-18 17:40:58.777] [Backend process started]
+[2026-09-18 17:40:59.586] [Scan failed] Backend capture failed: CAPTURE d194a336-30b3-4c80-840b-3d1fe3cbc151_1 FAIL -1
+END d194a336-30b3-4c80-840b-3d1fe3cbc151_1
+[2026-09-18 17:41:04.259] [Backend process started]
+[2026-09-18 17:41:07.003] [Capture discarded from scan] Scan stopped; raw backend result retained: 3975d5d5-7c79-4d36-9e2c-64d974624ec5_1
+[2026-09-18 17:41:09.112] [Backend process started]
+[2026-09-18 17:41:09.561] [Point saved] run=4a628d12-8dd7-4bda-8c01-75fac9404a23 point=1 pixels=2048 elapsed_ms=312
+[2026-09-18 17:41:10.078] [Point saved] run=4a628d12-8dd7-4bda-8c01-75fac9404a23 point=2 pixels=2048 elapsed_ms=328
+[2026-09-18 17:41:10.545] [Point saved] run=4a628d12-8dd7-4bda-8c01-75fac9404a23 point=3 pixels=2048 elapsed_ms=307
+[2026-09-22 15:24:40.929] [Backend process started]
+[2026-09-22 15:24:43.152] [Backend process started]
+[2026-09-22 15:24:45.759] [Point saved] run=654b27ec-820f-4feb-bab4-7ccf74d7adfe point=1 pixels=2048 elapsed_ms=280
+[2026-09-22 15:24:46.220] [Point saved] run=654b27ec-820f-4feb-bab4-7ccf74d7adfe point=2 pixels=2048 elapsed_ms=304
+[2026-09-22 15:24:46.632] [Point saved] run=654b27ec-820f-4feb-bab4-7ccf74d7adfe point=3 pixels=2048 elapsed_ms=275
+[2026-09-22 15:24:48.861] [Backend process started]
+[2026-09-22 15:24:51.253] [Backend process started]
+[2026-09-22 15:24:51.784] [Point saved] run=8093ebbb-9f73-4d9a-a292-15c8282f6f6b point=1 pixels=2048 elapsed_ms=344
+[2026-09-22 15:24:52.278] [Point saved] run=8093ebbb-9f73-4d9a-a292-15c8282f6f6b point=2 pixels=2048 elapsed_ms=350
+[2026-09-22 15:24:52.815] [Point saved] run=8093ebbb-9f73-4d9a-a292-15c8282f6f6b point=3 pixels=2048 elapsed_ms=358
+[2026-09-22 15:24:55.062] [Backend process started]
+[2026-09-22 15:24:55.534] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=1 pixels=2048 elapsed_ms=287
+[2026-09-22 15:24:55.955] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=2 pixels=2048 elapsed_ms=257
+[2026-09-22 15:24:56.416] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=3 pixels=2048 elapsed_ms=277
+[2026-09-22 15:24:56.839] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=4 pixels=2048 elapsed_ms=263
+[2026-09-22 15:24:57.263] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=5 pixels=2048 elapsed_ms=259
+[2026-09-22 15:24:57.946] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=6 pixels=2048 elapsed_ms=502
+[2026-09-22 15:24:58.478] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=7 pixels=2048 elapsed_ms=280
+[2026-09-22 15:24:58.922] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=8 pixels=2048 elapsed_ms=284
+[2026-09-22 15:24:59.325] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=9 pixels=2048 elapsed_ms=248
+[2026-09-22 15:24:59.760] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=10 pixels=2048 elapsed_ms=250
+[2026-09-22 15:25:00.233] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=11 pixels=2048 elapsed_ms=289
+[2026-09-22 15:25:00.664] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=12 pixels=2048 elapsed_ms=284
+[2026-09-22 15:25:01.096] [Point saved] run=29e42063-bdb8-4657-9e15-36f0cb464058 point=13 pixels=2048 elapsed_ms=272
+[2026-09-22 15:25:03.747] [Backend process started]
+[2026-09-22 15:25:04.298] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=1 pixels=2048 elapsed_ms=376
+[2026-09-22 15:25:04.763] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=2 pixels=2048 elapsed_ms=324
+[2026-09-22 15:25:05.233] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=3 pixels=2048 elapsed_ms=322
+[2026-09-22 15:25:05.706] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=4 pixels=2048 elapsed_ms=310
+[2026-09-22 15:25:06.217] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=5 pixels=2048 elapsed_ms=315
+[2026-09-22 15:25:06.706] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=6 pixels=2048 elapsed_ms=302
+[2026-09-22 15:25:07.199] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=7 pixels=2048 elapsed_ms=299
+[2026-09-22 15:25:07.686] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=8 pixels=2048 elapsed_ms=286
+[2026-09-22 15:25:08.165] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=9 pixels=2048 elapsed_ms=328
+[2026-09-22 15:25:08.689] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=10 pixels=2048 elapsed_ms=354
+[2026-09-22 15:25:09.191] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=11 pixels=2048 elapsed_ms=340
+[2026-09-22 15:25:09.729] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=12 pixels=2048 elapsed_ms=331
+[2026-09-22 15:25:10.269] [Point saved] run=3c69a8bf-f398-44ed-b7bb-9ac8ff583330 point=13 pixels=2048 elapsed_ms=369
+[2026-09-22 15:25:13.026] [Backend process started]
+[2026-09-22 15:25:13.740] [Point saved] run=44a33feb-f5fb-4d75-acb0-f5728e847eac point=1 pixels=2048 elapsed_ms=504
+[2026-09-22 15:25:14.380] [Point saved] run=44a33feb-f5fb-4d75-acb0-f5728e847eac point=2 pixels=2048 elapsed_ms=494
+[2026-09-22 15:25:15.021] [Point saved] run=44a33feb-f5fb-4d75-acb0-f5728e847eac point=3 pixels=2048 elapsed_ms=484
+[2026-09-22 15:25:17.245] [Backend process started]
+[2026-09-22 15:25:17.761] [Point saved] run=6c5a944d-c6f1-470b-ab1e-84fbfe5c385a point=1 pixels=2048 elapsed_ms=333
+[2026-09-22 15:25:18.427] [Point saved] run=6c5a944d-c6f1-470b-ab1e-84fbfe5c385a point=2 pixels=2048 elapsed_ms=290
+[2026-09-22 15:25:18.885] [Point saved] run=6c5a944d-c6f1-470b-ab1e-84fbfe5c385a point=3 pixels=2048 elapsed_ms=308
+[2026-09-22 15:25:21.106] [Backend process started]
+[2026-09-22 15:25:21.438] [Scan failed] Backend capture failed: CAPTURE 7aa61991-a431-4b4e-aabf-c4da8bd768e5_1 FAIL -1
+END 7aa61991-a431-4b4e-aabf-c4da8bd768e5_1
+[2026-09-22 15:25:26.078] [Backend process started]
+[2026-09-22 15:25:26.568] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-22 15:25:31.217] [Backend process started]
+[2026-09-22 15:25:31.668] [Scan failed] Malformed or mismatched capture result
+[2026-09-22 15:25:36.303] [Backend process started]
+[2026-09-22 15:25:37.995] [Scan failed] Capture timed out (15 s); no blind retry and no success ACK
+[2026-09-22 15:25:43.652] [Backend process started]
+[2026-09-22 15:25:44.489] [Scan failed] Backend capture failed: CAPTURE 160a85f9-db68-48ef-a8aa-2af88e2a63a5_1 FAIL -1
+END 160a85f9-db68-48ef-a8aa-2af88e2a63a5_1
+[2026-09-22 15:25:49.102] [Backend process started]
+[2026-09-22 15:25:51.901] [Capture discarded from scan] Scan stopped; raw backend result retained: 7372aea1-fe0a-423e-b304-720db05749c3_1
+[2026-09-22 15:25:53.989] [Backend process started]
+[2026-09-22 15:25:54.465] [Point saved] run=a0da9ca2-eb90-4e9d-af41-d3cc0ee187e8 point=1 pixels=2048 elapsed_ms=332
+[2026-09-22 15:25:54.925] [Point saved] run=a0da9ca2-eb90-4e9d-af41-d3cc0ee187e8 point=2 pixels=2048 elapsed_ms=305
+[2026-09-22 15:25:55.427] [Point saved] run=a0da9ca2-eb90-4e9d-af41-d3cc0ee187e8 point=3 pixels=2048 elapsed_ms=300
+[2026-09-22 16:15:37.027] [Backend process started]
+[2026-09-22 16:15:39.415] [Backend process started]
+[2026-09-22 16:15:41.739] [Point saved] run=ec384edc-2665-46ee-a585-173e63057c06 point=1 pixels=2048 elapsed_ms=364
+[2026-09-22 16:15:42.295] [Point saved] run=ec384edc-2665-46ee-a585-173e63057c06 point=2 pixels=2048 elapsed_ms=362
+[2026-09-22 16:15:42.833] [Point saved] run=ec384edc-2665-46ee-a585-173e63057c06 point=3 pixels=2048 elapsed_ms=340
+[2026-09-22 16:15:45.116] [Backend process started]
+[2026-09-22 16:15:47.593] [Backend process started]
+[2026-09-22 16:15:48.291] [Point saved] run=214d7227-bc9e-4ef8-aa90-75b673e90deb point=1 pixels=2048 elapsed_ms=416
+[2026-09-22 16:15:48.880] [Point saved] run=214d7227-bc9e-4ef8-aa90-75b673e90deb point=2 pixels=2048 elapsed_ms=420
+[2026-09-22 16:15:49.481] [Point saved] run=214d7227-bc9e-4ef8-aa90-75b673e90deb point=3 pixels=2048 elapsed_ms=358
+[2026-09-22 16:15:51.768] [Backend process started]
+[2026-09-22 16:15:52.291] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_f2495d93-c906-453c-ae0b-62e2ca732ecc/capture_results/a1eaf15c-fc62-4f55-849a-7b83b892e5f4_1.txt
+[2026-09-22 16:15:52.518] [Capture read recovered] a1eaf15c-fc62-4f55-849a-7b83b892e5f4_1; attempt 2/3
+[2026-09-22 16:15:52.599] [Point saved] run=a1eaf15c-fc62-4f55-849a-7b83b892e5f4 point=1 pixels=2048 elapsed_ms=495
+[2026-09-22 16:15:53.021] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_f2495d93-c906-453c-ae0b-62e2ca732ecc/capture_results/a1eaf15c-fc62-4f55-849a-7b83b892e5f4_2.txt
+[2026-09-22 16:15:53.249] [Capture read recovered] a1eaf15c-fc62-4f55-849a-7b83b892e5f4_2; attempt 2/3
+[2026-09-22 16:15:53.298] [Point saved] run=a1eaf15c-fc62-4f55-849a-7b83b892e5f4 point=2 pixels=2048 elapsed_ms=475
+[2026-09-22 16:15:53.656] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_f2495d93-c906-453c-ae0b-62e2ca732ecc/capture_results/a1eaf15c-fc62-4f55-849a-7b83b892e5f4_3.txt
+[2026-09-22 16:15:53.890] [Capture read recovered] a1eaf15c-fc62-4f55-849a-7b83b892e5f4_3; attempt 2/3
+[2026-09-22 16:15:53.939] [Point saved] run=a1eaf15c-fc62-4f55-849a-7b83b892e5f4 point=3 pixels=2048 elapsed_ms=439
+[2026-09-22 16:15:56.209] [Backend process started]
+[2026-09-22 16:15:56.590] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_f5df5ef8-28f6-4d09-b6de-9f0047872156/capture_results/4448a778-6505-4dcc-b09b-1e0b47feb535_1.txt
+[2026-09-22 16:15:56.717] [Capture read] Cannot read capture result (attempt 2/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_f5df5ef8-28f6-4d09-b6de-9f0047872156/capture_results/4448a778-6505-4dcc-b09b-1e0b47feb535_1.txt
+[2026-09-22 16:15:56.957] [Capture read recovered] 4448a778-6505-4dcc-b09b-1e0b47feb535_1; attempt 3/3
+[2026-09-22 16:15:57.048] [Point saved] run=4448a778-6505-4dcc-b09b-1e0b47feb535 point=1 pixels=2048 elapsed_ms=623
+[2026-09-22 16:15:57.374] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_f5df5ef8-28f6-4d09-b6de-9f0047872156/capture_results/4448a778-6505-4dcc-b09b-1e0b47feb535_2.txt
+[2026-09-22 16:15:57.496] [Capture read] Cannot read capture result (attempt 2/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_f5df5ef8-28f6-4d09-b6de-9f0047872156/capture_results/4448a778-6505-4dcc-b09b-1e0b47feb535_2.txt
+[2026-09-22 16:15:57.715] [Capture read recovered] 4448a778-6505-4dcc-b09b-1e0b47feb535_2; attempt 3/3
+[2026-09-22 16:15:57.772] [Point saved] run=4448a778-6505-4dcc-b09b-1e0b47feb535 point=2 pixels=2048 elapsed_ms=562
+[2026-09-22 16:15:58.122] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_f5df5ef8-28f6-4d09-b6de-9f0047872156/capture_results/4448a778-6505-4dcc-b09b-1e0b47feb535_3.txt
+[2026-09-22 16:15:58.247] [Capture read] Cannot read capture result (attempt 2/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_f5df5ef8-28f6-4d09-b6de-9f0047872156/capture_results/4448a778-6505-4dcc-b09b-1e0b47feb535_3.txt
+[2026-09-22 16:15:58.472] [Capture read recovered] 4448a778-6505-4dcc-b09b-1e0b47feb535_3; attempt 3/3
+[2026-09-22 16:15:58.517] [Point saved] run=4448a778-6505-4dcc-b09b-1e0b47feb535 point=3 pixels=2048 elapsed_ms=557
+[2026-09-22 16:16:00.820] [Backend process started]
+[2026-09-22 16:16:01.332] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_11f6c2d4-2bdb-431c-98d0-ec075d09e5de/capture_results/6bb73844-cfa0-498f-be9d-012cf6327825_1.txt
+[2026-09-22 16:16:01.457] [Capture read] Cannot read capture result (attempt 2/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_11f6c2d4-2bdb-431c-98d0-ec075d09e5de/capture_results/6bb73844-cfa0-498f-be9d-012cf6327825_1.txt
+[2026-09-22 16:16:01.583] [Capture read] Cannot read capture result (attempt 3/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_11f6c2d4-2bdb-431c-98d0-ec075d09e5de/capture_results/6bb73844-cfa0-498f-be9d-012cf6327825_1.txt
+[2026-09-22 16:16:01.597] [Scan failed] Cannot read capture result (attempt 3/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_11f6c2d4-2bdb-431c-98d0-ec075d09e5de/capture_results/6bb73844-cfa0-498f-be9d-012cf6327825_1.txt
+[2026-09-22 16:16:06.250] [Backend process started]
+[2026-09-22 16:16:06.931] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=1 pixels=2048 elapsed_ms=409
+[2026-09-22 16:16:07.572] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=2 pixels=2048 elapsed_ms=457
+[2026-09-22 16:16:08.316] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=3 pixels=2048 elapsed_ms=504
+[2026-09-22 16:16:08.878] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=4 pixels=2048 elapsed_ms=365
+[2026-09-22 16:16:09.407] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=5 pixels=2048 elapsed_ms=363
+[2026-09-22 16:16:09.941] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=6 pixels=2048 elapsed_ms=369
+[2026-09-22 16:16:10.531] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=7 pixels=2048 elapsed_ms=383
+[2026-09-22 16:16:11.080] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=8 pixels=2048 elapsed_ms=382
+[2026-09-22 16:16:11.725] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=9 pixels=2048 elapsed_ms=438
+[2026-09-22 16:16:12.371] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=10 pixels=2048 elapsed_ms=357
+[2026-09-22 16:16:12.980] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=11 pixels=2048 elapsed_ms=415
+[2026-09-22 16:16:13.520] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=12 pixels=2048 elapsed_ms=351
+[2026-09-22 16:16:14.185] [Point saved] run=feb2ccbb-90e1-412e-811c-bd7c072e6f6a point=13 pixels=2048 elapsed_ms=354
+[2026-09-22 16:16:17.259] [Backend process started]
+[2026-09-22 16:16:18.315] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=1 pixels=2048 elapsed_ms=402
+[2026-09-22 16:16:18.834] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=2 pixels=2048 elapsed_ms=332
+[2026-09-22 16:16:19.405] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=3 pixels=2048 elapsed_ms=315
+[2026-09-22 16:16:19.934] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=4 pixels=2048 elapsed_ms=350
+[2026-09-22 16:16:20.517] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=5 pixels=2048 elapsed_ms=359
+[2026-09-22 16:16:21.312] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=6 pixels=2048 elapsed_ms=587
+[2026-09-22 16:16:21.863] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=7 pixels=2048 elapsed_ms=339
+[2026-09-22 16:16:22.426] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=8 pixels=2048 elapsed_ms=358
+[2026-09-22 16:16:23.009] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=9 pixels=2048 elapsed_ms=388
+[2026-09-22 16:16:23.631] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=10 pixels=2048 elapsed_ms=354
+[2026-09-22 16:16:24.392] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=11 pixels=2048 elapsed_ms=556
+[2026-09-22 16:16:25.211] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=12 pixels=2048 elapsed_ms=602
+[2026-09-22 16:16:25.800] [Point saved] run=65ebb7d8-a269-4289-9c4b-b2eebeabfb73 point=13 pixels=2048 elapsed_ms=385
+[2026-09-22 16:16:28.713] [Backend process started]
+[2026-09-22 16:16:29.897] [Point saved] run=a24258a9-c532-455b-8cc8-19d3e720da01 point=1 pixels=2048 elapsed_ms=662
+[2026-09-22 16:16:30.607] [Point saved] run=a24258a9-c532-455b-8cc8-19d3e720da01 point=2 pixels=2048 elapsed_ms=528
+[2026-09-22 16:16:31.288] [Point saved] run=a24258a9-c532-455b-8cc8-19d3e720da01 point=3 pixels=2048 elapsed_ms=492
+[2026-09-22 16:16:33.569] [Backend process started]
+[2026-09-22 16:16:34.207] [Point saved] run=65f6def2-b93b-4b29-9b73-e92fddcd0e15 point=1 pixels=2048 elapsed_ms=399
+[2026-09-22 16:16:34.946] [Point saved] run=65f6def2-b93b-4b29-9b73-e92fddcd0e15 point=2 pixels=2048 elapsed_ms=337
+[2026-09-22 16:16:35.493] [Point saved] run=65f6def2-b93b-4b29-9b73-e92fddcd0e15 point=3 pixels=2048 elapsed_ms=346
+[2026-09-22 16:16:37.769] [Backend process started]
+[2026-09-22 16:16:38.213] [Scan failed] Backend capture failed: CAPTURE d2e6d51c-1a98-4de0-819b-1162925b6707_1 FAIL -1
+END d2e6d51c-1a98-4de0-819b-1162925b6707_1
+[2026-09-22 16:16:42.837] [Backend process started]
+[2026-09-22 16:16:43.287] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-22 16:16:47.915] [Backend process started]
+[2026-09-22 16:16:48.416] [Scan failed] Malformed or mismatched capture result
+[2026-09-22 16:16:53.158] [Backend process started]
+[2026-09-22 16:16:55.093] [Scan failed] Capture timed out (1500 ms); no blind retry and no success ACK
+[2026-09-22 16:17:00.811] [Backend process started]
+[2026-09-22 16:17:01.701] [Scan failed] Backend capture failed: CAPTURE 7ec4bb11-fe8f-40a3-aadb-f652f4ef276e_1 FAIL -1
+END 7ec4bb11-fe8f-40a3-aadb-f652f4ef276e_1
+[2026-09-22 16:17:06.335] [Backend process started]
+[2026-09-22 16:17:09.181] [Capture discarded from scan] Scan stopped; raw backend result retained: b0b72026-aa1e-4a5f-8774-fa80fc07c32a_1
+[2026-09-22 16:17:11.310] [Backend process started]
+[2026-09-22 16:17:12.021] [Point saved] run=a4b442b5-39bb-4015-9e6d-41bd3c4e273b point=1 pixels=2048 elapsed_ms=442
+[2026-09-22 16:17:12.721] [Point saved] run=a4b442b5-39bb-4015-9e6d-41bd3c4e273b point=2 pixels=2048 elapsed_ms=410
+[2026-09-22 16:17:13.230] [Point saved] run=a4b442b5-39bb-4015-9e6d-41bd3c4e273b point=3 pixels=2048 elapsed_ms=336
+[2026-09-22 17:06:06.285] [Backend process started]
+[2026-09-22 17:06:08.552] [Backend process started]
+[2026-09-22 17:06:10.520] [Point saved] run=ea172098-bad9-424d-998f-eeeff5e32ffc point=1 pixels=2048 elapsed_ms=335
+[2026-09-22 17:06:11.326] [Point saved] run=ea172098-bad9-424d-998f-eeeff5e32ffc point=2 pixels=2048 elapsed_ms=587
+[2026-09-22 17:06:12.489] [Point saved] run=ea172098-bad9-424d-998f-eeeff5e32ffc point=3 pixels=2048 elapsed_ms=757
+[2026-09-22 17:06:15.016] [Backend process started]
+[2026-09-22 17:06:18.036] [Backend process started]
+[2026-09-22 17:06:19.366] [Point saved] run=de004e99-ba8d-492d-81d5-db4c49be0833 point=1 pixels=2048 elapsed_ms=610
+[2026-09-22 17:06:20.112] [Point saved] run=de004e99-ba8d-492d-81d5-db4c49be0833 point=2 pixels=2048 elapsed_ms=444
+[2026-09-22 17:06:21.242] [Point saved] run=de004e99-ba8d-492d-81d5-db4c49be0833 point=3 pixels=2048 elapsed_ms=663
+[2026-09-22 17:06:23.762] [Backend process started]
+[2026-09-22 17:06:24.244] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_da2f97d5-234d-41f4-b8b7-d144603baf36/capture_results/9ad092d3-6d8c-490c-af94-6923ff37d115_1.txt
+[2026-09-22 17:06:24.514] [Capture read recovered] 9ad092d3-6d8c-490c-af94-6923ff37d115_1; attempt 2/3
+[2026-09-22 17:06:24.639] [Point saved] run=9ad092d3-6d8c-490c-af94-6923ff37d115 point=1 pixels=2048 elapsed_ms=557
+[2026-09-22 17:06:25.064] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_da2f97d5-234d-41f4-b8b7-d144603baf36/capture_results/9ad092d3-6d8c-490c-af94-6923ff37d115_2.txt
+[2026-09-22 17:06:25.298] [Capture read recovered] 9ad092d3-6d8c-490c-af94-6923ff37d115_2; attempt 2/3
+[2026-09-22 17:06:25.358] [Point saved] run=9ad092d3-6d8c-490c-af94-6923ff37d115 point=2 pixels=2048 elapsed_ms=463
+[2026-09-22 17:06:25.770] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_da2f97d5-234d-41f4-b8b7-d144603baf36/capture_results/9ad092d3-6d8c-490c-af94-6923ff37d115_3.txt
+[2026-09-22 17:06:25.983] [Capture read recovered] 9ad092d3-6d8c-490c-af94-6923ff37d115_3; attempt 2/3
+[2026-09-22 17:06:26.036] [Point saved] run=9ad092d3-6d8c-490c-af94-6923ff37d115 point=3 pixels=2048 elapsed_ms=449
+[2026-09-22 17:06:28.371] [Backend process started]
+[2026-09-22 17:06:28.835] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_fca15582-43ac-41ba-a35e-a384785e3c5d/capture_results/d3715459-67e0-4b84-8527-7122280306f0_1.txt
+[2026-09-22 17:06:28.962] [Capture read] Cannot read capture result (attempt 2/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_fca15582-43ac-41ba-a35e-a384785e3c5d/capture_results/d3715459-67e0-4b84-8527-7122280306f0_1.txt
+[2026-09-22 17:06:29.181] [Capture read recovered] d3715459-67e0-4b84-8527-7122280306f0_1; attempt 3/3
+[2026-09-22 17:06:29.257] [Point saved] run=d3715459-67e0-4b84-8527-7122280306f0 point=1 pixels=2048 elapsed_ms=608
+[2026-09-22 17:06:29.677] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_fca15582-43ac-41ba-a35e-a384785e3c5d/capture_results/d3715459-67e0-4b84-8527-7122280306f0_2.txt
+[2026-09-22 17:06:29.789] [Capture read] Cannot read capture result (attempt 2/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_fca15582-43ac-41ba-a35e-a384785e3c5d/capture_results/d3715459-67e0-4b84-8527-7122280306f0_2.txt
+[2026-09-22 17:06:29.998] [Capture read recovered] d3715459-67e0-4b84-8527-7122280306f0_2; attempt 3/3
+[2026-09-22 17:06:30.050] [Point saved] run=d3715459-67e0-4b84-8527-7122280306f0 point=2 pixels=2048 elapsed_ms=542
+[2026-09-22 17:06:30.416] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_fca15582-43ac-41ba-a35e-a384785e3c5d/capture_results/d3715459-67e0-4b84-8527-7122280306f0_3.txt
+[2026-09-22 17:06:30.539] [Capture read] Cannot read capture result (attempt 2/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_fca15582-43ac-41ba-a35e-a384785e3c5d/capture_results/d3715459-67e0-4b84-8527-7122280306f0_3.txt
+[2026-09-22 17:06:30.755] [Capture read recovered] d3715459-67e0-4b84-8527-7122280306f0_3; attempt 3/3
+[2026-09-22 17:06:30.839] [Point saved] run=d3715459-67e0-4b84-8527-7122280306f0 point=3 pixels=2048 elapsed_ms=578
+[2026-09-22 17:06:33.140] [Backend process started]
+[2026-09-22 17:06:33.611] [Capture read] Cannot read capture result (attempt 1/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_4bece3db-a1ed-48dc-bea0-38d27dfd4a81/capture_results/7a7ef289-54d0-4cc4-859b-1e6bcf8201ea_1.txt
+[2026-09-22 17:06:33.737] [Capture read] Cannot read capture result (attempt 2/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_4bece3db-a1ed-48dc-bea0-38d27dfd4a81/capture_results/7a7ef289-54d0-4cc4-859b-1e6bcf8201ea_1.txt
+[2026-09-22 17:06:33.863] [Capture read] Cannot read capture result (attempt 3/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_4bece3db-a1ed-48dc-bea0-38d27dfd4a81/capture_results/7a7ef289-54d0-4cc4-859b-1e6bcf8201ea_1.txt
+[2026-09-22 17:06:33.875] [Scan failed] Cannot read capture result (attempt 3/3): The process cannot access the file because it is being used by another process.; file: C:/Users/Jeremy666/OneDrive/Documents/laser_test/tests/build/scan_sessions/_backend_4bece3db-a1ed-48dc-bea0-38d27dfd4a81/capture_results/7a7ef289-54d0-4cc4-859b-1e6bcf8201ea_1.txt
+[2026-09-22 17:06:38.523] [Backend process started]
+[2026-09-22 17:06:39.114] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=1 pixels=2048 elapsed_ms=337
+[2026-09-22 17:06:39.775] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=2 pixels=2048 elapsed_ms=426
+[2026-09-22 17:06:40.440] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=3 pixels=2048 elapsed_ms=351
+[2026-09-22 17:06:41.032] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=4 pixels=2048 elapsed_ms=386
+[2026-09-22 17:06:41.637] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=5 pixels=2048 elapsed_ms=364
+[2026-09-22 17:06:42.189] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=6 pixels=2048 elapsed_ms=355
+[2026-09-22 17:06:42.754] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=7 pixels=2048 elapsed_ms=321
+[2026-09-22 17:06:43.363] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=8 pixels=2048 elapsed_ms=382
+[2026-09-22 17:06:43.990] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=9 pixels=2048 elapsed_ms=341
+[2026-09-22 17:06:44.662] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=10 pixels=2048 elapsed_ms=346
+[2026-09-22 17:06:45.274] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=11 pixels=2048 elapsed_ms=354
+[2026-09-22 17:06:45.862] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=12 pixels=2048 elapsed_ms=334
+[2026-09-22 17:06:46.461] [Point saved] run=5905abcf-6e52-4c81-a2d5-7c2f5a10ca66 point=13 pixels=2048 elapsed_ms=372
+[2026-09-22 17:06:49.512] [Backend process started]
+[2026-09-22 17:06:50.203] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=1 pixels=2048 elapsed_ms=397
+[2026-09-22 17:06:50.898] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=2 pixels=2048 elapsed_ms=472
+[2026-09-22 17:06:51.631] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=3 pixels=2048 elapsed_ms=437
+[2026-09-22 17:06:52.284] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=4 pixels=2048 elapsed_ms=438
+[2026-09-22 17:06:53.048] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=5 pixels=2048 elapsed_ms=490
+[2026-09-22 17:06:53.815] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=6 pixels=2048 elapsed_ms=471
+[2026-09-22 17:06:54.421] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=7 pixels=2048 elapsed_ms=376
+[2026-09-22 17:06:55.021] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=8 pixels=2048 elapsed_ms=368
+[2026-09-22 17:06:55.681] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=9 pixels=2048 elapsed_ms=416
+[2026-09-22 17:06:56.671] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=10 pixels=2048 elapsed_ms=481
+[2026-09-22 17:06:57.263] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=11 pixels=2048 elapsed_ms=357
+[2026-09-22 17:06:57.997] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=12 pixels=2048 elapsed_ms=415
+[2026-09-22 17:06:58.589] [Point saved] run=ac8b5247-6222-4bb9-9950-0c48849076df point=13 pixels=2048 elapsed_ms=373
+[2026-09-22 17:07:01.694] [Backend process started]
+[2026-09-22 17:07:02.461] [Point saved] run=b4ae182f-617d-40a0-b29b-4c51439e0d38 point=1 pixels=2048 elapsed_ms=509
+[2026-09-22 17:07:03.114] [Point saved] run=b4ae182f-617d-40a0-b29b-4c51439e0d38 point=2 pixels=2048 elapsed_ms=486
+[2026-09-22 17:07:04.024] [Point saved] run=b4ae182f-617d-40a0-b29b-4c51439e0d38 point=3 pixels=2048 elapsed_ms=694
+[2026-09-22 17:07:06.543] [Backend process started]

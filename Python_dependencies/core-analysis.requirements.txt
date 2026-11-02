@@ -1,0 +1,14 @@
+# Package names only; not a tested version lock.
+numpy
+scipy
+pandas
+matplotlib
+scikit-learn
+joblib
+torch
+jupyter
+ipykernel
+nbconvert
+nbformat
+openpyxl
+seaborn

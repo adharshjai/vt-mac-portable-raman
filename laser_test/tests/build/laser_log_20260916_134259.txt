@@ -1,0 +1,58 @@
+[2026-09-16 13:14:48.002] [Backend process started]
+[2026-09-16 13:14:48.590] [Point saved] run=ec2e4ec9-4681-4387-9136-6407737e567d point=1 pixels=2048 elapsed_ms=342
+[2026-09-16 13:14:49.048] [Point saved] run=ec2e4ec9-4681-4387-9136-6407737e567d point=2 pixels=2048 elapsed_ms=290
+[2026-09-16 13:14:49.533] [Point saved] run=ec2e4ec9-4681-4387-9136-6407737e567d point=3 pixels=2048 elapsed_ms=324
+[2026-09-16 13:14:49.580] [Scan failed] Cannot publish saved-point ACK
+[2026-09-16 13:14:51.792] [Backend process started]
+[2026-09-16 13:14:54.056] [Scan failed] Cannot publish pause heartbeat
+[2026-09-16 13:18:03.528] [Backend process started]
+[2026-09-16 13:18:04.059] [Point saved] run=abdd5277-16fc-4559-9fb3-b7cdb090a2a5 point=1 pixels=2048 elapsed_ms=268
+[2026-09-16 13:18:04.541] [Point saved] run=abdd5277-16fc-4559-9fb3-b7cdb090a2a5 point=2 pixels=2048 elapsed_ms=310
+[2026-09-16 13:18:05.034] [Point saved] run=abdd5277-16fc-4559-9fb3-b7cdb090a2a5 point=3 pixels=2048 elapsed_ms=294
+[2026-09-16 13:18:07.300] [Backend process started]
+[2026-09-16 13:18:07.763] [Point saved] run=ce96034f-6780-43c4-8769-857f4f11b29b point=1 pixels=2048 elapsed_ms=275
+[2026-09-16 13:18:08.446] [Point saved] run=ce96034f-6780-43c4-8769-857f4f11b29b point=2 pixels=2048 elapsed_ms=268
+[2026-09-16 13:18:08.902] [Point saved] run=ce96034f-6780-43c4-8769-857f4f11b29b point=3 pixels=2048 elapsed_ms=284
+[2026-09-16 13:18:11.133] [Backend process started]
+[2026-09-16 13:18:11.512] [Scan failed] Backend capture failed: CAPTURE c4be0010-77e9-434c-b325-5cc7dcf84a6e_1 FAIL -1
+END c4be0010-77e9-434c-b325-5cc7dcf84a6e_1
+[2026-09-16 13:18:13.657] [Backend process started]
+[2026-09-16 13:18:14.362] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-16 13:18:16.789] [Backend process started]
+[2026-09-16 13:18:17.618] [Scan failed] Malformed or mismatched capture result
+[2026-09-16 13:18:19.810] [Backend process started]
+[2026-09-16 13:18:21.776] [Scan failed] Capture timed out (15 s); no blind retry and no success ACK
+[2026-09-16 13:18:24.926] [Backend process started]
+[2026-09-16 13:18:25.677] [Capture discarded from scan] Scan stopped; raw backend result retained: 5784d99d-04a5-4df9-831e-3403598ffd05_1
+[2026-09-16 13:18:27.879] [Backend process started]
+[2026-09-16 13:18:28.562] [Point saved] run=3dda121d-eb11-47ca-9462-9941fbe5b048 point=1 pixels=2048 elapsed_ms=364
+[2026-09-16 13:18:29.064] [Point saved] run=3dda121d-eb11-47ca-9462-9941fbe5b048 point=2 pixels=2048 elapsed_ms=295
+[2026-09-16 13:18:29.568] [Point saved] run=3dda121d-eb11-47ca-9462-9941fbe5b048 point=3 pixels=2048 elapsed_ms=306
+[2026-09-16 13:40:41.964] [Backend process started]
+[2026-09-16 13:40:42.566] [Point saved] run=1bc394be-619f-4d86-af51-d548b6254c45 point=1 pixels=2048 elapsed_ms=320
+[2026-09-16 13:40:43.039] [Point saved] run=1bc394be-619f-4d86-af51-d548b6254c45 point=2 pixels=2048 elapsed_ms=304
+[2026-09-16 13:40:43.548] [Point saved] run=1bc394be-619f-4d86-af51-d548b6254c45 point=3 pixels=2048 elapsed_ms=314
+[2026-09-16 13:40:45.774] [Backend process started]
+[2026-09-16 13:40:46.283] [Point saved] run=c9d2f7bf-6055-4333-8875-44edb1b07f3b point=1 pixels=2048 elapsed_ms=349
+[2026-09-16 13:40:46.939] [Point saved] run=c9d2f7bf-6055-4333-8875-44edb1b07f3b point=2 pixels=2048 elapsed_ms=288
+[2026-09-16 13:40:47.459] [Point saved] run=c9d2f7bf-6055-4333-8875-44edb1b07f3b point=3 pixels=2048 elapsed_ms=310
+[2026-09-16 13:40:49.692] [Backend process started]
+[2026-09-16 13:40:50.070] [Scan failed] Backend capture failed: CAPTURE af04a171-f2e8-44be-a0a4-b66740f76f13_1 FAIL -1
+END af04a171-f2e8-44be-a0a4-b66740f76f13_1
+[2026-09-16 13:40:54.684] [Backend process started]
+[2026-09-16 13:40:55.122] [Scan failed] Incomplete spectrum / unexpected pixel count
+[2026-09-16 13:40:59.763] [Backend process started]
+[2026-09-16 13:41:00.142] [Scan failed] Malformed or mismatched capture result
+[2026-09-16 13:41:04.813] [Backend process started]
+[2026-09-16 13:41:06.517] [Scan failed] Capture timed out (15 s); no blind retry and no success ACK
+[2026-09-16 13:41:12.180] [Backend process started]
+[2026-09-16 13:41:14.985] [Capture discarded from scan] Scan stopped; raw backend result retained: fedf7212-5e8b-468b-9f28-bfed09a5b7e8_1
+[2026-09-16 13:41:17.151] [Backend process started]
+[2026-09-16 13:41:17.568] [Point saved] run=5c9e7fc3-3192-449d-95fa-bd77337e79e0 point=1 pixels=2048 elapsed_ms=272
+[2026-09-16 13:41:17.996] [Point saved] run=5c9e7fc3-3192-449d-95fa-bd77337e79e0 point=2 pixels=2048 elapsed_ms=269
+[2026-09-16 13:41:18.455] [Point saved] run=5c9e7fc3-3192-449d-95fa-bd77337e79e0 point=3 pixels=2048 elapsed_ms=307
+[2026-09-16 13:42:55.834] [Backend process started]
+[2026-09-16 13:42:56.366] [Point saved] run=ab90175a-8621-499e-9594-7cf6e17b1e1f point=1 pixels=2048 elapsed_ms=318
+[2026-09-16 13:42:56.814] [Point saved] run=ab90175a-8621-499e-9594-7cf6e17b1e1f point=2 pixels=2048 elapsed_ms=289
+[2026-09-16 13:42:57.290] [Point saved] run=ab90175a-8621-499e-9594-7cf6e17b1e1f point=3 pixels=2048 elapsed_ms=323
+[2026-09-16 13:42:59.516] [Backend process started]

@@ -1,0 +1,6 @@
+{
+  "source": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\scan_sessions\\1d_y_scan_20260921_152840_289\\laser_log_combined.txt",
+  "model": "CNN",
+  "threshold": 0.4,
+  "checkpoint": "C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\\pure_only_20260923\\shift_robust_v2\\CNN3_1_pure_only_results\\models\\cnn_shift_robust.pt"
+}

@@ -1,0 +1,42 @@
+; Hamamatsu C13560-0274 Raman module - WinUSB binding for Windows 10/11, x64 and Arm64.
+; Derived from Hamamatsu's winusb2.0wrraman.inf. Changes: NTarm64 model section added
+; (needed inside a Windows 11 Arm VM on Apple Silicon), legacy co-installers and
+; catalog removed (not needed on Windows 10+). The DeviceInterfaceGUID is unchanged:
+; RamSpecView's wrrusb2a.dll looks for the device under exactly this GUID.
+;
+; This INF is NOT signed. Windows only accepts it with driver signature enforcement
+; disabled. The README describes a method that avoids this INF entirely (preferred).
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = USBDevice
+ClassGuid   = {88BAE032-5A81-49f0-BC3D-A4FF138216D6}
+Provider    = %ProviderName%
+DriverVer   = 10/27/2026,1.0.1.0
+
+[Manufacturer]
+%ProviderName% = HamamatsuRaman, NTamd64, NTarm64
+
+[HamamatsuRaman.NTamd64]
+%DeviceDesc% = USB_Install, USB\VID_0661&PID_294C
+
+[HamamatsuRaman.NTarm64]
+%DeviceDesc% = USB_Install, USB\VID_0661&PID_294C
+
+[USB_Install]
+Include = winusb.inf
+Needs   = WINUSB.NT
+
+[USB_Install.Services]
+Include = winusb.inf
+Needs   = WINUSB.NT.Services
+
+[USB_Install.HW]
+AddReg = Dev_AddReg
+
+[Dev_AddReg]
+HKR,,DeviceInterfaceGUIDs,0x10000,"{88DC0D16-F5F0-4836-B6D0-89FD7C3495F3}"
+
+[Strings]
+ProviderName = "Hamamatsu driver for Mini-spectrometer"
+DeviceDesc   = "Hamamatsu Widerange-RAMAN1"

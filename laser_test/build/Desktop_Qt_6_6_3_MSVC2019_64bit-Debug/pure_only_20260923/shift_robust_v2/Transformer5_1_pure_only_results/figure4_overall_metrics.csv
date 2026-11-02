@@ -1,0 +1,2 @@
+model,n_test,n_mixture,target_macro_f1,target_macro_roc_auc,r6g_recall,mixture_exact_match,target_exact_match,all_label_exact_match,benchmark_threshold
+ViT-1D,96,0,0.6646505376344086,0.9880541232653909,1.0,nan,0.2604166666666667,0.2604166666666667,0.4

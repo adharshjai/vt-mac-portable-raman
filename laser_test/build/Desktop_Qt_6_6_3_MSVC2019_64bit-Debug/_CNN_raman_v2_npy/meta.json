@@ -1,0 +1,31 @@
+{
+  "classes": [
+    "r6g",
+    "methylene_blue"
+  ],
+  "target_len": 2018,
+  "drop_n": 30,
+  "do_baseline": true,
+  "baseline_window": 15,
+  "baseline_smooth": 15,
+  "preprocessing": "v5 (raw-dark -> drop30 -> rolling_min_baseline(15,15) -> min_max_norm)",
+  "split": {
+    "train": 0.7,
+    "val": 0.1,
+    "test": 0.2,
+    "note": "70/10/20 matching SVM & ViT."
+  },
+  "thresholds": {
+    "conf_min": 0.7355313241481781,
+    "margin_min": 0.4710626721382141,
+    "dist_max": 0.831523925065994,
+    "energy_min": 0.6292841613292695
+  },
+  "raw_min_ptp": 100.0,
+  "raw_min_std": 15.0,
+  "infer_temperature": 1.6,
+  "min_accept_blocks": 3,
+  "min_accept_ratio": 0.2,
+  "min_class_consensus": 0.75,
+  "timestamp": "2026-04-30 12:29:45"
+}

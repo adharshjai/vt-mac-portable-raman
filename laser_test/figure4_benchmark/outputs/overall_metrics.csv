@@ -1,0 +1,2 @@
+model,n_test,n_multi_target_mixture,target_macro_f1,target_macro_roc_auc,r6g_recall,mixture_exact_match,threshold
+PCA-SVM,472,260,0.9843420087918865,0.9976287379254902,0.9505703422053232,0.9346153846153846,0.5

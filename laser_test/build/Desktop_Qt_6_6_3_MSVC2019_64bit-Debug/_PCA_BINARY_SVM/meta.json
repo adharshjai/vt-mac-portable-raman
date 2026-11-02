@@ -1,0 +1,54 @@
+{
+  "classes": [
+    "r6g",
+    "methylene_blue",
+    "adenine",
+    "di_water"
+  ],
+  "feature_dim": 1958,
+  "n_components": 20,
+  "explained_variance_total": 0.6702585816383362,
+  "detection_thresholds": {
+    "r6g": 0.35,
+    "methylene_blue": 0.5,
+    "adenine": 0.5,
+    "di_water": 0.5
+  },
+  "recon_threshold": 55.233497619628906,
+  "binary_reports": {
+    "r6g": {
+      "best_params": {
+        "C": 0.1,
+        "gamma": "scale"
+      },
+      "test_accuracy": 1.0
+    },
+    "methylene_blue": {
+      "best_params": {
+        "C": 0.1,
+        "gamma": "scale"
+      },
+      "test_accuracy": 1.0
+    },
+    "adenine": {
+      "best_params": {
+        "C": 0.1,
+        "gamma": "scale"
+      },
+      "test_accuracy": 1.0
+    },
+    "di_water": {
+      "best_params": {
+        "C": 0.1,
+        "gamma": "scale"
+      },
+      "test_accuracy": 1.0
+    }
+  },
+  "split": {
+    "train": 0.7,
+    "val": 0.1,
+    "test": 0.2
+  },
+  "timestamp": "2026-05-21 15:23:57"
+}
