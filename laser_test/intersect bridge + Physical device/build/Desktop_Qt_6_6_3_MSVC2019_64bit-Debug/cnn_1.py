@@ -36,7 +36,7 @@ from torch.utils.data import Dataset, DataLoader
 # CONFIG
 # =============================================================================
 # Root directory where laser_log_*.txt and dark_*.txt are generated
-DATA_ROOT = r"C:\Users\Jeremy666\OneDrive\Documents\laser_test\build\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug"
+DATA_ROOT = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug"
 
 # Database files for training (these are the known reference spectra)
 LIB_FILES = {

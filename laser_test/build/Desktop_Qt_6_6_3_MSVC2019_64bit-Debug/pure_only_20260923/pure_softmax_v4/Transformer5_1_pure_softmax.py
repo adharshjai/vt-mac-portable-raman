@@ -11,7 +11,7 @@ if 'ipykernel' not in sys.modules:
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, roc_auc_score, roc_curve
 
-BASE = Path('C:\\Users\\Jeremy666\\OneDrive\\Documents\\laser_test\\build\\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug')
+BASE = Path('/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug')
 DATA_DIR = BASE / 'pure_only_20260923/data_r6g_20260922'
 OUTPUT_DIR = BASE / 'pure_only_20260923/pure_softmax_v4/results'
 TEST_FILE = BASE / 'scan_sessions/1d_y_scan_20260921_152840_289/laser_log_combined.txt'

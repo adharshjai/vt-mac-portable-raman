@@ -1,0 +1,22 @@
+# Python environment for the CNN, Transformer and PCA-SVM analysis scripts on macOS (Apple Silicon).
+# Versions follow the original author's Python 3.14 environment (environment_inventory.json,
+# "pythoncore-3.14-64"), which saved the models: scikit-learn 1.8.0 matches the .joblib files and
+# torch 2.9.1 matches the author's PyTorch. On a Mac, torch comes without the "+cpu" suffix.
+# Create it from the project root:
+#   /opt/anaconda3/bin/python3 -m venv .venv
+#   .venv/bin/python -m pip install -r Python_dependencies/mac-analysis.requirements.txt
+numpy==2.3.4
+scipy==1.17.1
+pandas==2.3.3
+matplotlib==3.10.7
+seaborn
+scikit-learn==1.8.0
+joblib==1.5.3
+threadpoolctl==3.6.0
+torch==2.9.1
+openpyxl
+ipython==9.6.0
+ipykernel==7.0.1
+jupyter==1.1.1
+nbconvert==7.16.6
+nbformat==5.10.4

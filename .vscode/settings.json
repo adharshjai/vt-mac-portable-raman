@@ -1,0 +1,13 @@
+{
+    // Python for the CNN / Transformer / SVM analysis scripts and notebooks
+    // (created from Python_dependencies/mac-analysis.requirements.txt).
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "python.terminal.activateEnvironment": true,
+    // Run notebooks from their own folder, as the original author did.
+    "jupyter.notebookFileRoot": "${fileDirname}",
+    // Don't index the large data folders or the environment.
+    "files.watcherExclude": {
+        "**/.venv/**": true,
+        "**/laser_test/build/**/scan_sessions/**": true
+    }
+}

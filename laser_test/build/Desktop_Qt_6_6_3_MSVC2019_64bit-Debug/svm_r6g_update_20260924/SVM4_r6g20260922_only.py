@@ -33,7 +33,7 @@ except ModuleNotFoundError as e:
 # =========================================================
 # CONFIG
 # =========================================================
-DATA_ROOT = r"C:\Users\Jeremy666\OneDrive\Documents\laser_test\build\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug"
+DATA_ROOT = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug"
 DATA_DIR = os.path.join(DATA_ROOT, "data_base_code_part")
 
 # ---------------------------------------------------------------------
@@ -58,11 +58,11 @@ TRAINING_RAW_NPY_FILES = {
     "di_water": os.path.join(DATA_DIR, "training_spectra_di_water_baseline_raw.npy"),
 }
 
-# TEST_FILE = r"C:\Users\Jeremy666\OneDrive\Documents\laser_test\build\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\portable_raman_test_data\laser_log_20260513_150549.txt"
-# TEST_DARK_FILE = r"C:\Users\Jeremy666\OneDrive\Documents\laser_test\build\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\portable_raman_test_data\dark_20260513_150739.txt"
-TEST_FILE = r"C:\Users\Jeremy666\OneDrive\Documents\laser_test\build\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\scan_sessions\1d_y_scan_20260921_152840_289\laser_log_combined.txt"
+# TEST_FILE = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/portable_raman_test_data/laser_log_20260513_150549.txt"
+# TEST_DARK_FILE = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/portable_raman_test_data/dark_20260513_150739.txt"
+TEST_FILE = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/scan_sessions/1d_y_scan_20260921_152840_289/laser_log_combined.txt"
 
-TEST_DARK_FILE = r"C:\Users\Jeremy666\OneDrive\Documents\laser_test\build\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug\dark_measurements\dark_20260921_153016_700.txt"
+TEST_DARK_FILE = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/dark_measurements/dark_20260921_153016_700.txt"
 
 DROP_N = 90
 TARGET_LEN = 2048
