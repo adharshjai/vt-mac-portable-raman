@@ -15,6 +15,31 @@ Usage:
   python cnn_2class_auto.py  path/to/test.txt        # specify test file
   python cnn_2class_auto.py  test.txt  dark.txt      # specify both
 """
+# --- Portable data location (added by macos-native/tools/mac_python_paths.py) ---------------------
+# RAMAN_HANDOFF_DIR is the hand-off folder laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug,
+# found by walking up from this file (a notebook: from its working folder). To use another copy,
+# set the RAMAN_HANDOFF_DIR environment variable to that folder.
+import os as _os
+
+
+def _raman_handoff_dir():
+    if _os.environ.get("RAMAN_HANDOFF_DIR"):
+        return _os.path.abspath(_os.environ["RAMAN_HANDOFF_DIR"])
+    start = _os.path.dirname(_os.path.abspath(globals()["__file__"])) if "__file__" in globals() else _os.getcwd()
+    folder = start
+    while True:
+        candidate = _os.path.join(folder, "laser_test", "build", "Desktop_Qt_6_6_3_MSVC2019_64bit-Debug")
+        if _os.path.isdir(candidate):
+            return candidate
+        parent = _os.path.dirname(folder)
+        if parent == folder:
+            raise FileNotFoundError("laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug not found above "
+                                    + start + "; set the RAMAN_HANDOFF_DIR environment variable")
+        folder = parent
+
+
+RAMAN_HANDOFF_DIR = _raman_handoff_dir()
+# ---------------------------------------------------------------------------------------------------
 
 import os
 import sys
@@ -36,7 +61,7 @@ from torch.utils.data import Dataset, DataLoader
 # CONFIG
 # =============================================================================
 # Root directory where laser_log_*.txt and dark_*.txt are generated
-DATA_ROOT = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug"
+DATA_ROOT = RAMAN_HANDOFF_DIR
 
 # Database files for training (these are the known reference spectra)
 LIB_FILES = {

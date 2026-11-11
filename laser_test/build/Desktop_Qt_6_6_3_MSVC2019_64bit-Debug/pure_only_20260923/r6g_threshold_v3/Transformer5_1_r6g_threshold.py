@@ -4,6 +4,31 @@ ViT-1D Raman classifier v2 — multi-label mixture detection
 Transformer architecture is IDENTICAL to v1.
 Changes: multi-label sigmoid output, synthetic mixture training, OvR-style inference.
 """
+# --- Portable data location (added by macos-native/tools/mac_python_paths.py) ---------------------
+# RAMAN_HANDOFF_DIR is the hand-off folder laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug,
+# found by walking up from this file (a notebook: from its working folder). To use another copy,
+# set the RAMAN_HANDOFF_DIR environment variable to that folder.
+import os as _os
+
+
+def _raman_handoff_dir():
+    if _os.environ.get("RAMAN_HANDOFF_DIR"):
+        return _os.path.abspath(_os.environ["RAMAN_HANDOFF_DIR"])
+    start = _os.path.dirname(_os.path.abspath(globals()["__file__"])) if "__file__" in globals() else _os.getcwd()
+    folder = start
+    while True:
+        candidate = _os.path.join(folder, "laser_test", "build", "Desktop_Qt_6_6_3_MSVC2019_64bit-Debug")
+        if _os.path.isdir(candidate):
+            return candidate
+        parent = _os.path.dirname(folder)
+        if parent == folder:
+            raise FileNotFoundError("laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug not found above "
+                                    + start + "; set the RAMAN_HANDOFF_DIR environment variable")
+        folder = parent
+
+
+RAMAN_HANDOFF_DIR = _raman_handoff_dir()
+# ---------------------------------------------------------------------------------------------------
 import os, sys, re, json, csv, time, math, random
 import matplotlib
 if "ipykernel" not in sys.modules:
@@ -21,8 +46,8 @@ from sklearn.metrics import roc_auc_score
 # =========================================================
 # CONFIG
 # =========================================================
-DATA_ROOT = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug"
-DATA_DIR = '/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/pure_only_20260923/data_r6g_20260922'
+DATA_ROOT = RAMAN_HANDOFF_DIR
+DATA_DIR = f'{RAMAN_HANDOFF_DIR}/pure_only_20260923/data_r6g_20260922'
 
 TRAINING_MINMAX_NPY_FILES = {
     "r6g": os.path.join(DATA_DIR, "training_spectra_r6g_minmax.npy"),
@@ -37,11 +62,11 @@ TRAINING_RAW_NPY_FILES = {
     "di_water": os.path.join(DATA_DIR, "training_spectra_di_water_baseline_raw.npy"),
 }
 
-# TEST_FILE = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/portable_raman_test_data/laser_log_20260513_150549.txt"
-# TEST_DARK_FILE = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/portable_raman_test_data/dark_20260513_150739.txt"
-TEST_FILE = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/scan_sessions/1d_y_scan_20260921_152840_289/laser_log_combined.txt"
+# TEST_FILE = f"{RAMAN_HANDOFF_DIR}/portable_raman_test_data/laser_log_20260513_150549.txt"
+# TEST_DARK_FILE = f"{RAMAN_HANDOFF_DIR}/portable_raman_test_data/dark_20260513_150739.txt"
+TEST_FILE = f"{RAMAN_HANDOFF_DIR}/scan_sessions/1d_y_scan_20260921_152840_289/laser_log_combined.txt"
 
-TEST_DARK_FILE = r"/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/dark_measurements/dark_20260921_153016_700.txt"
+TEST_DARK_FILE = f"{RAMAN_HANDOFF_DIR}/dark_measurements/dark_20260921_153016_700.txt"
 
 # RETRAIN_MODEL = True
 RETRAIN_MODEL = False
@@ -92,7 +117,7 @@ def threshold_vector():
 TARGET_ANALYTES = ["r6g", "methylene_blue", "adenine"]
 BACKGROUND_CLASSES = ["di_water"]
 
-OUTPUT_DIR = '/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/pure_only_20260923/r6g_threshold_v3/results'
+OUTPUT_DIR = f'{RAMAN_HANDOFF_DIR}/pure_only_20260923/r6g_threshold_v3/results'
 MODELS_DIR = os.path.join(OUTPUT_DIR, "models")
 MODEL_PATH = os.path.join(MODELS_DIR, "vit1d_threshold_retrained.pt")
 META_PATH = os.path.join(OUTPUT_DIR, "meta.json")
@@ -1039,7 +1064,7 @@ def select_r6g_threshold(model):
 RUNTIME_TEST_FILE,RUNTIME_TEST_DARK=_parse_cli_args()
 print(f"\nTest: {RUNTIME_TEST_FILE}")
 
-SOURCE_CHECKPOINT = '/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug/pure_only_20260923/shift_robust_v2/Transformer5_1_pure_only_results/models/vit1d_shift_robust.pt'
+SOURCE_CHECKPOINT = f'{RAMAN_HANDOFF_DIR}/pure_only_20260923/shift_robust_v2/Transformer5_1_pure_only_results/models/vit1d_shift_robust.pt'
 if RETRAIN_MODEL:
     model = train_model()
 else:

@@ -1,4 +1,29 @@
 """Pure-class ViT-1D v4. No synthetic mixtures; not a mixture detector."""
+# --- Portable data location (added by macos-native/tools/mac_python_paths.py) ---------------------
+# RAMAN_HANDOFF_DIR is the hand-off folder laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug,
+# found by walking up from this file (a notebook: from its working folder). To use another copy,
+# set the RAMAN_HANDOFF_DIR environment variable to that folder.
+import os as _os
+
+
+def _raman_handoff_dir():
+    if _os.environ.get("RAMAN_HANDOFF_DIR"):
+        return _os.path.abspath(_os.environ["RAMAN_HANDOFF_DIR"])
+    start = _os.path.dirname(_os.path.abspath(globals()["__file__"])) if "__file__" in globals() else _os.getcwd()
+    folder = start
+    while True:
+        candidate = _os.path.join(folder, "laser_test", "build", "Desktop_Qt_6_6_3_MSVC2019_64bit-Debug")
+        if _os.path.isdir(candidate):
+            return candidate
+        parent = _os.path.dirname(folder)
+        if parent == folder:
+            raise FileNotFoundError("laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug not found above "
+                                    + start + "; set the RAMAN_HANDOFF_DIR environment variable")
+        folder = parent
+
+
+RAMAN_HANDOFF_DIR = _raman_handoff_dir()
+# ---------------------------------------------------------------------------------------------------
 import os, sys, re, json, csv, random, hashlib
 from pathlib import Path
 import numpy as np
@@ -11,7 +36,7 @@ if 'ipykernel' not in sys.modules:
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, roc_auc_score, roc_curve
 
-BASE = Path('/Users/adhar/Downloads/research/Portable_Raman_full_project/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug')
+BASE = Path(RAMAN_HANDOFF_DIR)
 DATA_DIR = BASE / 'pure_only_20260923/data_r6g_20260922'
 OUTPUT_DIR = BASE / 'pure_only_20260923/pure_softmax_v4/results'
 TEST_FILE = BASE / 'scan_sessions/1d_y_scan_20260921_152840_289/laser_log_combined.txt'
