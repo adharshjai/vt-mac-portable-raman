@@ -6955,7 +6955,7 @@
    "Multi-line sentences (L0096-L0098, L0103-L0104, L0106-L0107, L0108-L0109) are translated line by line so that consecutive lines still read as one sentence; the code tokens '*' (L0106) and SampleApl.pch (L0108) stay on their original lines.",
    "L0101: the four spaces between #endif and the comment are preserved; L0100/L0101 keep the LANGUAGE LANG_JAPANESE resource block itself unchanged (only the comment text is translated).",
    "L0105: the digit 4 is kept as a numeral as in the source (the English template spells it out as 'four').",
-   "No string literals changed in this unit; no file under /Users/adhar/Downloads/Portable_Raman_full_project was modified."
+   "No string literals changed in this unit; no file in the project folder was modified."
   ],
   "intersect-readme": [
    "string literal changed: L0161",

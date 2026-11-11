@@ -24,7 +24,10 @@ import os as _os
 
 def _raman_handoff_dir():
     if _os.environ.get("RAMAN_HANDOFF_DIR"):
-        return _os.path.abspath(_os.environ["RAMAN_HANDOFF_DIR"])
+        chosen = _os.path.abspath(_os.path.expanduser(_os.environ["RAMAN_HANDOFF_DIR"]))
+        if not _os.path.isdir(chosen):
+            raise FileNotFoundError("RAMAN_HANDOFF_DIR is set to " + chosen + ", which is not a folder")
+        return chosen
     start = _os.path.dirname(_os.path.abspath(globals()["__file__"])) if "__file__" in globals() else _os.getcwd()
     folder = start
     while True:
@@ -65,14 +68,14 @@ DATA_ROOT = RAMAN_HANDOFF_DIR
 
 # Database files for training (these are the known reference spectra)
 LIB_FILES = {
-    "r6g":            os.path.join(DATA_ROOT, r"Portable_Raman_database\Database_r6g.txt"),
-    "methylene_blue": os.path.join(DATA_ROOT, r"Portable_Raman_database\Database_mythylene_blue.txt"),
+    "r6g":            os.path.join(DATA_ROOT, "Portable_Raman_database", "Database_r6g.txt"),
+    "methylene_blue": os.path.join(DATA_ROOT, "Portable_Raman_database", "Database_mythylene_blue.txt"),
 }
 
 # Dark files corresponding to each database
 LIB_DARK_FILES = {
-    "r6g":            os.path.join(DATA_ROOT, r"Portable_Raman_database\dark_r6g.txt"),
-    "methylene_blue": os.path.join(DATA_ROOT, r"Portable_Raman_database\dark_mythylene_blue.txt"),
+    "r6g":            os.path.join(DATA_ROOT, "Portable_Raman_database", "dark_r6g.txt"),
+    "methylene_blue": os.path.join(DATA_ROOT, "Portable_Raman_database", "dark_mythylene_blue.txt"),
 }
 
 # Patterns to find latest test data and dark files automatically

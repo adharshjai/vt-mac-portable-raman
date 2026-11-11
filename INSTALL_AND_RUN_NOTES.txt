@@ -46,13 +46,17 @@ Confirmed paths that must be adjusted (change them only in the recipient's copy;
 - laser_test/main.cpp: ramanDir -> the directory containing the locally rebuilt RamanAutofocus.exe.
 - laser_test/main.cpp: mappingLogPath -> a writable local log location.
 - laser_test/build_handshake.cmd, rebuild_raman_autofocus.cmd: Visual Studio, Qt, CMake and motor-project paths.
-- Python/Notebooks: absolute paths of the training database, real test files, dark, model directories and output directories.
+- Python/Notebooks: DONE for the CNN, Transformer and SVM scripts and notebooks under laser_test/. They now find their data relative to
+  the checkout (RAMAN_HANDOFF_DIR at the top of each file); see Python_dependencies/README.txt, "Quick start". Backup copies
+  (backup_* folders, *.before_* files), transformer_1.py, Untitled-2.ipynb and build_svm_full_pure_report.py still point at the
+  author's own folders, which are not in this package.
 - Bridge code/launch scripts/generated Qt code: EXE, model, dark, Qt, SDK and local mailbox paths.
 Beyond the confirmed items above, the package may contain other absolute paths; before running, search for Jeremy666, Downloads, OneDrive, C:/ and C:\.
 The full snapshot keeps historical code; this does not mean every historical script has passed testing on the new computer.
 
 4. Python
 Refer to Python_dependencies/README.txt to set up separate virtual environments for the different projects.
+For the CNN / Transformer / SVM analysis, follow its "Quick start" section (one pinned environment, Python 3.11-3.14).
 Prefer using the existing trained models for offline analysis; RETRAIN=False is only a switch in some of the scripts, so check the actual implementation before running.
 Do not run every Notebook with Run All, and do not overwrite old experimental results just because the output directories are the same.
 Three newer analysis entry points, for orientation (not a unified launcher for all historical versions):

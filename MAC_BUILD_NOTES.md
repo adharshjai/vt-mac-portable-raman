@@ -22,10 +22,11 @@ To rebuild or work on it in Qt Creator:
 ```
 
 **The Python analysis code** (PCA-SVM, CNN, Transformer scripts and notebooks) is
-plain Python and runs on macOS. The Anaconda Python at `/opt/anaconda3` already has
-numpy, scipy, scikit-learn, matplotlib and torch. Every script still contains the
-original author's absolute Windows paths (`C:\Users\Jeremy666\...`), which must be
-changed before running, as the hand-off notes say.
+plain Python and runs on macOS. The scripts and notebooks under `laser_test/` no longer
+contain the original author's Windows paths: each one finds the hand-off folder
+`laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug` relative to the checkout
+(`macos-native/tools/mac_python_paths.py` made the change). Set up the pinned Python
+environment as described in `Python_dependencies/README.txt`, section "Quick start".
 
 ## UPDATE: the backends now run on macOS too
 

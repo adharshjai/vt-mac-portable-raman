@@ -25,25 +25,47 @@ Quick start: CNN / Transformer / SVM analysis (any computer)
 =============================================================
 The analysis scripts and notebooks no longer contain the original author's C:\Users\Jeremy666\...
 paths. Each one finds the hand-off folder laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug by
-itself (RAMAN_HANDOFF_DIR at the top of the file), so a fresh clone runs where it is. Set the
-RAMAN_HANDOFF_DIR environment variable only to use the data from another folder.
+itself (RAMAN_HANDOFF_DIR at the top of the file), so a fresh clone runs wherever it is. To use the
+data from another copy, set the RAMAN_HANDOFF_DIR environment variable to that copy's hand-off folder.
 
-1. Create the environment from the project root (Python 3.13 recommended):
-     macOS/Linux:  python3 -m venv .venv
+Requirements: Python 3.11 to 3.14 (3.13 recommended) on Apple Silicon Mac, Windows (64-bit) or Linux (x86-64).
+The macOS built-in python3 is 3.9 and will NOT work: install Python 3.13 from python.org, with
+"brew install python@3.13", or use Anaconda. Intel Macs are not supported: PyTorch 2.9.1, which the saved
+CNN/Transformer models need, has no Intel-Mac build.
+Only Apple Silicon macOS with Python 3.13 has been tested; the Windows and Linux steps are untested.
+
+1. Create the environment in the project folder (the folder that contains laser_test/):
+     macOS/Linux:  python3.13 -m venv .venv
                    .venv/bin/python -m pip install -r Python_dependencies/mac-analysis.requirements.txt
      Windows:      py -3.13 -m venv .venv
                    .venv\Scripts\python.exe -m pip install -r Python_dependencies\mac-analysis.requirements.txt
-2. Optional, for notebooks outside VS Code/Antigravity:
+2. Optional, only for Jupyter outside VS Code/Antigravity. This creates a user-wide kernel named
+   "portable-raman" and replaces any existing kernel of that name (use another --name for a second copy):
      .venv/bin/python -m ipykernel install --user --name portable-raman --display-name "Python (Portable Raman)"
-3. Open the project folder in VS Code or Antigravity: .vscode/settings.json selects .venv and runs each
-   notebook from its own folder. Install the Python and Jupyter extensions if the editor asks.
-4. Run from the hand-off folder, for example:
-     pure_only_20260923/shift_robust_v2/CNN3_1_shift_robust.py          (CNN, uses the saved model)
-     pure_only_20260923/pure_softmax_v4/Transformer5_1_pure_softmax.py  (Transformer, uses the saved model)
-     svm_r6g_update_20260924/SVM4_pure_inference_only.py                (SVM, uses the saved models)
-   SVM4_full_PCA_SVM_new_analysis.py RETRAINS on every run and overwrites the saved SVM models in
-   _PCA_SVM_r6g20260922_results; the CNN and Transformer scripts retrain only with RETRAIN_MODEL = True.
-   Every run rewrites its own result files and plots; git restores the committed versions.
+3. Open the project folder in VS Code or Antigravity and install the Python and Jupyter extensions if asked.
+   .vscode/settings.json selects .venv on macOS/Linux and runs each notebook from its own folder.
+   On Windows, choose .venv\Scripts\python.exe once with "Python: Select Interpreter".
+4. Run a script with the environment's Python, for example on macOS/Linux:
+     source .venv/bin/activate
+     cd laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug
+     python pure_only_20260923/shift_robust_v2/CNN3_1_shift_robust.py          # CNN, saved model
+     python pure_only_20260923/pure_softmax_v4/Transformer5_1_pure_softmax.py  # Transformer, saved model
+     python svm_r6g_update_20260924/SVM4_pure_inference_only.py                # SVM, saved models
+   (Windows: .venv\Scripts\activate, then the same commands.) The .ipynb next to each script does the same.
 
-transformer_1.py and Untitled-2.ipynb still point at the author's Desktop data, which is not in this
-project. After moving or renaming folders inside laser_test, rerun macos-native/tools/mac_python_paths.py.
+Which scripts retrain:
+- SVM4_full_PCA_SVM_new_analysis.py RETRAINS on every run and overwrites the saved SVM models in
+  _PCA_SVM_r6g20260922_results.
+- cnn_1.py (the script behind the controller's "Analyze Latest" button) retrains its 2-class CNN on every
+  run and overwrites _CNN_2class_r6g_mb/models/cnn_2class.pt. The copy under
+  "laser_test/intersect bridge + Physical device" writes to the same model in the main hand-off folder.
+- The CNN and Transformer scripts retrain only with RETRAIN_MODEL = True, or when their saved model file is
+  missing. pure_only_20260923/Transformer5_1_pure_only.py has no saved model in the package, so it trains.
+- Every run rewrites its own result files and plots (and the CNN adds a scan_analysis/ folder). Do not
+  commit those run outputs; "git restore" puts back the committed versions.
+
+Not portable (they point at the author's own folders, which are not in this package): the backup copies
+in backup_* folders and *.before_* files, transformer_1.py, Untitled-2.ipynb and
+laser_test/build_svm_full_pure_report.py. macos-native/tools/mac_python_paths.py converts any remaining
+C:\Users\Jeremy666\...\Desktop_Qt_6_6_3_MSVC2019_64bit-Debug paths; it does not follow folders renamed
+inside the hand-off folder, so edit those paths by hand.

@@ -14,8 +14,10 @@ variable to use another copy. Absolute paths written by an earlier version of th
 Scope: .py and .ipynb files under laser_test/, code only (notebook outputs and markdown stay as
 recorded). Backup copies (folders named backup_*, files named *.before_*) and third_party/ are
 skipped. Paths to the author's other folders (Desktop, .codex) have no copy in the project and are
-reported, not changed. Line endings and notebook formatting are preserved; git keeps the originals.
-Running it again changes nothing.
+reported, not changed. Every notebook cell that uses RAMAN_HANDOFF_DIR gets its own block, so cells
+can run on their own. Line endings and notebook formatting are preserved; git keeps the originals.
+A file whose rewritten code would not compile is left unchanged and reported. Running the tool again
+only refreshes the inserted blocks; it does not follow folders renamed inside the hand-off folder.
 
     python3 macos-native/tools/mac_python_paths.py            # rewrite
     python3 macos-native/tools/mac_python_paths.py --dry-run  # report only
@@ -31,7 +33,8 @@ WINDOWS_HANDOFF = (r"C:%sUsers%sJeremy666%sOneDrive%sDocuments%slaser_test%sbuil
                    % ((SEP,) * 7))
 ABSOLUTE_HANDOFF = r"/[^'\"\n]*?/laser_test/build/Desktop_Qt_6_6_3_MSVC2019_64bit-Debug"
 LITERAL = re.compile(PREFIX + r"(?:%s|%s)(?P<rest>(?:%s[^'\"\n]*)?)(?P=q)" % (WINDOWS_HANDOFF, ABSOLUTE_HANDOFF, SEP))
-OTHER = re.compile(r"C:%sUsers%sJeremy666%s(?!OneDrive%sDocuments%slaser_test)[^'\"\n]*" % ((SEP,) * 5))
+OTHER = re.compile(r"C:%sUsers%sJeremy666(?!%sOneDrive%sDocuments%slaser_test)%s[^'\"\n]*" % ((SEP,) * 6))
+BLOCK_RE = re.compile(r"# --- Portable data location \(added by macos-native/tools/mac_python_paths\.py\) -+\n.*?\n# -{20,}\n", re.S)
 MARKER = "RAMAN_HANDOFF_DIR = _raman_handoff_dir()"
 BLOCK = '''\
 # --- Portable data location (added by macos-native/tools/mac_python_paths.py) ---------------------
@@ -43,7 +46,10 @@ import os as _os
 
 def _raman_handoff_dir():
     if _os.environ.get("RAMAN_HANDOFF_DIR"):
-        return _os.path.abspath(_os.environ["RAMAN_HANDOFF_DIR"])
+        chosen = _os.path.abspath(_os.path.expanduser(_os.environ["RAMAN_HANDOFF_DIR"]))
+        if not _os.path.isdir(chosen):
+            raise FileNotFoundError("RAMAN_HANDOFF_DIR is set to " + chosen + ", which is not a folder")
+        return chosen
     start = _os.path.dirname(_os.path.abspath(globals()["__file__"])) if "__file__" in globals() else _os.getcwd()
     folder = start
     while True:
@@ -69,15 +75,18 @@ def rewrite_literals(src):
     def replace(m):
         nonlocal count
         count += 1
-        rest = m.group("rest").replace("\\\\", "/").replace("\\", "/").rstrip("/")
+        rest = m.group("rest").replace("\\\\", "/").replace("\\", "/")
         if not rest:
             return "RAMAN_HANDOFF_DIR"
+        if rest == "/":
+            return 'RAMAN_HANDOFF_DIR + "/"'
         if "f" not in m.group("prefix").lower():
             rest = rest.replace("{", "{{").replace("}", "}}")
         q = m.group("q")
         return "f" + q + "{RAMAN_HANDOFF_DIR}" + rest + q
 
-    return LITERAL.sub(replace, src), count, OTHER.findall(src)
+    new = LITERAL.sub(replace, src)
+    return new, count, OTHER.findall(new)
 
 
 def module_insert_line(src):
@@ -101,17 +110,25 @@ def module_insert_line(src):
     return index
 
 
+def masked(src):
+    """Cell source with IPython magics / shell lines blanked, so ast and compile() accept it."""
+    return "".join(("\n" if line.endswith("\n") else "") if re.match(r"\s*[%!]", line) else line
+                   for line in src.splitlines(keepends=True))
+
+
 def with_block(src, newline, cell=False):
+    block = BLOCK.replace("\n", newline)
     if MARKER in src:
-        return src
+        normalized = src.replace(newline, "\n") if newline != "\n" else src
+        refreshed = BLOCK_RE.sub(lambda m: BLOCK, normalized, count=1)
+        return refreshed.replace("\n", newline) if newline != "\n" else refreshed
     lines = src.splitlines(keepends=True)
     if cell:
-        index = 0
-        while index < len(lines) and (lines[index].startswith("%%") or lines[index].startswith("from __future__")):
-            index += 1
+        start = 1 if lines and lines[0].startswith("%%") else 0
+        body = "".join(lines[start:])
+        index = start + module_insert_line(masked(body))
     else:
         index = module_insert_line(src)
-    block = BLOCK.replace("\n", newline)
     if index and not lines[index - 1].endswith(("\n", "\r")):
         lines[index - 1] += newline
     return "".join(lines[:index]) + block + "".join(lines[index:])
@@ -142,29 +159,41 @@ def process(path, dry):
         if layout is None:
             return 0, [], "notebook JSON layout not reproducible: left unchanged"
         ensure_ascii, json_newline = layout
-        total, others, block_added = 0, [], False
-        for cell in nb.get("cells", []):
+        total, others, edited = 0, [], False
+        for number, cell in enumerate(nb.get("cells", [])):
             if cell.get("cell_type") != "code":
                 continue
             source = cell.get("source", [])
             joined = "".join(source) if isinstance(source, list) else source
             new, count, found = rewrite_literals(joined)
             others += found
-            if not count:
-                continue
             total += count
-            if not block_added and MARKER not in "".join(
-                    "".join(c.get("source", [])) for c in nb["cells"] if c.get("cell_type") == "code"):
+            if "RAMAN_HANDOFF_DIR" in new:
                 new = with_block(new, "\n", cell=True)
-            block_added = True
+            if new == joined:
+                continue
+            try:
+                compile(masked(new), "%s cell %d" % (path, number), "exec")
+            except SyntaxError as error:
+                return 0, [], "cell %d would not compile after rewriting (%s): left unchanged" % (number, error.msg)
+            edited = True
             cell["source"] = new.splitlines(keepends=True) if isinstance(source, list) else new
+        if not edited:
+            return 0, others, None
         out = json.dumps(nb, indent=1, ensure_ascii=ensure_ascii).replace("\n", json_newline)
         out += text[len(text.rstrip("\r\n")):]
+        total = total or 1
     else:
         out, total, others = rewrite_literals(text)
-        if total:
+        if "RAMAN_HANDOFF_DIR" in out:
             out = with_block(out, newline)
-            compile(out, path, "exec")  # never write a file Python cannot parse
+        if out == text:
+            return 0, others, None
+        try:
+            compile(out, path, "exec")
+        except SyntaxError as error:
+            return 0, [], "would not compile after rewriting (%s): left unchanged" % error.msg
+        total = total or 1
     if total and not dry:
         with open(path, "w", encoding="utf-8", newline="") as handle:
             handle.write(out)
@@ -186,10 +215,10 @@ def main():
                 print("SKIPPED  %s: %s" % (rel, problem))
             if total:
                 changed += 1
-                print("%s %3d path(s)  %s" % ("would fix" if dry else "fixed    ", total, rel))
+                print("%s %s" % ("would update" if dry else "updated     ", rel))
             for other in sorted(set(others)):
                 print("  not in this project, left as is: %s  (%s)" % (other.strip()[:110], os.path.basename(rel)))
-    print("%d file(s) %s; paths are now relative to %s" % (changed, "to change" if dry else "changed", HANDOFF_REL))
+    print("%d file(s) %s; paths are relative to %s" % (changed, "to update" if dry else "updated", HANDOFF_REL))
 
 
 if __name__ == "__main__":
