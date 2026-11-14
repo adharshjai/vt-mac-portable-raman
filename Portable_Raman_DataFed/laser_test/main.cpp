@@ -44,6 +44,7 @@
 #include <QSplitter>
 #include <QTabWidget>
 #include <QTextBlock>
+#include <QValidator>
 #include <QWindow>
 #include "acquisition_protocol.h"
 
@@ -140,29 +141,37 @@ static QString strippedLikePython(const QString& text) {
     return text.mid(first, end - first);
 }
 
-// Python's json module refuses a raw control character inside a string; Qt's parser takes it.
-static bool controlCharacterInString(const QString& json) {
+// What Python's json module refuses and Qt's parser takes: a raw control character inside a string,
+// an escape that JSON does not have ("\q", "\x41", "\'", which Qt reads as the character itself), and
+// a number whose point lacks a digit on either side ("1.", ".5", "-.5", "1.e5"). Outside a string a
+// point stands only in a number.
+static bool refusedOnlyByPython(const QString& json) {
+    const auto digit = [&json](qsizetype i) { return i >= 0 && i < json.size() && json[i].unicode() >= u'0' && json[i].unicode() <= u'9'; };
     bool inString = false;
     for (qsizetype i = 0; i < json.size(); ++i) {
         const char16_t c = json[i].unicode();
-        if (!inString) inString = c == u'"';
-        else if (c == u'\\') ++i;
-        else if (c == u'"') inString = false;
+        if (!inString) {
+            if (c == u'"') inString = true;
+            else if (c == u'.' && !(digit(i - 1) && digit(i + 1))) return true;
+        } else if (c == u'\\') {
+            if (i + 1 == json.size() || !QStringView(u"\"\\/bfnrtu").contains(json[i + 1])) return true;
+            ++i;
+        } else if (c == u'"') inString = false;
         else if (c < 0x20) return true;
     }
     return false;
 }
 
 // The JSON object in a file as Python's json module reads it, or nothing: also when Python would
-// refuse a file that Qt's parser takes, one that is not UTF-8, starts with a byte order mark, or
-// holds a raw control character in a string. The data layer reads the same files with Python.
+// refuse a file that Qt's parser takes, one that is not UTF-8, starts with a byte order mark, or holds
+// what refusedOnlyByPython() finds. The data layer reads the same files with Python.
 static std::optional<QJsonObject> jsonObjectLikePython(const QString& path) {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) return std::nullopt;
     const QByteArray bytes = file.readAll();
     QStringDecoder utf8(QStringDecoder::Utf8);
     const QString text = utf8(bytes);
-    if (file.error() != QFileDevice::NoError || utf8.hasError() || bytes.startsWith("\xEF\xBB\xBF") || controlCharacterInString(text))
+    if (file.error() != QFileDevice::NoError || utf8.hasError() || bytes.startsWith("\xEF\xBB\xBF") || refusedOnlyByPython(text))
         return std::nullopt;
     QJsonParseError error;
     const QJsonDocument document = QJsonDocument::fromJson(bytes, &error);
@@ -280,6 +289,28 @@ static PillState nextDarkCaption(const QJsonValue& dark, bool simulated, const Q
             QString("A scan or single capture started now is paired with dark_measurements/%1, the newest %2 dark. "
                     "Capture Dark takes a new one.").arg(name, kind)};
 }
+
+// The Sample group's fields hold at most 200 UTF-16 units, and QLineEdit cuts a text at its limit
+// wherever the limit falls, also between the two halves of a character outside the Basic Multilingual
+// Plane (an emoji): a remembered value that is too long, a paste across the limit, such a character
+// typed with one unit of room left. Half a character would reach session.json and every point as
+// \ud83d, text the data layer cannot store. Every change of a field's text passes this validator, which
+// leaves each half character out, so the fields only ever hold whole characters.
+class WholeCharacterValidator : public QValidator {
+public:
+    using QValidator::QValidator;
+    State validate(QString& input, int& pos) const override {
+        for (qsizetype i = 0; i < input.size();) {
+            if (input[i].isHighSurrogate() && i + 1 < input.size() && input[i + 1].isLowSurrogate()) i += 2;
+            else if (!input[i].isSurrogate()) ++i;
+            else {
+                input.remove(i, 1);
+                if (pos > i) --pos;
+            }
+        }
+        return Acceptable;
+    }
+};
 
 namespace {
 static const int kNumPixels = 2048;
@@ -2375,8 +2406,12 @@ public:
         // Which sample, measured by whom and where (data_layer/PROTOCOL.md section 2.1): saved with every spectrum.
         sampleIdEdit = new QLineEdit; operatorEdit = new QLineEdit; locationEdit = new QLineEdit; notesEdit = new QLineEdit;
         // The Studio and raman_sim_runner take at most 200 characters per field. A longer text would
-        // only be refused later, when the data layer registers the spectrum.
-        for (QLineEdit* field : {sampleIdEdit, operatorEdit, locationEdit, notesEdit}) field->setMaxLength(200);
+        // only be refused later, when the data layer registers the spectrum. The validator comes before
+        // any text, the test values and the remembered ones included.
+        for (QLineEdit* field : {sampleIdEdit, operatorEdit, locationEdit, notesEdit}) {
+            field->setMaxLength(200);
+            field->setValidator(new WholeCharacterValidator(field));
+        }
         for (QLineEdit* required : {sampleIdEdit, operatorEdit, locationEdit}) required->setPlaceholderText("required");
         notesEdit->setPlaceholderText("optional");
         auto *captureButton = new QPushButton("Capture Spectrum");

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import datetime
 import json
+import os
 import shutil
 import uuid
 from pathlib import Path
@@ -59,16 +60,29 @@ def build_status(ctx, ask_catalog=True, online=None):
                "demo": config.mode == MODE_LOCAL_DEMO}
     counts = ledger.counts()
     total = sum(counts.values())
-    # Held back on purpose, so not waiting for anything: they are counted on their own.
-    held = ledger.count_held_simulated() if config.holds_back_simulated else 0
-    pending = sum(counts[state] for state in PENDING_STATES) - held
     errors = ledger.error_counts(config.max_attempts, config.holds_back_simulated)
+    bound = ledger.catalog_key
+    rebinding = bound is not None and bound != config.catalog_key
+    if rebinding:
+        # The rows still describe the catalog used before. The next sync makes every capture but
+        # those lacking fields "captured" again for this one (Ledger.bind_catalog) and forgets the
+        # dark spectra's uploads, so count as that sync will: otherwise the window would read
+        # "synced", and its periodic sync would not start, while nothing is in this catalog yet.
+        rebound, simulated = ledger.count_rebound()
+        held = simulated if config.holds_back_simulated else 0
+        pending = total - held
+        errors.update(retrying=0, given_up=0)
+        to_advance, darks = rebound - held, 0
+    else:
+        # Held back on purpose, so not waiting for anything: they are counted on their own.
+        held = ledger.count_held_simulated() if config.holds_back_simulated else 0
+        pending = sum(counts[state] for state in PENDING_STATES) - held
+        to_advance = ledger.count_to_advance(config.max_attempts, config.holds_back_simulated)
+        darks = len(ledger.darks_to_advance(config.max_attempts))
     waiting_reviews = ledger.queued_reviews(config.catalog_key)
     # What a plain sync can move on now; the window's periodic sync runs for this. Not what waits
     # for a person (missing fields, attempts used up) nor what the settings hold back.
-    sync_work = (ledger.count_to_advance(config.max_attempts, config.holds_back_simulated)
-                 + len(ledger.darks_to_advance(config.max_attempts))
-                 + sum(1 for entry in waiting_reviews if entry["attempts"] < config.max_attempts))
+    sync_work = to_advance + darks + sum(1 for entry in waiting_reviews if entry["attempts"] < config.max_attempts)
 
     problems = []
     trouble = who.get("problem")
@@ -78,8 +92,7 @@ def build_status(ctx, ask_catalog=True, online=None):
             trouble = "%s %d capture(s) wait for the next sync." % (trouble, pending)
     if trouble:
         problems.append(trouble)
-    bound = ledger.catalog_key
-    if total and bound is not None and bound != config.catalog_key:
+    if total and rebinding:
         kept = ", except the simulated ones, which stay on this Mac" if config.holds_back_simulated else ""
         problems.append("The catalog settings changed: the next sync registers every capture in %s%s."
                         % (catalog.label, kept))
@@ -96,7 +109,8 @@ def build_status(ctx, ask_catalog=True, online=None):
             "%d capture(s) failed %d times and are no longer retried: fix the cause, then run sync --retry-failed."
             % (errors["given_up"], config.max_attempts)
         )
-    if config.mode == MODE_DATAFED:
+    # Uploads to the catalog used before are not this catalog's concern: the next sync forgets them.
+    if config.mode == MODE_DATAFED and not rebinding:
         cutoff = utc_text(datetime.datetime.now(datetime.timezone.utc) - SLOW_UPLOAD)
         slow = ledger.count_uploads_without_news_since(cutoff)
         if slow:
@@ -104,7 +118,7 @@ def build_status(ctx, ask_catalog=True, online=None):
                 "%d upload(s) have made no progress for more than 10 minutes: check that Globus Connect "
                 "Personal is running on this Mac (see doctor)." % slow
             )
-    failed_darks = ledger.failed_darks()
+    failed_darks = [] if rebinding else ledger.failed_darks()
     if failed_darks:
         problems.append("%d dark spectrum file(s) could not be uploaded (the last: %s); Sync now tries again."
                         % (len(failed_darks), failed_darks[0]["last_error"]))
@@ -131,6 +145,9 @@ def build_status(ctx, ask_catalog=True, online=None):
         "pending": pending,
         "held_simulated": held,
         "sync_work": sync_work,
+        # The rows, with their states, record ids and predictions, still belong to the catalog used
+        # before the settings changed: the window must not show them as this catalog's.
+        "catalog_changed": bool(total and rebinding),
         "reviews_queued": len(waiting_reviews),
         "last_sync_utc": ledger.get_value(sync.LAST_SYNC_KEY),
         "problems": problems,
@@ -246,6 +263,16 @@ def _dark_file(paths, value):
         raise CommandError("There is no dark file %s" % given)
     target = paths.dark_measurements / given.name
     if not target.exists():
+        description = dark_description(given)
+        if description != given and (description.exists() or description.is_symlink()) and not (
+                description.is_file() and os.access(description, os.R_OK)):
+            # It makes the kind of the dark unknown, which pairs it with no spectrum; the dark copied
+            # without it would count as real and be paired with a real spectrum.
+            raise CommandError(
+                "The description %s beside the dark cannot be read; nothing was imported" % description.name,
+                detail="Copied without it, the dark would count as real here and be paired with real spectra. "
+                "Put the description the controller wrote back beside the dark, then import again.",
+            )
         return given.name, given
     if sha256_file(target)[0] != sha256_file(given)[0]:
         raise CommandError("dark_measurements already has a different file named %s" % given.name)

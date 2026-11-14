@@ -404,8 +404,13 @@ function standInServer(options) {
   // end at once with exit code 3, as raman_sim_runner does while the controller window is open.
   // `hold`: endpoints whose answers wait for release(); `provenanceDown`: provenance answers as
   // studio_server.py does while the catalog is offline (503); `realSession`: the newest session was
-  // recorded with real instruments; `extraTotal`: captures beyond the newest ones the list holds.
-  const state = { down: false, calls: [], run: null, lockHeld: false, hold: new Set(), waiting: [], provenanceDown: false, realSession: false, extraTotal: 0 };
+  // recorded with real instruments; `mixedOldest`: the oldest session with the real spectrometer and
+  // simulated stages; `undescribed`: the server lists its sessions without their simulated flags;
+  // `extraTotal`: older accepted captures beyond the newest ones the list holds; `runEnd`: the next
+  // run ends at once with this exit code and log line, as a runner that refuses to start does;
+  // `justBelow`: a capture whose low-confidence top score is 0.797 against the threshold of 0.8.
+  const state = { down: false, calls: [], run: null, lockHeld: false, hold: new Set(), waiting: [], provenanceDown: false, realSession: false,
+    mixedOldest: false, undescribed: false, extraTotal: 0, runEnd: null, runLine: null, justBelow: null };
   const plain = (value) => JSON.parse(JSON.stringify(value));
   function answer(url, body) {
     switch (url.pathname) {
@@ -419,7 +424,13 @@ function standInServer(options) {
         scan.run = run && plain(run);
         scan.active = scan.active || !!(run && run.running);
         if (run && run.exit_code === 3) scan.log_tail.push('[runner] Not started: /tmp/home/controller.lock is held; the controller window or another simulated run is open in this folder');
+        if (run && !run.running && state.runLine) scan.log_tail.push(state.runLine);
         if (state.realSession && scan.session) scan.session.simulated = { backend: false, motor: false };
+        scan.sessions.forEach((entry, index, all) => {
+          if (state.realSession && index === 0) entry.simulated = { backend: false, motor: false };
+          if (state.mixedOldest && index === all.length - 1) entry.simulated = { backend: false, motor: true };
+          if (state.undescribed) delete entry.simulated;
+        });
         return scan;
       }
       case '/api/pipeline': {
@@ -432,8 +443,15 @@ function standInServer(options) {
           if (item.demo && item.demo.queued_review) item.review = Object.assign({}, item.review, { queued: true });
           delete item.demo; item.point_file = 'point_' + String(item.point_id).padStart(4, '0') + '.json';
           if (state.realSession && newest && item.session_id === newest.session_id) item.simulated = false;
+          if (item.capture_id === state.justBelow && item.prediction) {
+            const top = item.prediction.top_class;
+            Object.assign(item.prediction, { confidence: 0.797, outcome: 'low_confidence', label: 'UNKNOWN', needs_review: true });
+            if (item.scores && top) item.scores[top] = 0.797;
+            if ('threshold' in item) item.threshold = 0.8;
+          }
         });
         view.total = view.items.length + state.extraTotal;
+        view.status.counts.accepted = (view.status.counts.accepted || 0) + state.extraTotal;
         return view;
       }
       case '/api/provenance':
@@ -454,6 +472,11 @@ function standInServer(options) {
           started_utc: engine.live().demo.clock_utc, stop_requested: false, simulated: true };
         if (state.lockHeld) {
           state.run = Object.assign(run, { running: false, exit_code: 3 });
+          return { ok: true, pid: run.pid };
+        }
+        state.runLine = state.runEnd ? state.runEnd.line : null;
+        if (state.runEnd) {
+          state.run = Object.assign(run, { running: false, exit_code: state.runEnd.code });
           return { ok: true, pid: run.pid };
         }
         engine.setDetails({ scan_mode: body.mode, power: body.power, sample_id: body.sample_id, operator: body.operator, location: body.location });
@@ -574,6 +597,19 @@ async function liveRun() {
   expect(!$('btnPlay').disabled, 'live: Play is ready again right after a refused run');
   server.state.lockHeld = false;
 
+  // Exit code 1 is also a refusal to start, which the runner's log names; a step that failed is not one.
+  const unwritable = 'controller.lock cannot be created (no permission), so this run could not keep the controller window and other runs out of this folder';
+  server.state.runEnd = { code: 1, line: '[runner] Not started: /tmp/home/' + unwritable };
+  click('btnPlay'); await win.step(10, 130);
+  expect(text('status') === 'The simulated run did not start: ' + unwritable + '.',
+    'live: a run that did not start says why, naming the file inside the deploy folder by itself, shown "' + text('status') + '"');
+  server.state.runEnd = { code: 1, line: '[runner] Laser ON was not confirmed: [Laser] State unconfirmed' };
+  click('btnPlay'); await win.step(10, 130);
+  expect(/^The simulated run failed: one of its steps did not succeed\. The log says which\.$/.test(text('status')),
+    'live: a run whose step failed is not said to have refused to start, shown "' + text('status') + '"');
+  expect(!$('btnPlay').disabled, 'live: Play is ready again after a run that ended with exit code 1');
+  server.state.runEnd = null;
+
   // a capture made offline: one sync after reconnecting starts its upload, and classify skips it until it is done
   toggle('offline', true); await win.step(10, 130);
   click('btnPlay'); await win.step(5, 130);
@@ -634,7 +670,8 @@ async function liveDetails() {
   expect($('mapProbe').children[0].getAttribute('visibility') === 'hidden' && text('roX') === 'X –',
     'live details: no probe and no stage position from the simulated stage file');
   toggle('truth', true); await win.step(3, 130);
-  expect(/ 124 not simulated, left out\.$/.test(text('status')), 'live details: agreement leaves the real spectra out, shown "' + text('status') + '"');
+  expect(/ \d+ of 13 agree\. 124 not known to be simulated, left out\.$/.test(text('status')),
+    'live details: agreement leaves the real spectra out, shown "' + text('status') + '"');
   // Halves are drawn only for the simulated 1D point that also lies in the inset.
   expect((built('zoomPts').match(/ A3\.6 3\.6 0 0 [01] /g) || []).length === 2, 'live details: no ground-truth halves on the real raster points');
   pick(server.engine.scan().points[10].capture_id); await win.step(3, 130);
@@ -652,6 +689,39 @@ async function liveDetails() {
   expect(/^Point 1, single$/.test(text('specTitle')) && /^latest/.test(text('specSub')), 'live details: the panels show the new run, shown "' + text('specSub') + '"');
   expect(!built('mapPts').includes('pt-single'), 'live details: a real single capture is not drawn where the simulated stage stands');
   server.state.realSession = false;
+
+  // An older session made with the real spectrometer and simulated stages: its list items say only that
+  // a simulator was used (either helper), so the session's own flags decide, and its spectra get no truth.
+  const firstScan = server.engine.pipeline().items.find((item) => item.scan_mode === '1d-x').capture_id;
+  server.state.mixedOldest = true;
+  await win.step(20, 130);
+  toggle('truth', true); await win.step(3, 130);
+  expect(/ \d+ of 124 agree\. 13 not known to be simulated, left out\.$/.test(text('status')),
+    'live details: the spectra of the mixed session are left out of the agreement, shown "' + text('status') + '"');
+  pick(firstScan); await win.step(3, 130);
+  expect(/none: not known to be a capture of the virtual sample/.test(built('facts')) && built('facts').includes('real spectrometer, simulated stages'),
+    'live details: a spectrum of the mixed session has no truth, and its record says which helper was real');
+  // A server that lists its sessions without their flags: only the session on show is known to be simulated.
+  server.state.mixedOldest = false;
+  server.state.undescribed = true;
+  toggle('truth', false); await win.step(20, 130);
+  toggle('truth', true); await win.step(3, 130);
+  expect(/ 137 not known to be simulated, left out\.$/.test(text('status')) && built('facts').includes('simulators used'),
+    'live details: undescribed sessions are not taken for simulated ones, shown "' + text('status') + '"');
+  server.state.undescribed = false;
+  toggle('truth', false);
+  await win.step(20, 130);
+
+  // A low-confidence score just under the threshold is never printed as the threshold.
+  const below = server.engine.pipeline().review.find((item) => item.prediction && item.prediction.top_class);
+  server.state.justBelow = below.capture_id;
+  await win.step(20, 130);
+  pick(below.capture_id); await win.step(3, 130);
+  const topClass = below.prediction.top_class;
+  expect(built('facts').includes(topClass + ' 0.797 · low_confidence') && built('facts').includes(topClass + ' 0.797, ') &&
+    !built('facts').includes(' 0.80 · low_confidence') && built('mapPts').includes(topClass + ' 0.797, needs review'),
+    'live details: 0.797 is shown as 0.797 beside the threshold 0.80, in the record, its scores and the map');
+  server.state.justBelow = null;
 
   // A review recorded offline is sent by a later sync, and the sync result says so.
   toggle('offline', true); await win.step(10, 130);
@@ -682,9 +752,22 @@ async function liveDetails() {
   // The server lists the newest captures only: the page says that its counts are of those.
   server.state.extraTotal = 100;
   await win.step(40, 130);
-  const shown = server.engine.pipeline().items.length;
+  const view = server.engine.pipeline();
+  const shown = view.items.length;
   expect($('event').title.startsWith('newest ' + shown + ' of ' + (shown + 100) + ' captures shown') && text('steps').startsWith('1 Capture: ' + shown + '+'),
     'live details: a list cut short is said to be, shown "' + $('event').title + '" and "' + text('steps') + '"');
+  // Panel 3 counts every capture the status counts, not only the listed ones; the 100 older ones are accepted.
+  const counts = Object.assign({}, view.status.counts, { accepted: (view.status.counts.accepted || 0) + 100 });
+  const inStates = (states) => states.reduce((sum, name) => sum + (counts[name] || 0), 0);
+  const listed = new Set(view.items.map((item) => item.capture_id));
+  const spectraTotal = shown + 100 + server.engine.scan().points.filter((point) => !listed.has(point.capture_id)).length;
+  const storedTotal = inStates(['uploaded', 'classified', 'needs_review', 'reviewed', 'accepted']);
+  const panel = ['acquire', 'record', 'transfer', 'analyse', 'decide'].map((id) => text('ev-' + id));
+  expect(panel[0] === spectraTotal + ' spectra' && panel[1] === (shown + 100 - inStates(['captured', 'error'])) + ' records' &&
+    panel[2] === storedTotal + ' stored\n' + (spectraTotal - storedTotal) + ' waiting' &&
+    panel[3] === inStates(['classified', 'needs_review', 'reviewed', 'accepted']) + ' predictions' &&
+    panel[4] === inStates(['needs_review']) + ' to review\n' + inStates(['reviewed']) + ' done',
+    'live details: panel 3 counts what the status counts, shown ' + JSON.stringify(panel));
   checkTextLayout('live details at the end');
 }
 

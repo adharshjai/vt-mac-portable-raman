@@ -87,15 +87,24 @@ if [ -f "$WINDEPLOY/best_raman_1dcnn.pth" ]; then cp "$WINDEPLOY/best_raman_1dcn
 # real measurements of the original instrument PC and stay in the original project. session.json names
 # the newest dark of the session's kind in dark_measurements/ (a dark without its .json counts as
 # real), and the data layer subtracts it from every spectrum of the session, so a months-old hand-off
-# dark there could be paired with a real session. Copies that an earlier build placed here (same name,
-# same content) are removed; never the hand-off file itself, as when RAMAN_HANDOFF_DIR names this
-# deploy folder or its dark_measurements/ leads here (-ef: one and the same file).
+# dark there could be paired with a real session. A dark here with the name and the content of a
+# hand-off dark and without a .json is a copy an earlier build placed here (every dark of this edition
+# has its .json, a hand-off dark never) and is removed, also when it is a link to the hand-off dark (rm
+# then takes the link, not the file). Never the hand-off file itself: nothing when both dark folders are
+# one (RAMAN_HANDOFF_DIR names this deploy folder, or a link leads here), nor a file that a hand-off
+# link leads to (-ef: one and the same file).
 handoff_copies=0
-for dark in "$WINDEPLOY"/dark_measurements/dark_*.txt; do
-  copy="$DEPLOY/dark_measurements/$(basename "$dark")"
-  if [ -f "$dark" ] && [ -f "$copy" ] && ! [ "$dark" -ef "$copy" ] && cmp -s "$dark" "$copy"; then rm "$copy"; handoff_copies=$((handoff_copies + 1)); fi
-done
-if [ "$handoff_copies" -gt 0 ]; then echo "   (removed $handoff_copies hand-off dark copies from dark_measurements/; the original project keeps them)"; fi
+if ! [ "$WINDEPLOY/dark_measurements" -ef "$DEPLOY/dark_measurements" ]; then
+  for dark in "$WINDEPLOY"/dark_measurements/dark_*.txt; do
+    copy="$DEPLOY/dark_measurements/$(basename "$dark")"
+    described="${copy%.txt}.json"
+    if [ -f "$dark" ] && [ -f "$copy" ] && ! [ -e "$described" ] && ! [ -L "$described" ] && cmp -s "$dark" "$copy" &&
+       ! { [ -L "$dark" ] && [ "$dark" -ef "$copy" ]; }; then
+      rm "$copy"; handoff_copies=$((handoff_copies + 1))
+    fi
+  done
+fi
+if [ "$handoff_copies" -gt 0 ]; then echo "   (removed $handoff_copies hand-off darks, copies or links, from dark_measurements/; $WINDEPLOY/dark_measurements keeps them)"; fi
 # training database and the CNN model folder the analysis script reads (DATA_ROOT = its own folder)
 if [ -d "$WINDEPLOY/Portable_Raman_database" ]; then rsync -a "$WINDEPLOY/Portable_Raman_database/" "$DEPLOY/Portable_Raman_database/"; fi
 if [ -d "$WINDEPLOY/_CNN_2class_r6g_mb" ]; then rsync -a "$WINDEPLOY/_CNN_2class_r6g_mb/" "$DEPLOY/_CNN_2class_r6g_mb/"; fi
@@ -195,7 +204,13 @@ if [ "${1:-}" = "--test" ]; then
   suite backend_watchdog       backend_test test_backend_watchdog
   suite backend_virtual_sample backend_test test_backend_virtual_sample
   suite virtual_sample_model   backend_test test_virtual_sample_model
-  suite hardware_check_simulated "$PYTHON" "$NATIVE/hardware_check.py" --deploy "$DEPLOY" --simulate all --dark
+  # The check writes its logs and its frame into <deploy>/scan_sessions/_hwcheck_<time>/. It gets a
+  # deploy folder of its own here, the helper programs and the virtual sample their simulators read,
+  # so that no test run leaves simulated data among the scans of deploy-macos/.
+  HWDEPLOY="$TESTLOGS/hardware_check_deploy"
+  mkdir -p "$HWDEPLOY"; cp -R "$DEPLOY/handshake_v2" "$HWDEPLOY/handshake_v2"
+  if [ -d "$DEPLOY/virtual_sample" ]; then cp -R "$DEPLOY/virtual_sample" "$HWDEPLOY/virtual_sample"; fi
+  suite hardware_check_simulated "$PYTHON" "$NATIVE/hardware_check.py" --deploy "$HWDEPLOY" --simulate all --dark
   fresh_if_moved "$ROOT/laser_test/tests/build-macos"
   "$CMAKE" -S "$ROOT/laser_test/tests" -B "$ROOT/laser_test/tests/build-macos" -G Ninja -DCMAKE_MAKE_PROGRAM="$NINJA" -DCMAKE_PREFIX_PATH="$QT" > /dev/null
   "$CMAKE" --build "$ROOT/laser_test/tests/build-macos" | tail -1

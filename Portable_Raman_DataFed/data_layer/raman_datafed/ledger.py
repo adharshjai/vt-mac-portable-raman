@@ -15,6 +15,7 @@ from __future__ import annotations
 import contextlib
 import fcntl
 import json
+import re
 import sqlite3
 from pathlib import Path
 
@@ -139,10 +140,32 @@ _DESCRIPTIVE_COLUMNS = (
     "z_mm",
 )
 _CATALOG_KEY = "catalog_key"
+# The captures a change of catalog makes "captured" again (bind_catalog): all but those lacking
+# fields, which no catalog has taken yet.
+_REBOUND = "NOT (state = 'error' AND error_stage = 'metadata')"
+_SURROGATE = re.compile("[\ud800-\udfff]")
+_SQLITE_INTEGERS = range(-2 ** 63, 2 ** 63)
 
 
 def _flag(value):
     return None if value is None else int(bool(value))
+
+
+def _storable(value):
+    """A value of a point file as a descriptive column can hold it.
+
+    The columns only describe the capture for the list; the record is made from the file. Text with
+    half of a character in it (a lone surrogate, which has no UTF-8 form) is stored with U+FFFD in
+    its place, and what SQLite cannot hold at all (an object, a list, a whole number beyond 64 bits)
+    as NULL, so that a point whose file is not usable as it is still gets its row in error/metadata.
+    """
+    if isinstance(value, str):
+        return _SURROGATE.sub("\ufffd", value)
+    if isinstance(value, int) and not isinstance(value, bool):
+        return value if value in _SQLITE_INTEGERS else None
+    if value is None or isinstance(value, (bool, float)):
+        return value
+    return None
 
 
 def _loads(text):
@@ -309,11 +332,18 @@ class Ledger:
                        raw_sha256 = NULL, upload_task_id = NULL, upload_status = NULL, upload_message = NULL,
                        prediction_id = NULL, prediction_json = NULL, review_json = NULL, review_queued = 0,
                        updated_utc = ?
-                   WHERE NOT (state = 'error' AND error_stage = 'metadata')""",
+                   WHERE """ + _REBOUND,
                 (utc_now(),),
             )
             db.execute("DELETE FROM darks")
             return True
+
+    def count_rebound(self):
+        """(captures, simulated captures among them) that bind_catalog makes "captured" again when
+        the catalog changes. Changes nothing: the status asked for before that sync counts with it."""
+        row = self._db.execute(
+            "SELECT COUNT(*), COALESCE(SUM(IFNULL(simulated, 0) = 1), 0) FROM captures WHERE " + _REBOUND).fetchone()
+        return row[0], row[1]
 
     # ------------------------------------------------------------------ captures
 
@@ -339,7 +369,7 @@ class Ledger:
         now = utc_now()
         state = "error" if error_message else "captured"
         stage = "metadata" if error_message else None
-        values = [entry.get(column) for column in _DESCRIPTIVE_COLUMNS]
+        values = [_storable(entry.get(column)) for column in _DESCRIPTIVE_COLUMNS]
         with self._write() as db:
             row = db.execute(
                 "SELECT session_folder, point_file, state, error_stage, error_message FROM captures "

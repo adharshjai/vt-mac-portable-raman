@@ -37,14 +37,21 @@ inline QString localTime(const QString& utc, const QString& format) {
     return time.isValid() ? time.toLocalTime().toString(format) : utc;
 }
 inline QString score(double value) { return QString::number(value, 'f', 2); }
-// A score read against the threshold: one just below it gets the digits that show it is below
-// (0.797 next to a threshold of 0.80), and is never rounded up to the threshold.
-inline QString score(double value, double threshold) {
-    if (!(value < threshold)) return score(value);
-    for (int digits = 2; digits <= 4; ++digits)
-        if (QString::number(value, 'f', digits).toDouble() < QString::number(threshold, 'f', digits).toDouble())
-            return QString::number(value, 'f', digits);
-    return QString::number(std::floor(value * 1e4) / 1e4, 'f', 4);
+// A score below the threshold it was judged by. It is never rounded up, so that it cannot read as the
+// threshold itself (0.797, not 0.80, next to a threshold of 0.80), also where the threshold is not at
+// hand: list items do not carry it. A third place where two would round up; past that it is cut.
+inline QString lowScore(double value) {
+    for (int digits = 2; digits <= 3; ++digits) {
+        const QString text = QString::number(value, 'f', digits);
+        if (text.toDouble() <= value) return text;
+    }
+    return QString::number(std::floor(value * 1000) / 1000, 'f', 3);
+}
+inline QString score(double value, double threshold) { return value < threshold ? lowScore(value) : score(value); }
+// The model's top score, worded by its outcome: a low-confidence one is below the threshold.
+inline QString confidence(const QJsonObject& p) {
+    const double value = p["confidence"].toDouble();
+    return p["outcome"].toString() == "low_confidence" ? lowScore(value) : score(value);
 }
 inline QString sample(const QJsonObject& item) {
     const QString id = item["sample_id"].toString();
@@ -56,7 +63,7 @@ inline QString point(const QJsonObject& item) {
 }
 inline QString topScore(const QJsonObject& p) {
     const QString top = p["top_class"].toString();
-    return top.isEmpty() ? QString() : top + " " + score(p["confidence"].toDouble());
+    return top.isEmpty() ? QString() : top + " " + confidence(p);
 }
 // The model's own label as it stands in the record: "r6g 0.97", or "UNKNOWN (r6g 0.61)" when the label
 // is not the top class. For the details pane and the tool tips.
@@ -76,7 +83,7 @@ inline QString prediction(const QJsonValue& value) {
     if (outcome == "rejected") return "unusable";
     if (scored.isEmpty()) return modelLabel(p);
     if (outcome == "background") return scored + " (background)";
-    if (outcome == "low_confidence") return p["top_class"].toString() + "? " + score(p["confidence"].toDouble()) + " (uncertain)";
+    if (outcome == "low_confidence") return p["top_class"].toString() + "? " + confidence(p) + " (uncertain)";
     return outcome == "confident" ? scored : modelLabel(p);
 }
 // A label a person settled on, in the words of the tables: REJECTED and UNKNOWN as review-set stores them.
@@ -481,20 +488,31 @@ public:
 
     void openStudio(const StudioLauncher::Done& done) { studio->open(done); }
 
-    // The "DATA" status of the header: which catalog, whether it is reachable, and what is not in the
-    // catalog yet. The count says what it is: beside "Review (N)", a bare "0 waiting" read as if nothing
-    // needed anyone. What waits for a person is that tab's count, so the pill stays short enough not to
-    // push the SIMULATION badge aside at the smallest window size.
+    // The "DATA" status of the header: which catalog, whether it is reachable, what a sync has still to
+    // move into it, and what no sync moves by itself ("stuck"). The count says what it is: beside
+    // "Review (N)", a bare "0 waiting" read as if nothing needed anyone. What waits for a review is that
+    // tab's count, and the words are short, so that the pill does not push the SIMULATION badge aside
+    // at the smallest window size.
     PillState pillState() const {
         if (!installed()) return {UiTone::Neutral, "not installed", "This copy has no data layer; spectra are saved in scan_sessions only."};
         if (!statusProblem.isEmpty()) return {UiTone::Danger, "unavailable", statusProblem, true};
         if (status.isEmpty()) return {UiTone::Neutral, "checking...", "Asking the data layer for its status."};
         const bool offline = catalogOffline();
+        // The counts are of the catalog used before; none of them says what this one holds.
+        const int toSync = catalogChanged() ? 0 : syncWork(), stuck = catalogChanged() ? 0 : needsAttention();
         QStringList parts{demoCatalog() ? "demo" : "DataFed"};
         if (offline) parts << "offline";
-        if (waiting() > 0) parts << QString("%1 to sync").arg(waiting());
-        else if (!offline) parts << "synced";
-        return {offline ? UiTone::Warn : waiting() > 0 ? UiTone::Info : UiTone::Ok, uiJoin(parts), catalogText() + "\n" + summaryText()};
+        if (catalogChanged()) parts << "not synced yet";
+        if (toSync > 0) parts << QString("%1 to sync").arg(toSync);
+        if (stuck > 0) parts << QString("%1 stuck").arg(stuck);
+        if (toSync == 0 && stuck == 0 && !offline && !catalogChanged()) parts << "synced";
+        QString tip = catalogText() + "\n" + summaryText();
+        if (stuck > 0)
+            tip += QString("\n%1 stuck: no sync moves %2 on by %3. The Data tab says why: Import scan folder for a capture "
+                           "without its fields, Sync now for what failed too often.")
+                       .arg(stuck).arg(stuck == 1 ? "it" : "them", stuck == 1 ? "itself" : "themselves");
+        const UiTone tone = offline || stuck > 0 ? UiTone::Warn : toSync > 0 || catalogChanged() ? UiTone::Info : UiTone::Ok;
+        return {tone, uiJoin(parts), tip};
     }
 
     // Colours that were put on items, icons and rich text are fixed when those are made: make them again.
@@ -525,11 +543,20 @@ private:
     // capture without its fields (import-session), one that failed too often (Sync now). A data layer
     // that does not report it gets every capture and review that waits here counted.
     int syncWork() const { return status["sync_work"].isDouble() ? status["sync_work"].toInt() : waiting(); }
+    // What waits on this Mac for a person rather than for a sync: captures without their fields (Import
+    // scan folder) or past sync.max_attempts, and reviews past it (Sync now). A dark spectrum still on
+    // its way counts in sync_work alone, so while one is, this can come out lower; never higher.
+    int needsAttention() const { return std::max(0, waiting() - syncWork()); }
+    // The rows still describe the catalog used before the settings changed ("catalog_changed"): their
+    // states, record ids and predictions are that catalog's, and the next sync registers every capture
+    // in this one. A data layer that does not report it never says so.
+    bool catalogChanged() const { return status["catalog_changed"].toBool(); }
     // Whether the interval of the periodic sync has something for it. Predictions are made elsewhere
     // (Classify now, the ARC job) and only a sync picks them up; with DataFed every sync is a new
     // connection, so for those alone it looks every few minutes instead of at every interval.
     bool periodicSyncDue() const {
-        if (syncWork() > 0) return true;
+        // Until a sync has moved the rows to the catalog in use, what they count says nothing about it.
+        if (catalogChanged() || syncWork() > 0) return true;
         if (toClassify() == 0) return false;
         if (demoCatalog()) return true;
         const QDateTime last = QDateTime::fromString(status["last_sync_utc"].toString(), Qt::ISODateWithMs);
@@ -551,12 +578,18 @@ private:
         int total = 0;
         for (auto it = counts.begin(); it != counts.end(); ++it) total += it.value().toInt();
         QStringList parts{QString("%1 capture%2").arg(total).arg(total == 1 ? "" : "s")};
-        if (status["pending"].toInt() > 0) parts << QString("%1 not uploaded yet").arg(status["pending"].toInt());
-        const int unsent = status["reviews_queued"].toInt();
-        if (unsent > 0) parts << QString("%1 review%2 kept on this Mac").arg(unsent).arg(unsent == 1 ? "" : "s");
-        if (toClassify() > 0) parts << QString("%1 to classify").arg(toClassify());
-        if (counts["needs_review"].toInt() > 0) parts << QString("%1 to review").arg(counts["needs_review"].toInt());
-        if (counts["error"].toInt() > 0) parts << QString("%1 with a problem").arg(counts["error"].toInt());
+        if (catalogChanged()) {
+            parts << QString("the next sync registers them in %1").arg(demoCatalog() ? "the demo catalog" : "DataFed");
+        } else {
+            // "pending" also counts the rows in error, which are counted once, as a problem.
+            const int notUploaded = std::max(0, status["pending"].toInt() - counts["error"].toInt());
+            if (notUploaded > 0) parts << QString("%1 not uploaded yet").arg(notUploaded);
+            const int unsent = status["reviews_queued"].toInt();
+            if (unsent > 0) parts << QString("%1 review%2 kept on this Mac").arg(unsent).arg(unsent == 1 ? "" : "s");
+            if (toClassify() > 0) parts << QString("%1 to classify").arg(toClassify());
+            if (counts["needs_review"].toInt() > 0) parts << QString("%1 to review").arg(counts["needs_review"].toInt());
+            if (counts["error"].toInt() > 0) parts << QString("%1 with a problem").arg(counts["error"].toInt());
+        }
         const QString last = status["last_sync_utc"].toString();
         parts << (last.isEmpty() ? QString("no sync yet") : "last sync " + DataText::localTime(last, "HH:mm:ss"));
         if (captureTotal > captures.size()) parts << QString("the newest %1 are listed").arg(captures.size());
@@ -612,7 +645,12 @@ private:
             : problems.first() + (problems.size() > 1 ? QString(" (+%1 more)").arg(problems.size() - 1) : QString()), UiTone::Warn);
         problemsLabel->setToolTip(problems.join("\n"));
         // The states are those of the demo catalog on this Mac: "Uploaded" must not read as sent to a service.
-        captureTable->horizontalHeaderItem(3)->setText(demoCatalog() ? "State (demo)" : "State");
+        // Nor may the states of the catalog used before the settings changed read as this one's.
+        QTableWidgetItem* stateHeader = captureTable->horizontalHeaderItem(3);
+        stateHeader->setText(catalogChanged() ? "State (previous catalog)" : demoCatalog() ? "State (demo)" : "State");
+        stateHeader->setToolTip(catalogChanged() ? "The states in the catalog used before the settings changed. The next sync registers "
+                                                   "every capture in " + QString(demoCatalog() ? "the demo catalog." : "DataFed.")
+                                : demoCatalog() ? "The states in the local demo catalog on this Mac; nothing is sent anywhere." : QString());
         updateControls();
         if (changed) changed();
     }
@@ -1012,7 +1050,7 @@ private:
                 word->setForeground(state == "captured" ? uiTheme().textDim : uiTheme().ink(DataText::stateTone(state)));
                 word->setFont(stateFont);
                 captureTable->setItem(row, 3, word);
-                captureTable->setItem(row, 4, cell(item["record_id"].toString(DataText::none())));
+                captureTable->setItem(row, 4, recordCell(item));
                 captureTable->setItem(row, 5, cell(DataText::predictionCell(item), predictionTip(item)));
                 captureTable->setItem(row, 6, cell(DataText::review(item["review"])));
                 if (!keep.isEmpty() && item["capture_id"].toString() == keep) keptRow = row;
@@ -1023,6 +1061,14 @@ private:
         showCaptureDetails();
     }
 
+    // A record id of the catalog used before the settings changed names nothing in this one: it is only
+    // in the tool tip, until the next sync has registered the capture here.
+    QTableWidgetItem* recordCell(const QJsonObject& item) const {
+        const QString record = item["record_id"].toString();
+        if (!catalogChanged() || record.isEmpty()) return cell(record.isEmpty() ? DataText::none() : record);
+        return cell(DataText::none(), QString("%1 in the catalog used before the settings changed; the next sync registers this capture in %2.")
+                                          .arg(record, demoCatalog() ? "the demo catalog" : "DataFed"));
+    }
     // The model's own record behind the worded cell: its label, its outcome, and the review.
     static QString predictionTip(const QJsonObject& item) {
         if (!item["prediction"].isObject()) return QString();
@@ -1055,14 +1101,17 @@ private:
             state += QString(" (%1): %2").arg(error["stage"].toString(), error["message"].toString());
         }
         row("State", state);
+        // Records of the catalog used before the settings changed are said to be that catalog's.
+        const QString previous = catalogChanged() ? QString("in the catalog used before: ") : QString();
         if (!item["record_id"].toString().isEmpty()) {
             QStringList record{item["record_id"].toString() + "  (" + item["record_alias"].toString() + ")"};
             if (item["upload"].isObject()) record << "upload " + item["upload"].toObject()["status"].toString();
-            row(demoCatalog() ? "Demo record" : "Record", uiJoin(record));
+            row(demoCatalog() && !catalogChanged() ? "Demo record" : "Record", previous + uiJoin(record));
         }
         if (item["prediction"].isObject()) {
             const QJsonObject prediction = item["prediction"].toObject();
-            row("Prediction", uiJoin({DataText::modelLabel(prediction), prediction["outcome"].toString().replace('_', ' '), prediction["record_id"].toString()}));
+            row("Prediction", previous + uiJoin({DataText::modelLabel(prediction), prediction["outcome"].toString().replace('_', ' '),
+                                                 prediction["record_id"].toString()}));
         }
         if (item["review"].isObject()) {
             const QJsonObject review = item["review"].toObject();
@@ -1086,9 +1135,10 @@ private:
             return;
         }
         captureFacts->setFacts(captureFactsText(item));
-        // Asked again only when the chain can have changed: a record was made, a prediction or a review was added.
+        // Asked again only when the chain can have changed: a record was made, a prediction or a review was
+        // added, the rows moved to the catalog in use.
         const QString key = item["record_id"].toString() + "|" + item["prediction"].toObject()["record_id"].toString()
-                            + "|" + item["review"].toObject()["status"].toString();
+                            + "|" + item["review"].toObject()["status"].toString() + (catalogChanged() ? "|previous" : "");
         if (key == provenanceShownFor) return;
         provenanceShownFor = key;
         wantProvenance(item["record_id"].toString());
@@ -1096,7 +1146,13 @@ private:
 
     // The newest request wins: an answer for a row the selection has left is dropped.
     void wantProvenance(const QString& record) {
-        provenanceWanted = record;
+        // The catalog in use is not asked about a record id of the one used before: it names nothing there.
+        provenanceWanted = catalogChanged() ? QString() : record;
+        if (catalogChanged() && !record.isEmpty()) {
+            showProvenance(QJsonObject(), QString("Registered in the catalog used before the settings changed. The provenance shows once "
+                                                  "the next sync has registered it in %1.").arg(demoCatalog() ? "the demo catalog" : "DataFed"));
+            return;
+        }
         if (record.isEmpty()) {
             showProvenance(QJsonObject(), selectedCapture().isEmpty() ? QString()
                 : QString(demoCatalog() ? "Not registered in the demo catalog yet, so there is no provenance to show."
@@ -1250,10 +1306,8 @@ private:
                 sample->setToolTip(sample->toolTip() + "\n" + taken);
                 reviewTable->setItem(row, 0, sample);
                 reviewTable->setItem(row, 1, cell(DataText::point(item), taken));
-                const double confidence = prediction["confidence"].toDouble();
                 reviewTable->setItem(row, 2, cell(prediction["outcome"].toString() == "rejected" ? QString("rejected")
-                    : prediction["top_class"].toString() + " " + (item["threshold"].isDouble() ? DataText::score(confidence, item["threshold"].toDouble())
-                                                                                               : DataText::score(confidence))));
+                                                                                                 : DataText::topScore(prediction)));
                 if (!keep.isEmpty() && item["prediction_id"].toString() == keep) keptRow = row;
             }
             // Something is always selected while anything waits, so the tab never opens on an empty half.
@@ -1263,7 +1317,8 @@ private:
         reviewListTitle->setText(QString("WAITING FOR REVIEW (%1)").arg(reviewItems.size()));
         // An item that was shown while the catalog could not be reached is asked for again once it can:
         // its scores and provenance come then, and the pane no longer says that the catalog is away.
-        if (reviewShownWithoutCatalog && status["online"].toBool() && reviewWanted.isEmpty() &&
+        // An empty list has no such item, also when the review that emptied it was made offline.
+        if (reviewShownWithoutCatalog && !reviewShownId.isEmpty() && status["online"].toBool() && reviewWanted.isEmpty() &&
             selectedReviewItem()["prediction_id"].toString() == reviewShownId) {
             reviewWanted = reviewShownId;
             if (!reviewShowRunning) fetchReview();
@@ -1276,6 +1331,7 @@ private:
         const QString prediction = selectedReviewItem()["prediction_id"].toString();
         if (prediction.isEmpty()) {
             reviewWanted.clear(); reviewShownId.clear();
+            reviewShownWithoutCatalog = false;
             reviewGraph = QJsonObject();
             reviewProvenance->setGraph(reviewGraph);
             // The result of the review that emptied the list stays readable here.
@@ -1302,6 +1358,7 @@ private:
             if (reply.ok()) showReview(prediction, reply.json);
             else {
                 reviewShownId.clear();
+                reviewShownWithoutCatalog = false;
                 reviewEmpty->setText(failureText("This prediction could not be shown", reply));
                 reviewStack->setCurrentIndex(0);
             }
@@ -1325,11 +1382,9 @@ private:
         if (outcome != "low_confidence") return reason;
         // The reason names the rule ("Low pure-class confidence"), the numbers follow. Offline neither the
         // reason nor the threshold is known here; the text then does without them.
-        const bool known = item["threshold"].isDouble();
-        const double confidence = prediction["confidence"].toDouble(), threshold = item["threshold"].toDouble();
-        const QString limit = known ? " " + DataText::score(threshold) : QString();
+        const QString limit = item["threshold"].isDouble() ? " " + DataText::score(item["threshold"].toDouble()) : QString();
         return QString("<b>%1</b> The top score, %2 for %3, is below the threshold%4.")
-            .arg(reason.isEmpty() ? QString("Low confidence.") : reason, known ? DataText::score(confidence, threshold) : DataText::score(confidence),
+            .arg(reason.isEmpty() ? QString("Low confidence.") : reason, DataText::confidence(prediction),
                  prediction["top_class"].toString().toHtmlEscaped(), limit);
     }
 
@@ -1449,6 +1504,7 @@ private:
                 reviewResult->setText(reviewedText(where, prediction, done), UiTone::Ok);
                 commentEdit->clear();
                 reviewShownId.clear();
+                reviewShownWithoutCatalog = false;
                 refresh();
             } else {
                 reviewResult->setText(failureText("The review was not recorded", reply), UiTone::Danger);

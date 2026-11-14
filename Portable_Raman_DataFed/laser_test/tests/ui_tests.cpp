@@ -654,12 +654,15 @@ struct HandshakeTest {   // friend of MainWindow and DataPanels
               "status, the rows of both tabs, the first prediction that waits; nothing else, and no sync");
         check(!p.catalogBadge->isHidden() && p.catalogBadge->text() == "DEMO", "the demo catalog is marked DEMO");
         check(p.catalogLabel->text().contains("demo", Qt::CaseInsensitive) && p.catalogLabel->text().contains("nothing is sent anywhere"), "and named in plain words");
-        check(p.summaryLabel->text() == uiJoin({"9 captures", "3 not uploaded yet", "1 to classify", "3 to review", "1 with a problem", "no sync yet"}), "counts");
+        // The capture in error lacks its fields: it is counted once, as a problem, and not as one a sync can move.
+        check(p.summaryLabel->text() == uiJoin({"9 captures", "2 not uploaded yet", "1 to classify", "3 to review", "1 with a problem", "no sync yet"}), "counts");
         check(!p.problemsLabel->isHidden() && p.problemsLabel->text().contains("cannot be registered as their files are") &&
               p.problemsLabel->tone() == UiTone::Warn, "problems");
         check(p.heldLabel->isHidden(), "the demo catalog takes simulated captures as well: nothing is held back");
-        check(w.display.data->value() == uiJoin({"demo", "3 to sync"}) && w.display.data->tone() == UiTone::Info &&
-              w.display.tabs->tabText(2) == "Review (3)", "header: catalog and what a sync has still to move; what waits for a person is the tab's count");
+        check(w.display.data->value() == uiJoin({"demo", "2 to sync", "1 stuck"}) && w.display.data->tone() == UiTone::Warn &&
+              w.display.data->toolTip().contains("1 stuck: no sync moves it on by itself") &&
+              w.display.tabs->tabText(2) == "Review (3)",
+              "header: catalog, what a sync has still to move and what no sync can move; what waits for a review is the tab's count");
         QStringList headers;
         for (int column = 0; column < p.captureTable->columnCount(); ++column) headers << p.captureTable->horizontalHeaderItem(column)->text();
         check(headers == QStringList({"Time", "Sample", "Point", "State (demo)", "Record", "Prediction", "Review"}) && p.captureTable->rowCount() == 9, "the table");
@@ -711,7 +714,7 @@ struct HandshakeTest {   // friend of MainWindow and DataPanels
         check(optionsOf("sync") == QStringList({"--retry-failed"}), "pressing Sync now also retries what had failed too often");
         check(p.activityLabel->text().startsWith("Demo sync at ") && p.activityLabel->text().contains("(nothing leaves this Mac): 1 registered, 1 upload started, 1 upload finished.") &&
               p.activityLabel->tone() == UiTone::Neutral, "the result is worded as a demo");
-        check(w.display.data->value() == uiJoin({"demo", "2 to sync"}) && p.summaryLabel->text().contains("last sync ") &&
+        check(w.display.data->value() == uiJoin({"demo", "1 to sync", "1 stuck"}) && p.summaryLabel->text().contains("last sync ") &&
               cellText(p, rowOf(p, "TEST-PLATE-A", 7), 3) == "Uploading" && cellText(p, rowOf(p, "TEST-PLATE-A", 6), 3) == "Uploaded", "the rows moved on");
         check(p.selectedCapture()["capture_id"].toString() == p.captures.at(errorRow).toObject()["capture_id"].toString(), "the selection survives a refresh");
 
@@ -751,7 +754,8 @@ struct HandshakeTest {   // friend of MainWindow and DataPanels
         check(optionsOf("import-session") == QStringList({"--folder=" + oldFolder, "--sample-id=S-OLD", "--operator=earlier operator", "--location=Lab 7"}),
               "the folder and the supplied fields, trimmed");
         check(p.activityLabel->text() == "Imported 2d_scan_20260924_141500_001: 1 capture(s) added to the list, 0 skipped.", "import result");
-        check(cellText(p, rowOf(p, "S-OLD", 3), 3) == "Captured" && p.problemsLabel->isHidden(), "the capture is usable now");
+        check(cellText(p, rowOf(p, "S-OLD", 3), 3) == "Captured" && p.problemsLabel->isHidden() && !w.display.data->value().contains("stuck"),
+              "the capture is usable now; nothing needs a person any more");
         QPointer<QDialog> dialog = p.openImportDialog();
         check(dialog && dialog->findChild<QLineEdit*>("importFolder")->text().isEmpty(), "the import dialog opens without blocking");
         check(dialog->isVisible() && dialog->windowModality() == Qt::NonModal && !QApplication::activeModalWidget(),
@@ -811,6 +815,37 @@ struct HandshakeTest {   // friend of MainWindow and DataPanels
         control({{"catalog", "datafed"}});
         p.refresh();
         check(waitUntil([&]{ return settled(p) && p.heldLabel->isHidden(); }), "the line goes once none is held back");
+
+        // The settings name another catalog than the one the rows describe, until the next sync: the
+        // states, records and predictions of the catalog used before are not passed off as DataFed's.
+        // The periodic sync would end that at any moment (periodicSync tests it); here the test syncs.
+        p.autoSync.stop();
+        control({{"catalog", "datafed"}, {"catalog_changed", true}});
+        p.refresh();
+        check(waitUntil([&]{ return settled(p) && p.catalogChanged(); }), "rows of the catalog used before");
+        QTableWidgetItem* stateHeader = p.captureTable->horizontalHeaderItem(3);
+        check(stateHeader->text() == "State (previous catalog)" && stateHeader->toolTip().contains("The next sync registers every capture in DataFed."),
+              "the states are said to be the previous catalog's");
+        row = rowOf(p, "TEST-PLATE-A", 1);
+        check(cellText(p, row, 4) == DataText::none() && p.captureTable->item(row, 4)->toolTip().startsWith("d/101 in the catalog used before"),
+              "no record id of the previous catalog in the table; it is in the tool tip");
+        check(p.summaryLabel->text().startsWith(uiJoin({QString("%1 captures").arg(p.captures.size()), "the next sync registers them in DataFed"})) &&
+              !p.summaryLabel->text().contains("to review") && !p.summaryLabel->text().contains("not uploaded"),
+              "the summary says what the next sync does and counts none of the previous catalog's states");
+        check(w.display.data->value() == uiJoin({"DataFed", "not synced yet"}) && w.display.data->tone() == UiTone::Info && p.periodicSyncDue(),
+              "the header does not say synced; the periodic sync is due");
+        const qsizetype provenanceAsked = commandsCalled().count("provenance");
+        p.captureTable->selectRow(row);
+        check(waitUntil([&]{ return settled(p) && p.provenanceNote->text().startsWith("Registered in the catalog used before"); }) &&
+              commandsCalled().count("provenance") == provenanceAsked && p.captureFacts->toPlainText().contains("in the catalog used before: d/101") &&
+              p.captureFacts->toPlainText().contains("in the catalog used before: r6g 0.97"), "DataFed is not asked about a record id of the previous catalog");
+        p.sync(false);
+        check(waitUntil([&]{ return settled(p) && !p.catalogChanged(); }), "the sync binds the rows to the catalog in use");
+        row = rowOf(p, "TEST-PLATE-A", 1);
+        check(p.captureTable->horizontalHeaderItem(3)->text() == "State" && cellText(p, row, 4) == "d/101" && !p.periodicSyncDue() &&
+              waitUntil([&]{ return settled(p) && commandsCalled().count("provenance") == provenanceAsked + 1; }) &&
+              p.captureFacts->toPlainText().contains("d/101") && !p.captureFacts->toPlainText().contains("catalog used before"),
+              "then the rows are this catalog's again, the provenance is asked for, and no other periodic sync is due");
     }
 
     static void reviewTab() {
@@ -888,9 +923,21 @@ struct HandshakeTest {   // friend of MainWindow and DataPanels
                                                             {"reason", "Low pure-class confidence"}, {"threshold", 0.8}});
         };
         check(belowOf(0.797) == "<b>Low pure-class confidence.</b> The top score, 0.797 for methylene_blue, is below the threshold 0.80." &&
-              belowOf(0.79996).contains(" 0.7999 for") && belowOf(0.74).contains(" 0.74 for"), "a score just under the threshold is never shown equal to it");
+              belowOf(0.79996).contains(" 0.799 for") && belowOf(0.74).contains(" 0.74 for"), "a score just under the threshold is never shown equal to it");
         check(DataText::score(0.7951, 0.8) == "0.795" && DataText::score(0.8, 0.8) == "0.80" && DataText::score(0.95, 0.8) == "0.95" &&
               DataText::score(0.79, 0.8) == "0.79", "two places wherever they tell the score from the threshold");
+        // Where no threshold is at hand (list items, the review list offline) the outcome says that the score is below it.
+        const QJsonObject uncertain{{"outcome", "low_confidence"}, {"label", "UNKNOWN"}, {"top_class", "r6g"}, {"confidence", 0.797}};
+        check(DataText::prediction(uncertain) == "r6g? 0.797 (uncertain)" && DataText::modelLabel(uncertain) == "UNKNOWN (r6g 0.797)" &&
+              DataText::predictionCell(QJsonObject{{"prediction", uncertain}, {"review", QJsonObject{{"status", "relabelled"}, {"label", "adenine"}}}}) ==
+                  "adenine, relabelled (model: r6g 0.797)" &&
+              DataPanels::reviewReasonText(QJsonObject{{"prediction", uncertain}, {"reason", QJsonValue()}, {"threshold", QJsonValue()}}) ==
+                  "<b>Low confidence.</b> The top score, 0.797 for r6g, is below the threshold.",
+              "a low-confidence score is never rounded up to a threshold the text cannot name");
+        check(DataText::lowScore(0.7999) == "0.799" && DataText::lowScore(0.72556) == "0.725" && DataText::lowScore(0.72) == "0.72" &&
+              DataText::lowScore(0.6149) == "0.61" && DataText::prediction(QJsonObject{{"outcome", "confident"}, {"label", "r6g"}, {"top_class", "r6g"},
+                                                                                     {"confidence", 0.8049}}) == "r6g 0.80",
+              "a third place only where two would round up; a score at or above the threshold keeps two places");
 
         showReviewItem(p, "d/202");
         control({{"review-set", QJsonObject{{"mode", "error"}, {"error", "The record is locked"}}}});
@@ -946,6 +993,11 @@ struct HandshakeTest {   // friend of MainWindow and DataPanels
               "an item shown with the catalog is not asked for again by a refresh");
         p.setOffline(true);
         check(waitUntil([&]{ return settled(p) && p.catalogOffline(); }), "offline again");
+        // Read again while the catalog is away, as the next item is after a review made offline: the
+        // last review then empties a list whose item was shown without the catalog.
+        p.reviewShownId.clear();
+        p.reviewSelectionChanged();
+        check(waitUntil([&]{ return p.reviewShownId == "d/203" && settled(p); }) && p.reviewShownWithoutCatalog, "the last item, shown without the catalog");
 
         p.confirmButton->click();
         check(waitUntil([&]{ return settled(p) && p.reviewItems.isEmpty(); }), "confirmed unusable while offline");
@@ -956,14 +1008,17 @@ struct HandshakeTest {   // friend of MainWindow and DataPanels
               "the list is empty; the last result stays readable");
         check(cellText(p, rowOf(p, "TEST-PLATE-A", 3), 6) == "confirmed: unusable (not sent yet)" && cellText(p, rowOf(p, "TEST-PLATE-A", 3), 5) == "unusable, confirmed",
               "the Data tab says that the review has not been sent");
-        check(p.status["pending"].toInt() == 3 && w.display.data->value() == uiJoin({"demo", "offline", "4 to sync"}) &&
-              p.summaryLabel->text().contains("1 review kept on this Mac"), "a review that waits counts as one to sync, next to the three captures");
+        check(p.status["pending"].toInt() == 3 && w.display.data->value() == uiJoin({"demo", "offline", "3 to sync", "1 stuck"}) &&
+              p.summaryLabel->text().contains("1 review kept on this Mac"),
+              "a review that waits counts as one to sync, next to the two captures a sync can move; the one without its fields needs a person");
         check(!p.confirmButton->isEnabled() && p.reviewProvenance->rowCount() == 0, "nothing to act on");
 
         // Back online, a sync sends the review: from then on the tab does not say that it is kept on this Mac (D4).
         p.setOffline(false);
         check(waitUntil([&]{ return settled(p) && !p.catalogOffline(); }), "online again");
         check(p.reviewResult->text().contains("Kept on this Mac"), "until a sync has sent it, the review is still said to be kept");
+        check(p.reviewStack->currentIndex() == 0 && p.reviewEmpty->text().contains("Kept on this Mac") && !p.reviewEmpty->text().contains("could not be shown"),
+              "an empty list is not an item shown without the catalog that has to be asked for again");
         p.syncButton->click();
         check(waitUntil([&]{ return settled(p) && commandsCalled().contains("sync") && p.status["reviews_queued"].toInt() == 0; }), "the sync sends it");
         const QString sentAt = DataText::localTime(p.status["last_sync_utc"].toString(), "HH:mm");
@@ -972,6 +1027,13 @@ struct HandshakeTest {   // friend of MainWindow and DataPanels
               p.reviewStack->currentIndex() == 0 && !p.reviewEmpty->text().contains("Kept on this Mac") &&
               p.reviewEmpty->text().contains("Recorded in the demo catalog at " + sentAt), "the Review tab no longer says that the review is kept on this Mac");
         check(cellText(p, rowOf(p, "TEST-PLATE-A", 3), 6) == "confirmed: unusable" && !p.summaryLabel->text().contains("kept on this Mac"), "nor does the Data tab");
+        const qsizetype shownSoFar = commandsCalled().count("review-show");
+        p.refresh();
+        check(waitUntil([&]{ return settled(p); }) && commandsCalled().count("review-show") == shownSoFar &&
+              p.reviewEmpty->text().contains("Recorded in the demo catalog at " + sentAt), "a later refresh asks for no item and keeps the line");
+        for (const QJsonObject& call : calls())
+            if (call["command"].toString() == "review-show")
+                check(!argumentsOf(call).mid(3).contains(QString()), "no prediction is asked for without its id");
     }
 
     static void syncAfterCaptures() {
@@ -1083,6 +1145,18 @@ struct HandshakeTest {   // friend of MainWindow and DataPanels
         check(commandsCalled().count("sync") == syncs, "none at the interval");
         p.status["last_sync_utc"] = QDateTime::currentDateTimeUtc().addSecs(-301).toString(Qt::ISODateWithMs);
         check(p.periodicSyncDue(), "five minutes after the last sync it looks again");
+        // The settings name another catalog than the one the rows describe: what the rows count says
+        // nothing about it, so one periodic sync binds them to it.
+        p.autoSync.stop();
+        control({{"catalog", "datafed"}, {"catalog_changed", true}});
+        p.refresh();
+        check(waitUntil([&]{ return settled(p) && p.catalogChanged(); }) && p.syncWork() == 0 && p.periodicSyncDue(), "the catalog settings changed");
+        syncs = commandsCalled().count("sync");
+        p.autoSync.start();
+        check(waitUntil([&]{ return commandsCalled().count("sync") == syncs + 1 && settled(p); }) && !p.catalogChanged(),
+              "one periodic sync binds the rows to the catalog in use");
+        spin(900);
+        check(commandsCalled().count("sync") == syncs + 1, "and no other one follows at the interval");
         control({});
         p.refresh();
         check(waitUntil([&]{ return settled(p) && p.demoCatalog(); }), "the demo catalog again");
@@ -1269,11 +1343,11 @@ struct HandshakeTest {   // friend of MainWindow and DataPanels
         w.display.backend->setState(UiTone::Danger, "stopped", QString(), true);
         w.display.laser->setState(UiTone::Danger, "UNCONFIRMED", QString(), true);
         w.display.scan->setState(UiTone::Danger, "FAILED at 12 of 13", QString(), true);
-        w.display.data->setState(UiTone::Warn, uiJoin({"DataFed", "offline", "128 to sync"}));
+        w.display.data->setState(UiTone::Warn, uiJoin({"DataFed", "offline", "128 to sync", "12 stuck"}));
         spin(200);
         check(w.size() == QSize(1180, 720), "the longest header texts do not widen the window");
         fits(w, "longest header texts");
-        check(w.display.simulation->toolTip().startsWith("LASER IS REAL (motors simulated)") && w.display.data->toolTip().contains("128 to sync"),
+        check(w.display.simulation->toolTip().startsWith("LASER IS REAL (motors simulated)") && w.display.data->toolTip().contains(uiJoin({"128 to sync", "12 stuck"})),
               "a status that had to give way keeps its whole text in the tool tip");
     }
 

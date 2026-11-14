@@ -23,6 +23,9 @@ the data layer's packages from PyPI.
 suite and exits 1 if any failed: the data layer, the Studio page and its embedded data, the motor
 program, the backend (protocol, safety stop, virtual sample), the simulated hardware check, the
 controller's handshake, settings and window tests, the simulated runner and the end-to-end run.
+The hardware check runs in a deploy folder of its own, `.build/test-logs/hardware_check_deploy/`
+(copies of `handshake_v2/` and `virtual_sample/`), so that its `scan_sessions/_hwcheck_<time>/`
+folder is never left in `deploy-macos/`.
 The self-tests that open the USB stack and the vendor library (`shim_selftest`, `SampleApl
 --selftest`) are left out while the instruments are attached, and also with
 `RAMAN_SKIP_DEVICE_SELFTESTS=1`.
@@ -48,7 +51,10 @@ deploy-macos/cnn_1.py, Portable_Raman_database/, _CNN_2class_r6g_mb/, dark_measu
 
 `dark_measurements/` starts empty: the darks of the original hand-off folder are not copied. They
 have no `.json` beside them, so they count as real, and a real session could be paired with one
-of them months later (data_layer/PROTOCOL.md sections 1 and 2.5).
+of them months later (data_layer/PROTOCOL.md sections 1 and 2.5). A dark in `deploy-macos/` with
+the name and the content of a hand-off dark and no `.json` (a copy an earlier build made, or a link
+to a hand-off dark) is removed by the build, which then names the hand-off folder that keeps them.
+It removes nothing when both dark folders are one, and never a file that a hand-off link points to.
 
 ## Running
 
@@ -147,12 +153,13 @@ end-to-end simulated run PASS (laser, dark, monitor, 1D 13 points, 2D 124 points
 both times).
 
 Last full run of the DataFed edition (`RAMAN_SKIP_DEVICE_SELFTESTS=1 build_macos.sh --test`,
-2026-11-14, after the review fixes, nothing attached): every suite PASS, in 687 s. Data layer 466
-tests, Studio embedded data, engine (32) and page, motor 36, backend protocol 10 (without its
-self-test class), safety stop 15, virtual sample 18 and 16, simulated hardware check,
-handshake_tests 46, settings_tests 2, ui_tests 27, simulated runner 7, end-to-end 1 (laser, dark
-and its `.json`, monitor, 1D 13 points, 2D 124 points, both sessions naming the dark the run took).
-The device self-tests were not run in that session.
+2026-11-14, after the second round of review fixes, nothing attached): every suite PASS, in 692 s.
+Data layer 488 tests, Studio embedded data, engine (32) and page, motor 36, backend protocol 10
+(without its self-test class), safety stop 15, virtual sample 18 and 16, simulated hardware check
+(in its own deploy folder under `.build/test-logs/`), handshake_tests 47, settings_tests 3,
+ui_tests 27, simulated runner 7, end-to-end 1 (laser, dark and its `.json`, monitor, 1D 13 points,
+2D 124 points, both sessions naming the dark the run took). The device self-tests were not run in
+that session.
 
 Verified for the original port on 2026-10-27 (above): the controller's own hardware-free test
 suite; the motor program's unit tests (sequence identical to the C++ original, 124 points in 2D,

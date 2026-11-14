@@ -49,7 +49,10 @@ HOME/studio.sh                        starts the Studio server for HOME (section
 
 `HOME/dark_measurements/` of a deploy holds only darks captured there: the build does not copy the
 darks of the original hand-off folder. They have no `.json`, so they count as real (section 2.5),
-and a real session could otherwise be paired with a dark months old.
+and a real session could otherwise be paired with a dark months old. A dark there with the name
+and the content of a hand-off dark and no `.json` (a copy an earlier build made, or a link to a
+hand-off dark) is removed by the build; the hand-off folder keeps its own, and nothing is removed
+when both folders are one.
 
 The controller starts the data layer as a child process and never blocks on it:
 
@@ -65,13 +68,14 @@ If `HOME/data_layer/raman_datafed/` does not exist the controller shows the data
 
 The controller window starts all this only once it is shown: `status`, `list` and `review-list`
 then; a plain `sync` when a scan or single capture has ended, after its own `classify`, and every
-30 s while no scan runs and either the status reports `sync_work` above 0 (section 6) or uploaded
-captures wait for a prediction made elsewhere (for those, with DataFed, only every 5 minutes);
-`sync --retry-failed` from its Sync now button. Sync now, Classify now and Import scan folder also
-work while a scan runs, so that earlier points of a long scan can be looked at; what a point or
-`session.json` still being written means for them is in section 5.4. A controller that is never
-shown (`raman_sim_runner`, the tests) starts no data-layer process, so nothing is synced behind the
-Studio's back. The Studio button starts `studio --no-open --idle-exit 900` detached.
+30 s while no scan runs and the status reports `sync_work` above 0 or `catalog_changed` (section
+6), or uploaded captures wait for a prediction made elsewhere (for those, with DataFed, only once
+the last sync is 5 minutes old); `sync --retry-failed` from its Sync now button. Sync now,
+Classify now and Import scan folder also work while a scan runs, so that earlier points of a long
+scan can be looked at; what a point or `session.json` still being written means for them is in
+section 5.4. A controller that is never shown (`raman_sim_runner`, the tests) starts no data-layer
+process, so nothing is synced behind the Studio's back. The Studio button starts `studio --no-open
+--idle-exit 900` detached.
 
 ## 2. Files the controller writes
 
@@ -80,10 +84,15 @@ Existing files and keys keep their exact meaning. Everything below is additive.
 ### 2.1 Operator fields
 
 The controller has four text fields: **Sample ID**, **Operator**, **Location** (all required,
-trimmed, non-empty) and **Notes** (optional), each at most 200 characters, as in the Studio and
-`raman_sim_runner`. A scan or single capture does not start while a
-required field is empty. Operator and Location are remembered between runs (`QSettings`). The
-values are copied at the moment the scan starts and do not change during that scan.
+trimmed, non-empty) and **Notes** (optional), each at most 200 characters, counted in UTF-16 units
+as `raman_sim_runner` counts them: an emoji counts two. A character that does not fit whole is left
+out, whether it is typed, pasted or a remembered value, so a field never holds half of a character
+(a lone UTF-16 surrogate) and `session.json` and the capture blocks never contain a `\ud800` to
+`\udfff` escape. A remembered value longer than the limit is shown cut at a whole character, and
+captures record what the field shows. The Studio's server counts the same limit in code points
+(section 7). A scan or single capture does not start while a required field is empty. Operator and
+Location are remembered between runs (`QSettings`). The values are copied at the moment the scan
+starts and do not change during that scan.
 
 `laser_power_level` is the level that was sent with the last confirmed Laser ON
 (`LOW` | `MEDIUM` | `HIGH`), not the current position of the Power box.
@@ -115,8 +124,12 @@ apply the rule by which each helper program chooses its simulator to the environ
 with: the backend simulates for `RAMAN_BACKEND_SIMULATE` exactly `1`; the motor program for
 `RAMAN_MOTOR_SIMULATE` `1` once leading and trailing blanks are removed, or for `"transport":
 "simulate"` (or `true`) in the `motor_config.json` it reads (`RAMAN_MOTOR_CONFIG`, else the one in
-`handshake_v2/motor/`). A Windows build starts the original `SampleApl.exe` and
-`RamanAutofocus.exe`, which have no simulator: there both are always `false`.
+`handshake_v2/motor/`). The controller reads that file only when both Python and Qt can (section
+2.5), the motor program with Python alone: a hand-edited `motor_config.json` that selects
+`simulate` and also holds what only Qt refuses (`NaN`, `Infinity`, a number beyond the range of a
+double, nesting deeper than 1024) gives `simulated.motor` false while the motor program simulates.
+A Windows build starts the original `SampleApl.exe` and `RamanAutofocus.exe`, which have no
+simulator: there both are always `false`.
 
 `dark_file` is the file name (no folder) of the newest dark in `HOME/dark_measurements/` at that
 moment whose kind (section 2.5) is the session's: simulated when `simulated.backend` is true, real
@@ -177,7 +190,9 @@ includes any `_N` suffix the `.txt` name got.
 2.2) and `instrument` is what `session.json` gets. When the `.json` cannot be written, the `.txt`
 is removed and the dark counts as not saved (`[Dark Error] Save failed.`); a `.txt` left without
 its `.json` would count as real. Should the removal fail as well, the log says to delete the file
-by hand.
+by hand. A controller stopped between the two writes (a crash, a kill, a power cut) leaves a
+simulated dark without its `.json`, and that dark then counts as real. A real dark captured
+before every real scan keeps such a dark from being the newest real one.
 
 The kind of a dark, read the same way by the controller (`darkKind()` in `laser_test/main.cpp`)
 and by the data layer (`dark_kind()` in `metadata.py`):
@@ -186,12 +201,19 @@ and by the data layer (`dark_kind()` in `metadata.py`):
 |---|---|
 | simulated | its `.json` has `simulated.backend` true |
 | real | its `.json` has `simulated.backend` false, or it has no `.json`: every dark taken before this edition, the hand-off darks included |
-| unknown | its `.json` cannot be read as Python's `json` module reads it (also a link to nothing, a folder, or a value that is not an object), or `simulated.backend` is missing or not `true`/`false` |
+| unknown | its `.json` cannot be read (below; also a link to nothing, a folder, or a value that is not an object), or `simulated.backend` is missing or not `true`/`false` |
+
+A `.json` can be read only when both Python's `json` module and Qt's JSON parser read it, so that
+both readers give every dark the same kind. The controller also refuses what only Python refuses:
+a byte order mark, text that is not UTF-8, a raw control character in a string, an escape that
+JSON does not have (`\q`, `\x41`, `\'`) and a number whose point lacks a digit on either side
+(`1.`, `.5`, `-.5`, `1.e5`). The data layer also refuses what only Qt refuses: `NaN`, `Infinity`
+and `-Infinity`, a number beyond the range of a double (`1e400`, or a whole number too large for
+one), a number that reads as 0 although a digit of it is not (`1e-400`), and nesting deeper than
+1024 arrays and objects.
 
 A dark of unknown kind is never paired. `session.json` names only a dark of the session's kind
 (section 2.2), and the data layer checks the kinds again when it registers a capture (section 5.3).
-One difference: a hand-edited `.json` holding `NaN` or `Infinity` is unknown to the controller,
-which never names such a dark, but readable to the data layer.
 
 This file's schema id is `raman-dark-description/1`. The catalog metadata of a dark record
 (section 5.3) has its own, `raman-dark/1`, and other keys. Neither reader checks the id of this
@@ -391,8 +413,19 @@ derived from it: the capture counts as having no dark.
 Registration refuses metadata the catalog would refuse: when the JSON of the metadata, with ASCII
 escapes as the DataFed adapter sends it, takes more than 102,400 - 256 bytes, the capture goes to
 `error` / `metadata` with a message that names the longest of the four text fields. Titles are
-shortened to 80 UTF-16 code units (an emoji counts 2); the free text in front is shortened, and a
-` [simulated]` at the end is kept.
+shortened to 80 UTF-16 code units (an emoji counts 2): the free text in front is shortened and its
+end kept whole. When that end (the session folder, in the title of a session's collection or of
+its predictions' collection) leaves no room for the text in front, the two are shortened together.
+A ` [simulated]` at the end is always kept, also when a catalog fits a whole title again.
+
+Text holding half of a character (a lone UTF-16 surrogate, as an emoji cut in two leaves it) has
+no UTF-8 form, so neither the ledger nor a catalog can store it. In the capture block, or in any
+other key of the point, it puts the capture in `error` / `metadata` with `<point> cannot be
+registered: <key> holds a broken character` (a key whose own name is broken is called "a key").
+A broken `capture_id` or `session_id` gets no row at all (section 5.4). Whole numbers are 64-bit,
+as the ledger stores them: a `point_id` beyond that range gets no row, `controller_*_steps` beyond
+it give `position_*` null, and an `integration_time_us` beyond it is a problem of the capture
+block.
 
 Dark (`type` = `raman.dark_spectrum`): `{"type": "raman.dark_spectrum", "schema": "raman-dark/1",
 "file": "dark_....txt", "sha256": "...", "bytes": 12345, "simulated": true}`. `simulated` is
@@ -431,8 +464,9 @@ versions of python, numpy, scikit-learn and joblib that computed it). A `rejecte
 - `dark not used: the dark was taken in simulation; this spectrum is real`, or `dark not used: the
   dark was taken with the real spectrometer; this spectrum is simulated`;
 - `dark not used: it is not known whether the dark was taken in simulation (<file>.json cannot be
-  read | <file>.json does not say whether the backend simulated); this spectrum is real` (or
-  `simulated`);
+  read | <file>.json does not say whether the backend simulated | a dark named <file>.json has no
+  room for a description beside it); this spectrum is real` (or `simulated`); the third is a dark
+  whose own name ends in `.json`;
 - in these three cases `dark` is `null` and there is no link to the dark;
 - `the dark spectrum <file> was never uploaded: <why>`, when its record says `unavailable`; here
   `dark` is `{record, sha256}` and the link is made.
@@ -475,6 +509,18 @@ renames it when complete, and the data layer reads only the final names. A point
 sync reads again: it never spends an attempt and is never given up. So `sync`, `classify` and
 `import-session` may run during a scan.
 
+A file that cannot be read never ends a sync; it is reported on its own and the other files go
+on. A session folder that cannot be listed gives the errors entry `<folder> cannot be read: <OS
+error>`. A `session.json` or point that cannot be used at all (not JSON, nested too deeply for
+Python, a `capture_id` or `session_id` that is missing or holds a broken character, a `point_id`
+that is not a 64-bit whole number) gives an entry that starts with the folder and names the file,
+for example `<folder>: point_0003.json: capture_id holds a broken character` or `<folder>:
+session.json cannot be read as JSON`. These entries have `capture_id` null and no row; the status
+lists them among its `problems` as the last sync found them. A point whose file, or whose dark,
+cannot be read when it is found waits in `error` / `metadata` (`<point> cannot be registered: <OS
+error>`). A capture with a broken character waits there until its point file is corrected:
+`import-session` keeps the values already in the files.
+
 ### 5.5 Catalog interface (Python)
 
 ```
@@ -496,9 +542,16 @@ class Catalog:                          # raman_datafed/catalog.py
     transfer_status(task_id) -> Transfer        # status: queued | running | succeeded | failed
     get_data(record, dest_dir) -> Path          # blocks until the file is there
 Errors: CatalogOffline (unreachable, nothing changed, retry later; in DataFed mode also a client
-that cannot connect at all: "DataFed cannot be used from this Mac"), CatalogAuthRequired (the user
-must set up credentials), CatalogConflict, CatalogNotFound, CatalogError (base).
+that cannot connect at all: "DataFed cannot be used from this Mac", and an interpreter without the
+datafed package: "The datafed Python package is not available in this interpreter"),
+CatalogAuthRequired (the user must set up credentials), CatalogConflict, CatalogNotFound,
+CatalogError (base).
 ```
+
+A CatalogOffline ends a sync without spending an attempt of any capture: `sync` reports `online`
+false, and a command that fails on it reports `"kind": "offline"`. The missing package's detail is
+`<import error>; create the data layer's environment with data_layer/setup_env.sh`, and `status`
+names it as `The datafed Python package is not available in this interpreter (<that detail>).`
 
 `local-demo` keeps everything under `HOME/data_catalog/local_demo/`. A file
 `HOME/data_catalog/local_demo/OFFLINE` makes every call but `whoami` raise `CatalogOffline`, which is how the
@@ -518,19 +571,50 @@ finish; the next `sync` picks the result up.
 
 | command | does | main output keys |
 |---|---|---|
-| `status` | nothing but report | `mode`, `mode_label`, `demo`, `online`, `user`, `context`, `endpoint`, `counts` (one key per state), `total`, `pending` (captures not yet uploaded, without the held ones), `held_simulated` (simulated captures that `datafed` mode keeps on this Mac, section 5.1; always 0 in the demo), `sync_work` (what a plain `sync` can move on now: captures and dark spectra to register or upload, failed ones below `sync.max_attempts`, reviews recorded offline; not the held captures, those lacking fields, or those past the limit), `reviews_queued`, `last_sync_utc`, `problems` (list of strings) |
+| `status` | nothing but report | `mode`, `mode_label`, `demo`, `online`, `user`, `context`, `endpoint`, `counts` (one key per state), `total`, `pending` (captures not yet uploaded, without the held ones), `held_simulated` (simulated captures that `datafed` mode keeps on this Mac, section 5.1; always 0 in the demo), `sync_work` (what a plain `sync` can move on now: captures and dark spectra to register or upload, failed ones below `sync.max_attempts`, reviews recorded offline; not the held captures, those lacking fields, or those past the limit), `catalog_changed` (true while the rows, with their states, record ids and predictions, still belong to the catalog used before the settings changed; the next sync registers every capture in the catalog in use. False when there is no capture), `reviews_queued`, `last_sync_utc`, `problems` (list of strings, below) |
 | `sync [--retry-failed]` | find new points, register, upload, poll transfers, pick up predictions and reviews; `--retry-failed` also retries what reached `sync.max_attempts` | `busy` (another sync is running; nothing was done and `online` is `null`), `online`, `ingested`, `registered`, `uploads_started`, `uploads_done`, `predictions_found`, `reviews_found`, `reviews_sent` (reviews written to the catalog: a queued review that a later one already in the catalog supersedes leaves the queue unwritten), `held_simulated` (as in `status`), `errors` (list of `{capture_id, stage, message}`), `status` (same object as `status`) |
 | `list [--session ID] [--state S] [--limit N]` | rows for the Data tab, newest first | `items`, `total` |
 | `classify [--limit N]` | run the classifier job here against the active catalog; unlike the other commands it waits for the downloads of the files it classifies | `runner`, `processed` (spectra that left the queue with a prediction), `predictions` (prediction records this run created), `skipped` (left in the queue: a file is not uploaded yet), `remaining` (not looked at), `errors`, `items` (`{capture_id, raw_record, prediction_record, label, top_class, confidence, outcome, needs_review, created}`), `model` |
 | `review-list` | predictions of this HOME's captures waiting for a person | `items`, `online` (`null`: the catalog did not have to be asked; `false`: the items come from the ledger alone and their `scores`, `reason`, `threshold`, `model` are `null`) |
 | `review-show --prediction ID` | one prediction in full; the spectrum is read from this Mac and only fetched from the catalog (waiting for the download) when it is not here | `item`, `spectrum` (`raman_shift`, `intensity`, `dark`, `processed`: index-aligned lists of 2048; `processed` is `null` for the first `processed_start` = 90 pixels, which the model does not see; `dark` or `processed` is `null` when there is none; `source`), `provenance` (the records the prediction is derived from: nodes as in `provenance`, plus `relation` and `label`), `classes`, `online`, `problems`. Only the dark the classifier used is shown: online the one the prediction names (the file on this Mac only when its SHA-256 matches); offline the capture's dark when the kinds allow it (section 5.3). Without one, `dark` and `processed` are `null` and `problems` says why, for example "The classifier used no dark spectrum for this prediction, so none is shown." |
-| `review-set --prediction ID --decision confirm\|relabel\|reject [--label CLASS] --reviewer NAME [--comment TEXT]` | record a review (queued locally when offline). `--label` goes with `relabel` only: one of the model's classes, or `unknown` (stored as `UNKNOWN`). `confirm` stores the prediction's `top_class` as the review label (`REJECTED` for a rejected one), `reject` none. It waits for `HOME/data_catalog/review.lock`, which a sync holds while it sends one queued review, and takes the review's time inside it; a review already in the catalog that was made later is kept, and `item` then shows that one | `item`, `queued` |
+| `review-set --prediction ID --decision confirm\|relabel\|reject [--label CLASS] --reviewer NAME [--comment TEXT]` | record a review (queued locally when offline). `--label` goes with `relabel` only: one of the model's classes, or `unknown` (stored as `UNKNOWN`). `confirm` stores the prediction's `top_class` as the review label (`REJECTED` for a rejected one), `reject` none. It waits, without a time limit, for `HOME/data_catalog/review.lock`, which a sync holds while it sends one queued review (the sync makes its first catalog request, which connects, before it takes the lock), and takes the review's time inside it; a review already in the catalog that was made later is kept, and `item` then shows that one | `item`, `queued` |
 | `provenance --record ID` | the provenance chain around a record | `nodes` (`{id, alias, title, type, role: start\|source\|derived, info}`), `edges` (`{from, to, relation, label}`: `from` is derived from `to`), `truncated` |
-| `import-session --folder DIR [--sample-id S --operator O --location L] [--notes N --laser-power LEVEL --simulated yes\|no --dark-file FILE]` | add an existing scan folder (copied under `scan_sessions/` unless it is there), supplying missing fields; values already in the files win. `--dark-file` also copies the dark's `.json` from beside it, first | `ingested`, `skipped`, `errors`, `folder`, `session_id`, `copied` |
+| `import-session --folder DIR [--sample-id S --operator O --location L] [--notes N --laser-power LEVEL --simulated yes\|no --dark-file FILE]` | add an existing scan folder (copied under `scan_sessions/` unless it is there), supplying missing fields; values already in the files win. `--dark-file` also copies the dark's `.json` from beside it, first; when that `.json` exists, or is a link, but is not a file that can be read (a link to nothing, a folder, an unreadable file), nothing is imported: kind `command`, "The description <name> beside the dark cannot be read; nothing was imported", because the dark copied without it would count as real. A point holding a broken character outside its capture block (section 5.3) is not completed: an `errors` entry `<file>: <key> holds a broken character` | `ingested`, `skipped`, `errors`, `folder`, `session_id`, `copied` |
 | `config [--set key=value ...]` | show or change settings (dotted keys) | `config`, `path`, `problems` and `warnings` when there are any |
 | `doctor [--online]` | check the DataFed prerequisites without logging in; `--online` (datafed mode only) also asks DataFed who the user is. The settings check names `datafed.include_simulated` and what it does | `checks` (list of `{name, ok, detail, fix}`), `online_checked`, `datafed_ready`, `mode`, `include_simulated` |
 | `offline --on\|--off` | local-demo only: simulate losing the connection | `offline` |
 | `studio [--port N] [--no-open] [--idle-exit SECONDS]` | serve the Simulation Studio on 127.0.0.1, on port N (default 8765) or the next free one, until interrupted (SIGINT, SIGTERM, SIGHUP); with `--idle-exit` also until nobody has used it for that long (no request, no run of its own) | prints `{"ok": true, "url": "http://127.0.0.1:N/"}` then keeps running |
+
+While `catalog_changed` is true, `pending`, `held_simulated` and `sync_work` count as the next sync
+will see them: `held_simulated` every simulated capture that sync will hold back, `pending` all
+captures less those (the ones lacking fields included), and `sync_work` the captures it will
+register plus the reviews queued for the catalog in use, with no dark spectra. `counts` and
+`total` still describe the rows as stored.
+
+The status `problems`, in this order, each only when it applies (N and M are numbers):
+
+1. What the catalog reports, such as `DataFed cannot be reached (...).`, `DataFed cannot be used
+   from this Mac (connect: ...).`, the missing package (section 5.5), or missing credentials or
+   default endpoint; `The catalog cannot be reached.` when it cannot be reached and says no more
+   (the demo). While it cannot be reached and captures wait, ` N capture(s) wait for the next
+   sync.` follows.
+2. `The catalog settings changed: the next sync registers every capture in <label>.`, with
+   `, except the simulated ones, which stay on this Mac` before the full stop while simulated
+   captures are held back (section 5.1). `<label>` is the catalog's `mode_label`.
+3. `N capture(s) cannot be registered as their files are (their Error rows say why). Where Sample
+   ID, Operator or Location is missing, import the session folder again with these fields (Data
+   tab: Import scan folder; command line: import-session --folder FOLDER).`
+4. `N capture(s) failed and will be tried again by the next sync.`
+5. `N capture(s) failed M times and are no longer retried: fix the cause, then run sync
+   --retry-failed.` (M is `sync.max_attempts`)
+6. In `datafed` mode: `N upload(s) have made no progress for more than 10 minutes: check that
+   Globus Connect Personal is running on this Mac (see doctor).`
+7. `N dark spectrum file(s) could not be uploaded (the last: <reason>); Sync now tries again.`
+8. `N review(s) could not be sent: <the last error>`
+9. The held-back sentence of section 5.1.
+10. The errors without a capture id that the last sync found (section 5.4).
+
+While `catalog_changed` is true, 4 to 7 are left out: they concern the catalog used before.
 
 `list` item:
 
@@ -549,7 +633,9 @@ finish; the next `sync` picks the result up.
 `prediction` and `review` are `null` until they exist. An item also has `point_file`
 (`point_0003.json`); `error` is `{"stage", "message", "attempts"}` in state `error`; `review` has
 `"queued": true` while a review recorded offline waits to be sent. `review-list` items are the same shape
-plus `prediction_id`, `scores`, `reason`, `threshold`, `model` (`name`, `sha256`, `record`).
+plus `prediction_id`, `scores`, `reason`, `threshold`, `model` (`name`, `sha256`, `record`). The text
+of an item shows U+FFFD in place of half a character (section 5.3), and a value that the ledger
+cannot hold (an object, a list, a whole number beyond 64 bits) is `null`.
 
 ## 7. Simulation Studio
 
@@ -584,9 +670,11 @@ and the page itself are answered.
 Beyond the table:
 
 - `GET /api/scan` also returns `folder`, `sessions` (the 12 newest: `folder`, `session_id`,
-  `scan_mode`, `started_utc`, `sample_id`) and `run` (the run started by `/api/run`, else `null`:
-  `pid`, `running`, `exit_code`, `started_utc`, `finished_utc`, `stop_requested`, `simulated` and the
-  fields it was started with). `?session=<folder>` shows another session. Newest is the latest
+  `scan_mode`, `started_utc`, `sample_id`, and `simulated`: `session.json`'s `{"backend",
+  "motor"}`, `null` when it does not give both as true or false; the page shows ground truth only
+  for the spectra of a session whose two flags are true, the one on show or one of these) and `run`
+  (the run started by `/api/run`, else `null`: `pid`, `running`, `exit_code`, `started_utc`,
+  `finished_utc`, `stop_requested`, `simulated` and the fields it was started with). `?session=<folder>` shows another session. Newest is the latest
   `started_utc`, else the folder's modification time. `active`: `request.txt` or `response.txt` of
   the newest session changed in the last 5 s and there is no `cancel.txt`, or the run of this server
   is alive. `ack` is `null` until the controller has answered the STEP in `request`. `stage` also has
@@ -598,9 +686,13 @@ Beyond the table:
   `?session=ID`, and has `review_problem` (with an empty `review`) when the review list could not be had.
 - `POST /api/sync` takes `{"retry_failed": true}`, `POST /api/classify` `{"limit": N}`.
 - `POST /api/run` passes `sample_id`, `operator` and `location` as single arguments: at most 200
-  characters each, no control characters, no bidirectional controls (U+202A to U+202E, U+2066 to
-  U+2069), not starting with `-`. One run at a time. The text fields of `POST /api/review` follow
-  the same character rules (its comment may hold line breaks); a refused field answers 400.
+  characters each, counted in code points, no control characters, no half characters, no
+  bidirectional controls (U+202A to U+202E, U+2066 to U+2069), not starting with `-`. One run at a
+  time. `raman_sim_runner` counts the 200 in UTF-16 units, as the window does (section 2.1), and
+  refuses a longer text with exit code 2: a text of more than 100 emoji passes the server and still
+  does not start a run. The page's own fields take at most 60 units. The text fields of `POST
+  /api/review` follow the same character rules (its comment may hold line breaks); a refused field
+  answers 400.
 - `POST /api/stop` sends SIGTERM to the runner, then, after 5 s, SIGKILL to the runner's whole
   process group (the runner and its helper programs), and answers `{"ok": true, "stopped": true,
   "pid", "exit_code", "forced"}`; a negative `exit_code` is the number of the signal. It is a

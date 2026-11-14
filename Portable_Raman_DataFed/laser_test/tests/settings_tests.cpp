@@ -68,6 +68,34 @@ struct HandshakeTest {   // friend of MainWindow (see main.cpp)
         MainWindow w;
         check(w.operatorEdit->text() == "Operator Ten" && w.locationEdit->text().isEmpty(), "the latest value is remembered, an emptied field too");
     }
+    // A remembered value longer than the field's limit of 200 UTF-16 units (stored before the limit
+    // existed, or edited by hand): the field shows it cut at the limit, never through the middle of a
+    // character (an emoji takes two units), and a capture records what the field shows. The store
+    // keeps the long value until the field is edited.
+    static void longRemembered() {
+        const QString emoji = QString::fromUtf8("\xF0\x9F\x94\xAC");   // U+1F52C
+        const QString longOperator = QString(250, 'o') + "END";
+        const QString emojiLocation = QString(199, 'l') + emoji + "tail";   // the emoji across the limit
+        const auto stored = [](const char* key) { return QSettings().value(key).toString(); };
+        {
+            QSettings store;
+            store.setValue("capture/operator", longOperator);
+            store.setValue("capture/location", emojiLocation);
+        }
+        {
+            MainWindow w;
+            check(w.operatorEdit->text() == QString(200, 'o'), "a remembered value longer than 200 characters: its first 200");
+            check(w.locationEdit->text() == QString(199, 'l'), "cut before an emoji that does not fit, not through it");
+            check(stored("capture/operator") == longOperator && stored("capture/location") == emojiLocation, "the store is left as it was");
+            const QJsonObject capture = w.captureMetadata();
+            check(capture["operator"].toString() == w.operatorEdit->text() && capture["location"].toString() == w.locationEdit->text() &&
+                  !QJsonDocument(capture).toJson().toLower().contains("\\ud"), "a capture records what the fields show, no half character");
+            w.locationEdit->setText("Lab 11");
+        }
+        check(stored("capture/operator") == longOperator && stored("capture/location") == "Lab 11", "an edited field stores what it shows");
+        MainWindow w;
+        check(w.operatorEdit->text() == QString(200, 'o') && w.locationEdit->text() == "Lab 11", "and shows it at the next start");
+    }
 };
 int main(int argc, char** argv) {
     qputenv("QT_QPA_PLATFORM", "offscreen");
@@ -82,6 +110,7 @@ int main(int argc, char** argv) {
         check(ramanHome() == QCoreApplication::applicationDirPath(), "must run next to the emulators (handshake_v2/ in this folder)");
         HandshakeTest::withoutOrganisation(store); std::cout << "PASS no organisation name / empty fields / guard / nothing stored or loaded\n";
         HandshakeTest::withOrganisation(store); std::cout << "PASS Operator and Location remembered / Sample ID and Notes not\n";
+        HandshakeTest::longRemembered(); std::cout << "PASS remembered value longer than 200 characters / cut at a whole character / recorded as shown\n";
         return 0;
     } catch (const std::exception& ex) {
         std::cerr << "FAIL " << ex.what() << std::endl; return 1;

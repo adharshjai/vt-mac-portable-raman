@@ -512,9 +512,11 @@ class ScanTest(ServerCase):
         self.assertEqual([entry["folder"] for entry in answer["sessions"]], [NEWER, LEGACY, OLDER])
         self.assertEqual(answer["sessions"][0], {
             "folder": NEWER, "session_id": newer["session_id"], "scan_mode": "2d",
-            "started_utc": "2026-11-13T16:00:00.000Z", "sample_id": "S-001"})
+            "started_utc": "2026-11-13T16:00:00.000Z", "sample_id": "S-001",
+            "simulated": {"backend": True, "motor": True}})
         self.assertEqual(answer["sessions"][1], {
-            "folder": LEGACY, "session_id": None, "scan_mode": "1d-y", "started_utc": None, "sample_id": None})
+            "folder": LEGACY, "session_id": None, "scan_mode": "1d-y", "started_utc": None, "sample_id": None,
+            "simulated": None})
 
         set_times(legacy["folder"], moment(16, 30))
         answer = self.scan()
@@ -532,6 +534,25 @@ class ScanTest(ServerCase):
         status, answer = self.get("/api/scan?session=no_such_session")
         self.assertEqual((status, answer["ok"]), (404, False))
         self.assertEqual(self.get("/api/scan?session=%s&session=%s" % (OLDER, NEWER))[0], 400)
+
+    def test_each_listed_session_says_which_helper_program_simulated(self):
+        self.session(OLDER, "2026-11-13T15:15:00.123Z", points=1, simulated=False)
+        path = self.session(NEWER, "2026-11-13T16:00:00.000Z", points=1)["folder"] / "session.json"
+        described = json.loads(path.read_text())
+
+        def listed_with(flags, minute):
+            described["simulated"] = flags
+            path.write_text(json.dumps(described))
+            # Another time for every version: the server reads a file again only when it changed.
+            set_times(path, moment(12, minute))
+            return {entry["folder"]: entry["simulated"] for entry in self.scan()["sessions"]}
+
+        self.assertEqual(listed_with({"backend": False, "motor": True}, 0),
+                         {NEWER: {"backend": False, "motor": True}, OLDER: {"backend": False, "motor": False}})
+        # Only both flags, each true or false, describe a session; anything else is not known.
+        unknown = ({"backend": True}, {"backend": "true", "motor": True}, {"backend": 1, "motor": 1}, True, None)
+        for minute, flags in enumerate(unknown, 1):
+            self.assertIsNone(listed_with(flags, minute)[NEWER], flags)
 
     def test_only_a_short_list_of_recent_sessions(self):
         for number in range(15):

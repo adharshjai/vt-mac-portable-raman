@@ -324,6 +324,45 @@ struct HandshakeTest {
         }
         check(json(w.sessionDir + "/session.json") == session, "session.json is written once");
     }
+    // The limit of 200 counts UTF-16 units, and a character outside the Basic Multilingual Plane (an
+    // emoji) takes two. However a text reaches a field, the field never keeps half of such a character,
+    // so session.json and the points never carry one (it would be written as \ud83d, text that the data
+    // layer cannot store).
+    static void wholeCharacters() {
+        const QString emoji = QString::fromUtf8("\xF0\x9F\x94\xAC");   // U+1F52C
+        const QString high(QChar(0xD83D)), low(QChar(0xDD2C));         // its two halves on their own
+        MainWindow w;
+        confirmLaserOn(w);
+        setMode(w, "ok");
+        struct Field { QLineEdit* edit; char letter; const char* key; };
+        const QList<Field> fields{{w.sampleIdEdit, 's', "sample_id"}, {w.operatorEdit, 'o', "operator"},
+                                  {w.locationEdit, 'l', "location"}, {w.notesEdit, 'n', "notes"}};
+        for (const Field& field : fields) {
+            QLineEdit* edit = field.edit;
+            edit->setText(QString(199, field.letter) + emoji + "tail");
+            check(edit->text() == QString(199, field.letter), "a text longer than the field: cut before the emoji, not through it");
+            edit->insert(emoji);
+            check(edit->text() == QString(199, field.letter), "an emoji typed or pasted with one unit of room left: not inserted");
+            edit->setText(QString(100, field.letter));
+            edit->setCursorPosition(50);
+            edit->insert(high + "x" + low);
+            check(edit->text() == QString(50, field.letter) + "x" + QString(50, field.letter) && edit->cursorPosition() == 51,
+                  "half characters pasted on their own are left out");
+            edit->setText(QString(197, field.letter));
+            edit->setCursorPosition(100);
+            edit->insert(emoji + emoji);
+            check(edit->text() == QString(100, field.letter) + emoji + QString(97, field.letter) && edit->cursorPosition() == 102,
+                  "a paste in the middle that crosses the limit: whole characters only");
+        }
+        click(w, "Capture Spectrum");
+        check(QFile::exists(w.singleCaptureDir + "/point_0001.json"), "single capture saved");
+        for (const QString& file : {QString("/session.json"), QString("/point_0001.json")}) {
+            const QByteArray bytes = readFile(w.singleCaptureDir + file);
+            check(!bytes.toLower().contains("\\ud") && bytes.count(emoji.toUtf8()) == 4, "each emoji whole, as UTF-8, and no half character");
+        }
+        const QJsonObject session = json(w.singleCaptureDir + "/session.json");
+        for (const Field& field : fields) check(session[field.key].toString() == field.edit->text(), "recorded as the field shows it");
+    }
     static void lineScanSession() {
         MainWindow w;
         confirmLaserOn(w);
@@ -672,9 +711,15 @@ struct HandshakeTest {
             "{\"simulated\": {\"backend\": \"true\"}}", "{\"simulated\": {\"backend\": 1}}", "{\"simulated\": {\"backend\": null}}",
             "\xEF\xBB\xBF{\"simulated\": {\"backend\": true}}",                    // Python's json module refuses a byte order mark,
             "{\"simulated\": {\"backend\": true}, \"note\": \"a\tb\"}",            // a raw tab inside a string,
-            "{\"simulated\": {\"backend\": true}, \"note\": \"\xff\"}",            // and a file that is not UTF-8
+            "{\"simulated\": {\"backend\": true}, \"note\": \"\xff\"}",            // a file that is not UTF-8,
+            "{\"simulated\": {\"backend\": true}, \"x\": 1.}", "{\"simulated\": {\"backend\": true}, \"x\": .5}",
+            "{\"simulated\": {\"backend\": true}, \"x\": -.5}", "{\"simulated\": {\"backend\": true}, \"x\": 1.e5}",   // a point without a digit on one side,
+            "{\"simulated\": {\"backend\": true}, \"note\": \"\\q\"}", "{\"simulated\": {\"backend\": true}, \"note\": \"\\x41\"}",
+            "{\"simulated\": {\"backend\": true}, \"note\": \"\\'\"}",             // and an escape JSON does not have, all of which Qt takes
         };
         for (const QByteArray& record : unreadable) check(kindOf(record) == DarkKind::Unknown, "a .json without a readable simulated.backend: unknown");
+        check(kindOf("{\"x\": [1.5e-3, -0.25, 10.0E+2], \"note\": \"a.b .5 \\\"\\\\q\\/\\b\\f\\n\\r\\t\\u00e9\", \"simulated\": {\"backend\": true}}")
+                  == DarkKind::Simulated, "numbers with a point, points in a string and the escapes JSON has: read");
         check(kindOf("{\"simulated\": {\"backend\": true}, \"simulated\": {\"backend\": false}}") == DarkKind::Real, "the last key counts, as in Python");
         check(QDir(folder.path()).mkdir("dark_20261113_101700_000.json") && darkKind(folder.path() + "/dark_20261113_101700_000.txt") == DarkKind::Unknown,
               "a folder named like the .json: unknown");
@@ -725,7 +770,9 @@ struct HandshakeTest {
             {"{\"transport\": \"simulate\", \"transport\": \"auto\"}", false},     // the last one counts, as in Python
             {"\xEF\xBB\xBF{\"transport\": \"simulate\"}", false},                    // Python does not read a byte order mark,
             {"{\"_comment\": \"a\tb\", \"transport\": \"simulate\"}", false},        // a raw tab inside a string,
-            {"{\"transport\": \"simulate\", \"note\": \"\xff\"}", false},             // or a file that is not UTF-8
+            {"{\"transport\": \"simulate\", \"note\": \"\xff\"}", false},             // a file that is not UTF-8,
+            {"{\"transport\": \"simulate\", \"speed\": 1.}", false},                  // a point without a digit after it,
+            {"{\"transport\": \"simulate\", \"note\": \"\\q\"}", false},             // or an escape JSON does not have
         };
         for (const auto& [content, simulates] : configurations) {
             configure(content, "motor_config.json");
@@ -954,11 +1001,18 @@ struct HandshakeTest {
             check(capture["simulated"].toObject()["backend"] == false, "a session with a real backend");
             return capture["dark_file"];
         };
+        // The Capture group names the dark of the backend's kind, as session.json does.
+        const auto captionNames = [&w](const QString& dark) {
+            w.refreshStatusDisplay();
+            return w.display.nextDark->text() == nextDarkCaption(dark, false, QDate::currentDate()).text &&
+                   w.display.nextDark->tone() == UiTone::Neutral && w.display.nextDark->toolTip().contains(dark);
+        };
         check(realSession().toString() == realWith, "a real session: the newest real dark, whose .json says real");
+        check(captionNames(realWith), "the Capture group of a real session names its real dark");
         QFile::remove(darkRecordPath(darkFolder() + "/" + realWith)); QFile::remove(darkFolder() + "/" + realWith);
-        check(realSession().toString() == realWithout, "a dark without a .json is real");
+        check(realSession().toString() == realWithout && captionNames(realWithout), "a dark without a .json is real");
         const QString simulatedLater = later(999, darkRecordOf(true));
-        check(realSession().toString() == realWithout, "a real session never names a simulated dark, however late");
+        check(realSession().toString() == realWithout && captionNames(realWithout), "a real session never names a simulated dark, however late");
         w.laserProcess->setProcessEnvironment(QProcessEnvironment::systemEnvironment());
         check(w.captureMetadata()["dark_file"].toString() == simulatedLater, "and the simulated session takes the later simulated one");
     }
@@ -986,13 +1040,33 @@ struct HandshakeTest {
         setMode(w, "ok");
         const auto scansPrimary = [&w] { return primary(w.display.zScanButton) && primary(w.display.lineScanButton) && primary(w.display.captureButton); };
         const auto scansPlain = [&w] { return !primary(w.display.zScanButton) && !primary(w.display.lineScanButton) && !primary(w.display.captureButton); };
+        // A session with a real backend: the same window with RAMAN_BACKEND_SIMULATE taken out of the
+        // environment its labels are read from (darkPairing); the running emulator is not restarted.
+        const QProcessEnvironment simulatedBackend = w.laserProcess->processEnvironment();
+        const auto withRealBackend = [&w, &simulatedBackend](const std::function<void()>& checks) {
+            QProcessEnvironment realBackend = simulatedBackend;
+            realBackend.remove("RAMAN_BACKEND_SIMULATE");
+            w.laserProcess->setProcessEnvironment(realBackend);
+            w.refreshStatusDisplay();
+            checks();
+            w.laserProcess->setProcessEnvironment(simulatedBackend);
+            w.refreshStatusDisplay();
+        };
         w.refreshStatusDisplay();
         check(primary(w.display.laserButton) && !primary(w.display.darkButton) && scansPlain(), "laser off: Laser ON is the next step");
         check(w.display.nextDark->text() == "no simulated dark yet" && w.display.nextDark->tone() == UiTone::Warn, "no dark: said as a warning");
         confirmLaserOn(w);
+        withRealBackend([&w, &scansPlain] {
+            check(w.display.nextDark->text() == "no real dark yet" && w.display.nextDark->tone() == UiTone::Warn &&
+                  primary(w.display.darkButton) && scansPlain(), "a real session without a real dark: said, and Capture Dark is the next step");
+        });
         QDir().mkpath(darkFolder());
-        writeFile(darkFolder() + "/dark_29991231_235959_999.txt", "x");   // real: no .json
-        w.refreshStatusDisplay();
+        const QString real = "dark_29991231_235959_999.txt";
+        writeFile(darkFolder() + "/" + real, "x");   // real: no .json
+        withRealBackend([&w, &real, &scansPrimary] {
+            check(w.display.nextDark->text() == nextDarkCaption(real, false, QDate::currentDate()).text && w.display.nextDark->tone() == UiTone::Neutral &&
+                  !primary(w.display.darkButton) && scansPrimary(), "a real session with a real dark: named, and the scans are the next step");
+        });
         check(!primary(w.display.laserButton) && primary(w.display.darkButton) && scansPlain(), "laser on, no dark of its kind: Capture Dark");
         check(w.display.nextDark->text() == "no simulated dark yet", "a real dark does not count for a simulated scan");
         click(w, "Capture Dark");
@@ -1115,6 +1189,7 @@ int main(int argc, char** argv) {
         HandshakeTest::backendReportMissing("absent"); std::cout << "PASS backend without report lines / null values\n";
         HandshakeTest::backendReportMissing("unavailable"); std::cout << "PASS module information unavailable / null instrument\n";
         HandshakeTest::sessionFile(); std::cout << "PASS session.json content / capture block in every point\n";
+        HandshakeTest::wholeCharacters(); std::cout << "PASS fields keep whole characters / no half emoji in session.json or a point\n";
         HandshakeTest::lineScanSession(); std::cout << "PASS 1D session.json / capture block in 13 points\n";
         HandshakeTest::requiredFields(); std::cout << "PASS required fields guard / nothing happens\n";
         HandshakeTest::fieldLock(); std::cout << "PASS fields read-only during a scan / values taken at the start\n";

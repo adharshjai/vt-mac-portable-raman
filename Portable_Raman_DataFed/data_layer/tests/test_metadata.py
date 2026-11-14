@@ -26,7 +26,8 @@ class ReadingFolders(unittest.TestCase):
 
         path = session["folder"] / "session.json"
         content = json.loads(path.read_text(encoding="utf-8"))
-        for change, message in (({"schema": "something/9"}, "schema"), ({"session_id": " "}, "session_id")):
+        for change, message in (({"schema": "something/9"}, "schema"), ({"session_id": " "}, "session_id"),
+                                ({"session_id": "\ud83d"}, "session_id holds a broken character")):
             path.write_text(json.dumps({**content, **change}), encoding="utf-8")
             with self.assertRaisesRegex(MetadataError, message):
                 metadata.read_session(session["folder"])
@@ -59,14 +60,19 @@ class ReadingFolders(unittest.TestCase):
         session = support.make_session(self.home, points=1)
         good = json.loads(session["files"][0].read_text(encoding="utf-8"))
         self.assertEqual(metadata.read_point(session["files"][0])["capture_id"], good["capture_id"])
-        broken = {
-            "capture_id is missing": {"capture_id": ""},
-            "session_id is missing": {"session_id": None},
-            "point_id is not a whole number": {"point_id": "3"},
-            "no intensity values": {"intensity": []},
-            "status is 'FAIL'": {"status": "FAIL"},
-        }
-        for message, change in broken.items():
+        broken = [
+            ("capture_id is missing", {"capture_id": ""}),
+            ("session_id is missing", {"session_id": None}),
+            ("point_id is not a whole number", {"point_id": "3"}),
+            # Beyond 64 bits: no point number the controller writes, and the ledger could not store it.
+            ("point_id is not a whole number", {"point_id": 2 ** 63}),
+            ("no intensity values", {"intensity": []}),
+            ("status is 'FAIL'", {"status": "FAIL"}),
+            # Half of an emoji: the ledger and the record alias are keyed by these two.
+            ("capture_id holds a broken character", {"capture_id": "S-\ud83d_1"}),
+            ("session_id holds a broken character", {"session_id": "\udc80"}),
+        ]
+        for message, change in broken:
             session["files"][0].write_text(json.dumps({**good, **change}), encoding="utf-8")
             with self.assertRaisesRegex(MetadataError, message):
                 metadata.read_point(session["files"][0])
@@ -116,6 +122,17 @@ class CaptureBlock(unittest.TestCase):
         block["sample_id"] = ""
         self.assertEqual(metadata.capture_problems(block), ["sample_id is empty"])
 
+    def test_text_with_half_a_character_is_named_and_not_repeated(self):
+        # 199 letters and the first half of an emoji: a field of 200 UTF-16 units cut in the middle of one.
+        block = support.capture_block(location="L" * 199 + "\ud83d")
+        self.assertEqual(metadata.capture_problems(block), ["location holds a broken character"])
+        block = support.capture_block(notes="\U0001F52C a whole emoji is fine")
+        self.assertEqual(metadata.capture_problems(block), [])
+        block["instrument"]["serial"] = "\udc80"
+        block["\ud800"] = "x"
+        self.assertEqual(metadata.capture_problems(block),
+                         ["instrument holds a broken character", "a key holds a broken character"])
+
 
 class RawMetadata(unittest.TestCase):
     def setUp(self):
@@ -160,6 +177,22 @@ class RawMetadata(unittest.TestCase):
                                        steps=None)
         built = self.build(session)
         self.assertEqual((built["position_steps"], built["position_mm"], built["scan_mode"]), (None, None, "single"))
+
+    def test_steps_beyond_64_bits_are_no_position(self):
+        # 10**400 steps are no millimetres a float can hold; such a point must not stop a sync.
+        session = support.make_session(self.home, points=1, steps=(10 ** 400, 0, 0))
+        built = self.build(session)
+        self.assertEqual((built["position_steps"], built["position_mm"]), (None, None))
+
+    def test_a_broken_character_outside_the_capture_block_is_named_too(self):
+        session = support.make_session(self.home, points=1)
+        point = json.loads(session["files"][0].read_text(encoding="utf-8"))
+        point.update(scan_mode="1d-x\udc80", started_utc="\ud83d")
+        session["files"][0].write_text(json.dumps(point), encoding="utf-8")
+        with self.assertRaises(MetadataError) as raised:
+            self.build(session)
+        self.assertEqual(str(raised.exception), "point_0001.json cannot be registered: scan_mode holds a broken "
+                                                "character; started_utc holds a broken character")
 
     def test_simulated_is_true_when_either_simulator_was_used(self):
         session = support.make_session(self.home, points=1, simulated=False)
@@ -237,6 +270,42 @@ class DarkPairing(unittest.TestCase):
         description.unlink()
         description.mkdir()
         self.assertEqual(metadata.dark_kind(dark)[0], "unknown")
+
+    def test_what_the_controllers_parser_refuses_is_unknown_here_too(self):
+        """darkKind() in laser_test/main.cpp reads the description with Qt's parser, which refuses
+        some JSON that Python's json module reads. Both must give a dark the same kind."""
+        dark = self.dark(True)
+        description = metadata.dark_description(dark)
+
+        def with_x(value):
+            return '{"x": %s, "simulated": {"backend": true}}' % value
+
+        refused = {
+            "NaN": with_x("NaN"),
+            "Infinity": with_x("Infinity"),
+            "-Infinity, backend false": '{"x": -Infinity, "simulated": {"backend": false}}',
+            "beyond a double": with_x("1e400"),
+            "beyond a double, negative": with_x("-1.7976931348623159e308"),
+            "a whole number beyond a double": with_x("1" + "0" * 400),
+            "read as 0 though it is not": with_x("1e-400"),
+            "1025 levels": with_x("[" * 1024 + "]" * 1024),
+            # Deeper than the json module goes: it raises RecursionError, which must not escape.
+            "100000 levels": with_x("[" * 100000 + "]" * 100000),
+        }
+        for case, content in refused.items():
+            description.write_text(content, encoding="utf-8")
+            self.assertEqual(metadata.dark_kind(dark), ("unknown", "%s cannot be read" % description.name), case)
+        taken = {
+            "the largest double": with_x("1.7976931348623157e308"),
+            "a whole number beyond 64 bits": with_x("9223372036854775808"),
+            "zero with a small exponent": with_x("0e-400"),
+            "a subnormal number": with_x("1e-320"),
+            "1024 levels": with_x("[" * 1023 + "]" * 1023),
+            "half of an emoji in another value": '{"n": "\\ud800", "simulated": {"backend": true}}',
+        }
+        for case, content in taken.items():
+            description.write_text(content, encoding="utf-8")
+            self.assertEqual(metadata.dark_kind(dark), ("simulated", None), case)
 
     def test_a_dark_with_a_suffix_after_its_stamp_has_its_own_description(self):
         dark = self.dark(True, name="dark_20261113_101400_001_1.txt")
@@ -428,6 +497,20 @@ class Completion(unittest.TestCase):
         plan = metadata.plan_completion(session["folder"], self.supplied)
         self.assertEqual(len(plan["changes"]), 2)
         self.assertEqual([entry["file"] for entry in plan["errors"]], ["point_0003.json"])
+
+    def test_a_point_with_a_broken_character_is_reported_not_written_again(self):
+        session = self.legacy(points=2)
+        point = json.loads(session["files"][1].read_text(encoding="utf-8"))
+        point["started_utc"] = "2026-11-13T15:15:03.150Z\ud83d"
+        session["files"][1].write_text(json.dumps(point), encoding="utf-8")
+        before = session["files"][1].read_bytes()
+        plan = metadata.plan_completion(session["folder"], self.supplied)
+        self.assertEqual([name for name, _capture in plan["changes"]], ["point_0001.json"])
+        self.assertEqual(plan["errors"],
+                         [{"file": "point_0002.json", "message": "started_utc holds a broken character"}])
+        metadata.apply_completion(session["folder"], plan)
+        self.assertEqual(session["files"][1].read_bytes(), before)
+        self.assertEqual(metadata.read_session(session["folder"])["started_utc"], "2026-11-13T15:15:02.150Z")
 
 
 if __name__ == "__main__":

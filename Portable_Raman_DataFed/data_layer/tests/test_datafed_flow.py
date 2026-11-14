@@ -464,6 +464,21 @@ class DataFedFlow(DataFedCase):
         self.assertIn("DataFed cannot be used from this Mac (connect: Incompatible server api detected",
                       status["problems"][0])
 
+    def test_without_the_datafed_package_a_sync_spends_no_attempt(self):
+        self.session(points=2)
+        ctx = support.context(self, self.home, catalog=DataFedCatalog(context=PROJECT))
+        # An interpreter without the package, or without a module it needs.
+        with mock.patch.dict("sys.modules", {"datafed": None, "datafed.CommandLib": None}):
+            for _pass in range(7):
+                result = commands_core.cmd_sync(Namespace(), ctx)
+                self.assertEqual((result["online"], result["errors"]), (False, []))
+            status = commands_core.cmd_status(Namespace(), ctx)
+        self.assertEqual([(row["state"], row["register_attempts"]) for row in ctx.ledger.rows()], [("captured", 0)] * 2)
+        self.assertEqual((status["online"], status["sync_work"]), (False, 2))
+        self.assertIn("The datafed Python package is not available in this interpreter", status["problems"][0])
+        self.assertIn("setup_env.sh", status["problems"][0])
+        self.assertEqual(self.server.calls, [])
+
 
 class SimulatedCaptures(DataFedCase):
     """In datafed mode simulated captures stay on this Mac unless datafed.include_simulated is true."""
@@ -531,12 +546,44 @@ class SimulatedCaptures(DataFedCase):
         self.set_include_simulated("true")
         self.assertIn(changed + ".", commands_core.cmd_status(Namespace(), self.ctx)["problems"])
 
+    def test_after_switching_from_the_demo_status_counts_what_the_first_sync_holds_and_sends(self):
+        settings = load_settings(self.home)
+        settings.set("mode", "local-demo")
+        settings.save()
+        demo = support.context(self, self.home)
+        self.simulated_session(points=3)
+        self.session(folder="1d_x_scan_measured", points=2)
+        for _pass in range(2):
+            commands_core.cmd_sync(Namespace(), demo)
+        self.assertEqual(demo.ledger.counts()["uploaded"], 5)
+
+        settings.set("mode", "datafed")
+        settings.save()
+        self.ctx.reload()
+        before = commands_core.cmd_status(Namespace(), self.ctx)
+        # Every capture is registered again in DataFed, except the simulated ones, which the settings hold.
+        self.assertEqual((before["held_simulated"], before["pending"], before["sync_work"], before["catalog_changed"]),
+                         (3, 2, 2, True))
+        self.assertIn("3 simulated capture(s) stay on this Mac", " ".join(before["problems"]))
+        result = self.sync()
+        self.assertEqual((result["registered"], result["held_simulated"]), (2, 3))
+        after = result["status"]
+        self.assertEqual((after["held_simulated"], after["pending"], after["catalog_changed"]), (3, 2, False))
+
     def test_with_include_simulated_they_are_registered_like_any_other(self):
         self.set_include_simulated("true")
         self.simulated_session()
         result = self.sync()
         self.assertEqual((result["registered"], result["held_simulated"]), (2, 0))
         self.assertEqual(result["status"]["problems"], [])
+
+    def test_the_collection_of_a_session_in_a_long_named_folder_still_says_simulated(self):
+        self.set_include_simulated("true")
+        folder = "measurements of the plate from the old instrument, second day, repeated after cleaning"
+        session = self.simulated_session(folder=folder, points=1)
+        self.assertEqual(self.sync()["errors"], [])
+        title = self.server.collections[self.server.aliases[session_alias(session["session_id"])]]["title"]
+        self.assertEqual(title, "S-001 - measurements of the plate from the old instrument, second... [simulated]")
 
     def test_an_imported_session_nobody_recorded_simulated_for_is_sent(self):
         legacy = support.make_session(self.home, root=support.make_home(self), points=2, with_capture=False,

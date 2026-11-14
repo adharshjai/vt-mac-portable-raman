@@ -164,9 +164,11 @@ class DataFedCatalog(Catalog):
         try:
             from datafed.CommandLib import API
         except ImportError as error:
-            raise CatalogError(
+            # Like a client that cannot connect: no request was made, and every capture would fail the
+            # same way until the package is installed, so no attempt of theirs is spent on it.
+            raise _Unusable(
                 "The datafed Python package is not available in this interpreter",
-                detail="%s. Create the data layer's environment with data_layer/setup_env.sh." % error,
+                detail="%s; create the data layer's environment with data_layer/setup_env.sh" % error,
             ) from error
         log.info("connecting to DataFed")
         try:

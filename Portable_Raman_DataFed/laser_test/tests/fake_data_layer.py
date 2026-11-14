@@ -12,9 +12,11 @@ the HOME folder it is given:
   fake_data_layer_control.json   written by a test to make a command misbehave or to change the
                                  canned catalog, for example
                                  {"sync": {"mode": "slow", "seconds": 2}, "status": {"mode": "error"},
-                                  "catalog": "datafed", "held_simulated": 4}
+                                  "catalog": "datafed", "held_simulated": 4, "catalog_changed": true}
                                  modes: error, slow, garbage, crash, silent; held_simulated counts
-                                 simulated captures that DataFed mode keeps on this Mac
+                                 simulated captures that DataFed mode keeps on this Mac;
+                                 catalog_changed: the settings name another catalog than the one the
+                                 rows describe, until the next sync
   fake_studio.pid, fake_studio_stop   the pretended Studio server writes the first and ends when
                                  the second appears
 
@@ -220,6 +222,12 @@ def public(row):
     return {key: value for key, value in row.items() if not key.startswith("_")}
 
 
+def catalog_changed(state, control):
+    """The settings name another catalog than the rows describe: until the first sync after the
+    change, which binds the rows to the new one as the real ledger does."""
+    return bool(control.get("catalog_changed")) and not state.get("rebound")
+
+
 def status(state, control):
     rows = captures(state)
     counts = dict.fromkeys(STATES, 0)
@@ -231,9 +239,13 @@ def status(state, control):
     # Simulated captures that DataFed mode keeps on this Mac (datafed.include_simulated false). The
     # canned rows have none; a test gives their number. The demo catalog takes everything.
     held = 0 if demo else int(control.get("held_simulated", 0))
+    changed = catalog_changed(state, control)
     problems = []
     if state["offline"]:
         problems.append("The catalog cannot be reached." + (" %d capture(s) wait for the next sync." % pending if pending else ""))
+    if changed:
+        problems.append("The catalog settings changed: the next sync registers every capture in %s."
+                        % (DEMO_LABEL if demo else "DataFed (your own space)"))
     if counts["error"]:
         problems.append("%d capture(s) cannot be registered as their files are (their Error rows say why). Where Sample ID, "
                         "Operator or Location is missing, import the session folder again with these fields (Data tab: Import "
@@ -247,6 +259,7 @@ def status(state, control):
         "demo": demo, "online": not state["offline"], "user": DEMO_USER if demo else "u/testuser",
         "context": DEMO_CONTEXT if demo else "", "endpoint": None if demo else "stand-in-endpoint",
         "counts": counts, "total": len(rows), "pending": pending, "held_simulated": held, "reviews_queued": reviews_queued,
+        "catalog_changed": changed,
         # What a plain sync can move on. The canned error row lacks its fields: only import-session moves it.
         "sync_work": counts["captured"] + counts["registered"] + counts["uploading"] + reviews_queued,
         "last_sync_utc": state["last_sync_utc"], "problems": problems,
@@ -269,9 +282,10 @@ def review_items(state):
     return [review_item(row, state["offline"]) for row in captures(state) if row["state"] == "needs_review"]
 
 
-def review_list(state):
-    """"online" is null when nothing waits: the catalog then did not have to be asked."""
-    items = review_items(state)
+def review_list(state, control):
+    """"online" is null when nothing waits: the catalog then did not have to be asked. Until the sync
+    after a change of catalog nothing waits either: the predictions are the previous catalog's."""
+    items = [] if catalog_changed(state, control) else review_items(state)
     return {"items": items, "online": (not state["offline"]) if items else None}
 
 
@@ -377,6 +391,9 @@ def offline_failure():
 def sync(state, control):
     result = {"busy": False, "online": not state["offline"], "ingested": 0, "registered": 0, "uploads_started": 0,
               "uploads_done": 0, "predictions_found": 0, "reviews_found": 0, "reviews_sent": 0, "errors": []}
+    # The real sync binds the ledger to the catalog in use before it contacts any catalog.
+    if control.get("catalog_changed"):
+        state["rebound"] = True
     if not state["offline"]:
         before = {row["capture_id"]: row["state"] for row in captures(state)}
         state["syncs"] += 1
@@ -501,7 +518,7 @@ def answer(command, options, files, control):
         limit = int(options["limit"]) if options.get("limit") else len(rows)
         return {"items": rows[:limit], "total": len(rows)}
     if command == "review-list":
-        return review_list(files.load_state())
+        return review_list(files.load_state(), control)
     if command == "review-show":
         return review_show(files.load_state(), options.get("prediction"))
     if command == "provenance":

@@ -122,10 +122,15 @@ def ingest_folder(paths, ledger, folder, known=None):
     known = ledger.known_files() if known is None else known
     try:
         session = read_session(folder)
+        files = point_files(folder)
     except MetadataError as error:
         report["errors"].append(problem(None, "metadata", "%s: %s" % (folder.name, error)))
         return report
-    for path in point_files(folder):
+    except OSError as error:
+        # One folder that cannot be listed must not keep the other folders out of the ledger.
+        report["errors"].append(problem(None, "metadata", "%s cannot be read: %s" % (folder.name, error)))
+        return report
+    for path in files:
         if (folder.name, path.name) in known:
             report["skipped"] += 1
             continue
@@ -144,6 +149,10 @@ def ingest_folder(paths, ledger, folder, known=None):
                 _describe(entry, build_raw_metadata(paths.home, folder.name, point, path))
             except MetadataError as error:
                 message = str(error)
+            except OSError as error:
+                # The point, or the dark it names, cannot be read now. Like a point that lacks fields
+                # it waits in error/metadata, which every sync reads again, instead of ending the sync.
+                message = "%s cannot be registered: %s" % (path.name, error)
         outcome = ledger.add_capture(entry, error_message=message)
         if outcome == "duplicate":
             other = ledger.get(capture_id)
@@ -231,6 +240,22 @@ def _apply_review(catalog, config, prediction_id, review):
     return record, True
 
 
+def _connect_before_the_lock(catalog, record_id):
+    """Make the first catalog request of the pass outside the review lock.
+
+    The first request of a process connects. With DataFed that can take long: the datafed package
+    first asks the Python package index for its newest version, with no time limit, and then the
+    server for its own. A review-set waiting for the lock would wait for all of that; this way it
+    waits only for the requests of one review. A failure that ends the pass ends it here; any other
+    is the review's own and is met, and recorded, again when the review is sent.
+    """
+    try:
+        catalog.get_record(record_id)
+    except CatalogError as error:
+        if _stops_the_pass(error):
+            raise
+
+
 def send_queued_reviews(catalog, config, ledger):
     """Step 2: send the reviews that were recorded while the catalog was unreachable.
 
@@ -239,7 +264,10 @@ def send_queued_reviews(catalog, config, ledger):
     written to the catalog, errors).
     """
     sent, errors = 0, []
-    for listed in ledger.queued_reviews(config.catalog_key, config.max_attempts):
+    entries = ledger.queued_reviews(config.catalog_key, config.max_attempts)
+    if entries:
+        _connect_before_the_lock(catalog, entries[0]["prediction_id"])
+    for listed in entries:
         with ledger.review_lock():
             entry = ledger.queued_review(listed["id"])
             if entry is None:

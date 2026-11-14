@@ -2057,6 +2057,11 @@ globalThis.STUDIO_EMBED = {
           completed_utc: point.completed_utc, capture_id: point.capture_id, spectrum: point.spectrum };
       });
       view.log_tail = S.ticker.slice(-60).map(function (line) { return '[' + line.who + '] ' + line.text; });
+      // Newest first, with what session.json says of the simulators, as the server lists its newest ones.
+      view.sessions = S.sessions.slice().reverse().map(function (each) {
+        return { folder: each.folder, session_id: each.session_id, scan_mode: each.scan_mode, started_utc: each.started_utc,
+          sample_id: each.sample_id, simulated: each.simulated };
+      });
       view.demo.plan = run && run.state === 'running' ? run.plan
         : planFor(S.details.scan_mode, { x: Math.round(S.stage.x), y: Math.round(S.stage.y), z: Math.round(S.stage.z) });
       return view;
@@ -2168,7 +2173,7 @@ globalThis.STUDIO_EMBED = {
   let seen = { points: -1, pipeline: -1, run: -1, ticker: -1 };
   let lastEvent = '';
 
-  function emptyScan() { return { session: null, active: false, stage: null, request: null, ack: null, points: [], log_tail: [], run: null, starting: false }; }
+  function emptyScan() { return { session: null, sessions: [], active: false, stage: null, request: null, ack: null, points: [], log_tail: [], run: null, starting: false }; }
   function emptyPipe() { return { status: { counts: {}, online: true, problems: [] }, items: [], review: [], total: 0 }; }
 
   // ---------------------------------------------------------------------------- small helpers
@@ -2179,6 +2184,19 @@ globalThis.STUDIO_EMBED = {
   }
   function isNum(value) { return typeof value === 'number' && isFinite(value); }
   function num(value, digits) { return isNum(value) ? value.toFixed(digits) : '–'; }
+  // A score below the threshold it was judged by is never rounded up, so that it cannot read as the
+  // threshold itself (0.797, not 0.80, beside a threshold of 0.80): a third place where two would round
+  // up, and past that it is cut. The window's Data and Review tabs print it the same way.
+  function lowScore(value) {
+    if (!isNum(value)) return '–';
+    for (let digits = 2; digits <= 3; digits++) {
+      const text = value.toFixed(digits);
+      if (Number(text) <= value) return text;
+    }
+    return (Math.floor(value * 1000) / 1000).toFixed(3);
+  }
+  // The model's top score, by its outcome: a low-confidence one is below the threshold.
+  function confidenceText(prediction) { return prediction.outcome === 'low_confidence' ? lowScore(prediction.confidence) : num(prediction.confidence, 2); }
   function setText(el, text) { if (el.textContent !== text) el.textContent = text; }
   function plural(count, word) { return count + ' ' + word + (count === 1 ? '' : 's'); }
   // Browser storage only remembers conveniences; the page works the same without it.
@@ -2422,10 +2440,26 @@ globalThis.STUDIO_EMBED = {
   function sessionSimulated(session) {
     return !!(session && session.simulated && session.simulated.backend === true && session.simulated.motor === true);
   }
-  function pointSimulated(point) {
+  // The session a point belongs to, as session.json describes it: the one on show, or one of the newest
+  // the server lists. A list item cannot stand in for it: its "simulated" is true when either helper
+  // program simulated (PROTOCOL.md section 5.3).
+  function describedSession(point) {
     const session = model.scan.session;
-    if (session && point.session_id === session.session_id) return sessionSimulated(session);
-    return !!(point.item && point.item.simulated === true);
+    if (session && point.session_id === session.session_id) return session;
+    const listed = model.scan.sessions || [];
+    for (let i = 0; i < listed.length; i++) if (listed[i].session_id === point.session_id) return listed[i];
+    return null;
+  }
+  // A session the server does not describe, or describes without its two flags, is not known to be simulated.
+  function pointSimulated(point) { return sessionSimulated(describedSession(point)); }
+  const INSTRUMENT_WORDS = { 'true true': 'simulated', 'false false': 'real instrument', 'true false': 'simulated spectrometer, real stages',
+    'false true': 'real spectrometer, simulated stages' };
+  function instrumentWords(point) {
+    const flags = (describedSession(point) || {}).simulated;
+    const words = flags && INSTRUMENT_WORDS[flags.backend + ' ' + flags.motor];
+    if (words) return words;
+    const item = point.item;
+    return item && item.simulated !== null && item.simulated !== undefined ? (item.simulated ? 'simulators used' : 'real instrument') : '';
   }
 
   function unrecordedPosition(point) {
@@ -2502,7 +2536,7 @@ globalThis.STUDIO_EMBED = {
     if (!prediction) words += item ? (item.state_label || item.state) : 'captured';
     else {
       const review = item.review || {};
-      words += (prediction.top_class || 'no class') + ' ' + num(prediction.confidence, 2) + ', ' +
+      words += (prediction.top_class || 'no class') + ' ' + confidenceText(prediction) + ', ' +
         (review.status && review.status !== 'not_required' && review.status !== 'pending' ? 'review ' + review.status : prediction.needs_review ? 'needs review' : 'accepted');
     }
     return words;
@@ -3108,9 +3142,12 @@ globalThis.STUDIO_EMBED = {
   // ---------------------------------------------------------------------------- record view
   const REVIEW_WORDS = { not_required: 'not needed', pending: 'waiting for a person', confirmed: 'confirmed', relabelled: 'relabelled', rejected: 'rejected' };
 
-  function scoreText(scores) {
+  // The top score is the one the threshold decides on: below it, it is never rounded up to it.
+  function scoreText(scores, threshold) {
     return Object.keys(scores || {}).sort(function (a, b) { return scores[b] - scores[a]; })
-      .map(function (name) { return name + ' ' + num(scores[name], 2); }).join(', ');
+      .map(function (name, index) {
+        return name + ' ' + (index === 0 && isNum(threshold) && scores[name] < threshold ? lowScore(scores[name]) : num(scores[name], 2));
+      }).join(', ');
   }
 
   function reviewEntry(point) {
@@ -3140,7 +3177,7 @@ globalThis.STUDIO_EMBED = {
       add('Laser', info.session.laser_power_level + ' · ' + info.session.integration_time_us / 1e6 + ' s exposure');
       add('Instrument', info.session.instrument.model + ' · serial ' + info.session.instrument.serial + ' · simulated');
     }
-    else if (item && item.simulated !== null && item.simulated !== undefined) add('Instrument', item.simulated ? 'simulated' : 'real instrument');
+    else add('Instrument', instrumentWords(point));
     add('File', info ? info.file : (item && item.point_file ? 'scan_sessions/' + point.folder + '/' + item.point_file : ''));
 
     if (ui.lens) {
@@ -3148,7 +3185,7 @@ globalThis.STUDIO_EMBED = {
       add('Search', 'no catalog to search', 'lost');
       add('Transfer', 'copied by hand, no task to check or resume', 'lost');
       if (item && item.prediction) {
-        add('Predicted', (item.prediction.top_class || 'none') + ' ' + num(item.prediction.confidence, 2) + ', a row in a results table');
+        add('Predicted', (item.prediction.top_class || 'none') + ' ' + confidenceText(item.prediction) + ', a row in a results table');
         add('Traced to', 'not recorded: which spectrum file, which dark, which model version', 'lost');
         add('Review', 'no queue: nobody is asked to look', 'lost');
       }
@@ -3165,10 +3202,10 @@ globalThis.STUDIO_EMBED = {
     if (item && item.error) add('Error', (item.error.stage ? item.error.stage + ': ' : '') + (item.error.message || item.error), 'lost');
     if (item && item.prediction) {
       const prediction = item.prediction;
-      add('Predicted', (prediction.top_class || 'no class') + ' ' + num(prediction.confidence, 2) + ' · ' + prediction.outcome + ' · label ' + prediction.label);
+      add('Predicted', (prediction.top_class || 'no class') + ' ' + confidenceText(prediction) + ' · ' + prediction.outcome + ' · label ' + prediction.label);
       const scores = info && info.prediction ? info.prediction.metadata.scores : entry ? entry.scores : null;
-      add('Scores', scoreText(scores));
       const threshold = info && info.prediction ? info.prediction.metadata.threshold : entry ? entry.threshold : null;
+      add('Scores', scoreText(scores, threshold));
       const reason = info && info.prediction ? info.prediction.metadata.reason : entry ? entry.reason : '';
       if (isNum(threshold)) add('Threshold', num(threshold, 2) + (reason ? ' · ' + reason : ''));
       add('Prediction', prediction.record_id + (info && info.prediction ? ' · ' + info.prediction.alias : ''));
@@ -3357,12 +3394,20 @@ globalThis.STUDIO_EMBED = {
 
   function renderPicture() {
     const status = model.pipe.status || {}, counts = status.counts || {};
-    const total = model.points.length;
-    const records = model.points.filter(function (p) { return p.item && p.item.record_id; }).length;
-    const stored = model.points.filter(function (p) { return p.item && p.item.upload && p.item.upload.status === 'succeeded'; }).length;
-    const predictions = model.points.filter(function (p) { return p.item && p.item.prediction; }).length;
+    // The server lists the newest captures only (notShown); the status counts every one of them in
+    // its states, and a point of the newest scan that no sync has seen yet is the page's to add.
+    const cut = notShown() > 0;
+    const inStates = function (states) { return states.reduce(function (sum, state) { return sum + (isNum(counts[state]) ? counts[state] : 0); }, 0); };
+    const unseen = model.points.filter(function (p) { return !p.item; }).length;
+    const total = cut ? model.pipe.total + unseen : model.points.length;
+    const records = cut ? model.pipe.total - inStates(['captured', 'error'])
+      : model.points.filter(function (p) { return p.item && p.item.record_id; }).length;
+    const stored = cut ? inStates(['uploaded', 'classified', 'needs_review', 'reviewed', 'accepted'])
+      : model.points.filter(function (p) { return p.item && p.item.upload && p.item.upload.status === 'succeeded'; }).length;
+    const predictions = cut ? inStates(['classified', 'needs_review', 'reviewed', 'accepted'])
+      : model.points.filter(function (p) { return p.item && p.item.prediction; }).length;
     const waiting = total - stored;
-    const toReview = fill.review, done = fill.done;
+    const toReview = cut ? inStates(['needs_review']) : fill.review, done = cut ? inStates(['reviewed']) : fill.done;
     const online = status.online !== false;
     const frame = model.frame;
     const scanning = ui.mode === 'demo' ? !!(frame && frame.demo.run && frame.demo.run.state === 'running') : !!model.scan.active;
@@ -3584,6 +3629,7 @@ globalThis.STUDIO_EMBED = {
     const scan = emptyScan();
     if (!data || typeof data !== 'object') return scan;
     scan.session = data.session && typeof data.session === 'object' ? data.session : null;
+    scan.sessions = Array.isArray(data.sessions) ? data.sessions.filter(function (each) { return each && typeof each === 'object'; }) : [];
     scan.active = !!data.active;
     const stage = data.stage;
     if (stage && isNum(stage.x_mm) && isNum(stage.y_mm)) scan.stage = { x_mm: stage.x_mm, y_mm: stage.y_mm, z_mm: isNum(stage.z_mm) ? stage.z_mm : null, moving: !!stage.moving };
@@ -3607,7 +3653,19 @@ globalThis.STUDIO_EMBED = {
     const code = run.exit_code;
     if (code === 0) return 'The simulated run finished. Press Sync now to register its spectra.';
     if (code === 3) return 'The simulated run did not start: the controller window or another run holds the controller lock.';
-    if (code === 1) return 'The simulated run failed: one of its steps did not succeed. The log says which.';
+    if (code === 1) {
+      // Exit code 1 is also the runner's refusal to start (a lock file it cannot create, a folder that is
+      // not a deploy folder); its log then says why, in a line of its own.
+      const prefix = '[runner] Not started: ';
+      const refused = model.scan.log_tail.filter(function (line) { return line.indexOf(prefix) === 0; }).pop();
+      if (refused) {
+        // A file of the deploy folder is named by itself: the folder's path would fill the status line.
+        const home = live.ping && live.ping.home ? String(live.ping.home) + '/' : null;
+        const why = refused.slice(prefix.length);
+        return 'The simulated run did not start: ' + (home ? why.split(home).join('') : why).replace(/\.?\s*$/, '.');
+      }
+      return 'The simulated run failed: one of its steps did not succeed. The log says which.';
+    }
     if (code === 2) return 'The simulated run did not start: the runner refused its arguments. The log says why.';
     if (run.stop_requested && (code > 128 || code < 0)) {
       // The runner switches the laser off on its way out; said as confirmed only when its log says so.
@@ -3958,8 +4016,8 @@ globalThis.STUDIO_EMBED = {
       judged++;
       if ((review.status === 'confirmed' || review.status === 'relabelled' ? review.label : prediction.top_class) === point.truth) agree++;
     });
-    if (!judged) return other ? 'No simulated spectrum is classified yet; ' + other + ' not simulated, left out.' : 'Nothing is classified yet.';
-    return agree + ' of ' + judged + ' agree.' + (other ? ' ' + other + ' not simulated, left out.' : '');
+    if (!judged) return other ? 'No simulated spectrum is classified yet; ' + other + ' not known to be simulated, left out.' : 'Nothing is classified yet.';
+    return agree + ' of ' + judged + ' agree.' + (other ? ' ' + other + ' not known to be simulated, left out.' : '');
   }
 
   function onLens() {

@@ -86,6 +86,18 @@ class Rows(LedgerCase):
                          ("captured", None, None, "S-001"))
         self.assertEqual(len(self.ledger.rows_to_advance(5)), 1)
 
+    def test_values_sqlite_cannot_take_do_not_keep_a_point_out_of_the_ledger(self):
+        odd = dict(entry(1), scan_mode="1d-x\ud83d", sample_id="\udc80S", timestamp_utc={"utc": "now"},
+                   point_id=2 ** 64, x_mm=float("inf"))
+        self.assertEqual(self.ledger.add_capture(odd, error_message="scan_mode holds a broken character"), "added")
+        row = self.ledger.get(odd["capture_id"])
+        # Half a character becomes U+FFFD; what SQLite cannot hold at all is NULL.
+        self.assertEqual((row["scan_mode"], row["sample_id"], row["timestamp_utc"], row["point_id"], row["x_mm"]),
+                         ("1d-x\ufffd", "\ufffdS", None, None, float("inf")))
+        self.assertEqual(row["state"], "error")
+        self.assertEqual(self.ledger.add_capture(dict(odd, scan_mode=["1d-x"]), error_message="other"), "unchanged")
+        self.assertEqual(self.ledger.get(odd["capture_id"])["scan_mode"], None)
+
     def test_counts_have_every_state(self):
         ids = self.add(4)
         self.ledger.mark_registered(ids[1], "d/1", "rs-1", "aa")
@@ -295,6 +307,22 @@ class CatalogBinding(LedgerCase):
         # The review made for the first catalog is kept for when the user goes back to it.
         self.assertEqual(len(self.ledger.queued_reviews("local-demo|raman-portable")), 1)
         self.assertEqual(self.ledger.queued_reviews("datafed|p/lab|raman-portable"), [])
+
+    def test_what_a_change_of_catalog_would_make_captured_again_is_counted_without_a_change(self):
+        ids = self.add(3)
+        self.ledger.add_capture(dict(entry(4), simulated=0))
+        self.ledger.add_capture(dict(entry(5), simulated=None))
+        self.ledger.add_capture(dict(entry(9), sample_id=None), error_message="sample_id is empty")
+        self.ledger.bind_catalog("local-demo|raman-portable")
+        self.ledger.mark_registered(ids[0], "d/1", "rs-1", "aa")
+        self.ledger.mark_error(ids[1], "upload", "failed")
+        before = self.ledger.rows(newest_first=False)
+        # Five captures, three of them simulated; the one lacking fields stays as it is.
+        self.assertEqual(self.ledger.count_rebound(), (5, 3))
+        self.assertEqual(self.ledger.rows(newest_first=False), before)
+        self.assertTrue(self.ledger.bind_catalog("local-demo|second-root"))
+        self.assertEqual(self.ledger.count(states=["captured"]), 5)
+        self.assertEqual(self.ledger.count_held_simulated(), 3)
 
 
     def test_review_queued_before_the_first_binding_belongs_to_the_first_catalog(self):

@@ -350,12 +350,17 @@ class _Session:
 
     def summary(self):
         described = self.described or {}
+        # The page shows ground truth only for spectra that both simulators made. A list item cannot tell
+        # it: its "simulated" is true when either did. None when session.json does not say both.
+        flags = described.get("simulated")
+        known = isinstance(flags, dict) and all(isinstance(flags.get(key), bool) for key in ("backend", "motor"))
         return {
             "folder": self.name,
             "session_id": _text_or_none(described.get("session_id")),
             "scan_mode": _text_or_none(described.get("scan_mode")) or scan_mode_from_folder(self.name),
             "started_utc": _text_or_none(described.get("started_utc")),
             "sample_id": _text_or_none(described.get("sample_id")),
+            "simulated": {"backend": flags["backend"], "motor": flags["motor"]} if known else None,
         }
 
 

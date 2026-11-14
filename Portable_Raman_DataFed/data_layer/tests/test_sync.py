@@ -1,6 +1,7 @@
 """Sync against the local demo catalog: the whole flow, offline work, crashes, conflicts, retries."""
 
 import contextlib
+import fcntl
 import functools
 import hashlib
 import os
@@ -593,6 +594,101 @@ class MissingFields(SyncCase):
         self.assertIn("point_0002.json", self.ledger.get_value(sync.LAST_PROBLEMS_KEY))
 
 
+class OneBadFile(SyncCase):
+    """A file that cannot be used as it is fails on its own: the sync goes on with every other one."""
+
+    def edit_point(self, path, **changes):
+        point = support.json.loads(path.read_text(encoding="utf-8"))
+        point.update(changes)
+        # Lone surrogates are written as JSON escapes, as the window wrote them.
+        path.write_text(support.json.dumps(point), encoding="utf-8")
+
+    def test_a_broken_character_in_a_text_field_leaves_that_capture_in_error_metadata(self):
+        broken = support.make_session(self.home, folder="1d_x_scan_broken", points=1,
+                                      location="L" * 199 + "\ud83d")
+        self.edit_point(broken["files"][0], scan_mode="1d-x\udc80")
+        good = support.make_session(self.home, folder="1d_x_scan_good", points=1)
+        result = self.sync()
+        self.assertEqual((result["online"], result["ingested"], result["registered"]), (True, 1, 1))
+        self.assertEqual(result["errors"], [{
+            "capture_id": broken["capture_ids"][0], "stage": "metadata",
+            "message": "point_0001.json cannot be registered: location holds a broken character; scan_mode holds a "
+                       "broken character"}])
+        row = self.ledger.get(broken["capture_ids"][0])
+        self.assertEqual((row["state"], row["error_stage"], row["register_attempts"]), ("error", "metadata", 0))
+        # The list shows the row, the broken half replaced; the file keeps what it has.
+        self.assertEqual(row["scan_mode"], "1d-x\ufffd")
+        self.assertIn("\\udc80", broken["files"][0].read_text(encoding="utf-8"))
+        self.assertEqual(self.ledger.get(good["capture_ids"][0])["state"], "uploading")
+
+        later = support.make_session(self.home, folder="1d_x_scan_later", points=1)
+        again = self.sync()
+        self.assertEqual((again["ingested"], again["registered"], again["errors"]), (1, 1, []))
+        self.assertEqual(self.ledger.get(later["capture_ids"][0])["state"], "uploading")
+
+        self.edit_point(broken["files"][0], scan_mode="1d-x", capture=support.capture_block(location="Bench 1"))
+        fixed = self.sync()
+        self.assertEqual((fixed["ingested"], fixed["registered"], fixed["errors"]), (1, 1, []))
+
+    def test_a_broken_capture_id_is_reported_without_a_row(self):
+        session = support.make_session(self.home, points=2)
+        self.edit_point(session["files"][0], capture_id="S-\ud83d_1")
+        result = self.sync()
+        self.assertEqual((result["registered"], self.ledger.count()), (1, 1))
+        self.assertEqual([(entry["capture_id"], entry["message"]) for entry in result["errors"]],
+                         [(None, "%s: point_0001.json: capture_id holds a broken character" % session["folder"].name)])
+        self.assertIn("capture_id holds a broken character", self.ledger.get_value(sync.LAST_PROBLEMS_KEY))
+
+    def test_a_point_or_dark_description_nested_too_deeply_ends_no_sync(self):
+        deep = '{"x": ' + "[" * 100000 + "]" * 100000 + ', "simulated": {"backend": true}}'
+        session = support.make_session(self.home, points=2)
+        session["files"][1].write_text(deep, encoding="utf-8")
+        self.dark.with_suffix(".json").write_text(deep, encoding="utf-8")
+        result = self.sync()
+        self.assertEqual((result["online"], result["registered"]), (True, 1))
+        self.assertEqual([entry["message"] for entry in result["errors"]],
+                         ["%s: point_0002.json cannot be read as JSON" % session["folder"].name])
+        # Qt's parser cannot read that description either: the dark's kind is unknown, so it is not paired.
+        dark = self.catalog.get_record(raw_alias(session["capture_ids"][0])).metadata["dark"]
+        self.assertEqual((dark["kind"], dark["record"]), ("unknown", None))
+        self.assertIn("cannot be read", dark["reason"])
+
+    def test_numbers_beyond_what_the_ledger_or_a_float_holds_end_no_sync(self):
+        session = support.make_session(self.home, points=3, steps=(0, 0, 0))
+        self.edit_point(session["files"][0], point_id=2 ** 63)
+        self.edit_point(session["files"][1], controller_x_steps=10 ** 400)
+        self.edit_point(session["files"][2], completed_utc=10 ** 30, scan_mode={"mode": "1d-x"})
+        result = self.sync()
+        self.assertEqual((result["online"], result["registered"]), (True, 2))
+        self.assertEqual([entry["message"] for entry in result["errors"]],
+                         ["%s: point_0001.json: point_id is not a whole number" % session["folder"].name])
+        moved, odd = self.ledger.get(session["capture_ids"][1]), self.ledger.get(session["capture_ids"][2])
+        self.assertEqual((moved["x_mm"], odd["timestamp_utc"], odd["scan_mode"]), (None, None, None))
+
+    @unittest.skipIf(os.geteuid() == 0, "file permissions do not keep the superuser from reading")
+    def test_a_dark_or_a_folder_that_cannot_be_read_holds_back_only_what_needs_it(self):
+        with_dark = support.make_session(self.home, folder="1d_x_scan_with_dark", points=1)
+        without = support.make_session(self.home, folder="1d_x_scan_without_dark", points=1, dark_file=None)
+        hidden = support.make_session(self.home, folder="1d_x_scan_unlisted", points=1, dark_file=None)
+        self.dark.chmod(0)
+        self.addCleanup(self.dark.chmod, 0o644)
+        # Its files can be opened by name, but the folder cannot be listed.
+        hidden["folder"].chmod(0o300)
+        self.addCleanup(hidden["folder"].chmod, 0o755)
+        result = self.sync()
+        self.assertEqual((result["online"], result["registered"]), (True, 1))
+        self.assertEqual(self.ledger.get(without["capture_ids"][0])["state"], "uploading")
+        row = self.ledger.get(with_dark["capture_ids"][0])
+        self.assertEqual((row["state"], row["error_stage"]), ("error", "metadata"))
+        self.assertIn("point_0001.json cannot be registered: [Errno 13] Permission denied", row["error_message"])
+        self.assertIn("1d_x_scan_unlisted cannot be read", self.ledger.get_value(sync.LAST_PROBLEMS_KEY))
+
+        self.dark.chmod(0o644)
+        hidden["folder"].chmod(0o755)
+        result = self.sync()
+        self.assertEqual((result["registered"], result["errors"]), (2, []))
+
+
 class DuringAScan(SyncCase):
     """A sync, while a scan is still writing its folder, sees files that are not complete yet. The
     controller publishes each file in one step; a folder copied in by hand or by another program
@@ -807,6 +903,31 @@ class ReviewOrder(SyncCase):
         latest = self.review("confirmed", 3, "third decision")
         self.assertEqual(sync.apply_review(self.catalog, self.config, prediction.id, latest).metadata["review"],
                          latest)
+
+    def test_the_first_request_of_the_pass_is_made_before_the_review_lock_is_taken(self):
+        """With DataFed the first request of a process connects, which can take long; a review-set
+        waiting for the lock meanwhile would be cut off by the window's time limit."""
+        _capture_id, prediction = self.waiting_prediction()
+        self.ledger.queue_review(prediction.id, self.review("confirmed", 1, "first decision"))
+        lock_file = self.paths.data_catalog / "review.lock"
+        held_at_each_read = []
+        real_get_record = self.catalog.get_record
+
+        def get_record(record):
+            with open(lock_file, "a") as handle:
+                try:
+                    fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except BlockingIOError:
+                    held_at_each_read.append(True)
+                else:
+                    fcntl.flock(handle, fcntl.LOCK_UN)
+                    held_at_each_read.append(False)
+            return real_get_record(record)
+
+        with mock.patch.object(self.catalog, "get_record", get_record):
+            self.assertEqual(self.sync()["reviews_sent"], 1)
+        # The first read connects, outside the lock; the review is read again under it before it is written.
+        self.assertEqual(held_at_each_read[:2], [False, True])
 
     def test_a_queued_review_replaced_after_the_queue_was_read_is_not_sent(self):
         _capture_id, prediction = self.waiting_prediction()

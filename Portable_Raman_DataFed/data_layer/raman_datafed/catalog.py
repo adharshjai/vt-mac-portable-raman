@@ -20,6 +20,10 @@ RELATIONS = ("der", "comp", "ver")
 # against a live server). Both catalogs shorten them the same way. The characters are counted in
 # UTF-16 code units, as the service's JavaScript does, so that an emoji counts twice.
 MAX_TITLE_LENGTH = 80
+# The end of the title of a record about something simulated (simulated_mark).
+SIMULATED_MARK = " [simulated]"
+# Put where a title was shortened.
+_SHORTENED = "..."
 # The most metadata one record may carry: the limit the datafed client states (_max_md_size).
 MAX_METADATA_BYTES = 102400
 
@@ -194,18 +198,26 @@ def _start_within(text, units):
 
 
 def fit_title(head, tail=""):
-    """A title no longer than the catalog allows. The free text in front is shortened; the tail,
-    which may carry the "[simulated]" marker, is kept whole."""
+    """A title no longer than the catalog allows. The free text in front is shortened and the tail
+    kept whole; a tail that leaves no room for that (a long session folder name) is shortened together
+    with the text in front. A "[simulated]" marker at the end always stays, also when a whole title
+    is fitted again (the DataFed adapter fits every title it sends)."""
     head = " ".join(str(head).split())
+    if not tail and head.endswith(SIMULATED_MARK):
+        head, tail = head[:-len(SIMULATED_MARK)], SIMULATED_MARK
     room = MAX_TITLE_LENGTH - title_length(tail)
-    if title_length(head) > room:
-        head = _start_within(head, max(room - 3, 0)) + "..."
-    return head + tail
+    if title_length(head) <= room:
+        return head + tail
+    if room >= len(_SHORTENED):
+        return _start_within(head, room - len(_SHORTENED)) + _SHORTENED + tail
+    mark = SIMULATED_MARK if tail.endswith(SIMULATED_MARK) else ""
+    text = head + tail[:len(tail) - len(mark)]
+    return _start_within(text, MAX_TITLE_LENGTH - len(mark) - len(_SHORTENED)) + _SHORTENED + mark
 
 
 def simulated_mark(metadata):
     """The end of a title that says the record is about something simulated."""
-    return " [simulated]" if metadata.get("simulated") else ""
+    return SIMULATED_MARK if metadata.get("simulated") else ""
 
 
 def dependency_pairs(deps):

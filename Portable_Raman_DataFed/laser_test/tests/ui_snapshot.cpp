@@ -136,6 +136,17 @@ struct HandshakeTest {   // friend of MainWindow and DataPanels
         check(waitUntil([&]{ return settled() && panels.reviewResult->text().contains("Recorded in the demo catalog"); }), "review sent by the sync");
         save(w, dir, appearance, "11_review_sent");
 
+        // The settings name DataFed while the rows are still those of the demo catalog, until the next sync.
+        w.display.tabs->setCurrentIndex(1);
+        panels.autoSync.stop();
+        check(AcquisitionProtocol::publish(home + "/fake_data_layer_control.json", R"({"catalog": "datafed", "catalog_changed": true})"),
+              "tell the stand-in that the catalog changed");
+        panels.refresh();
+        check(waitUntil([&]{ return settled() && panels.catalogChanged(); }), "rows of the catalog used before");
+        selectCapture(panels, "TEST-PLATE-A", 2);
+        check(waitUntil([&]{ return settled() && !panels.provenanceNote->text().isEmpty(); }), "details of a capture of the catalog used before");
+        save(w, dir, appearance, "12_catalog_changed");
+
         // The two tabs of a copy without the data layer, as they would stand in the tab area.
         QLineEdit nobody;
         DataPanels absent(home + "/no_such_home", "python3", &nobody, nullptr);

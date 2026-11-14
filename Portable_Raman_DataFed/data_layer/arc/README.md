@@ -219,6 +219,14 @@ Typical first-run messages:
   for the instrument computer and means the computer the job runs on.)
 - `DataFed cannot be reached`: the compute node could not connect to `datafed.ornl.gov`, port
   7512. Try `datafed user who` inside an `interact` session on the same partition.
+- `DataFed cannot be used from this Mac` (detail `connect: ...`): the DataFed client on the
+  cluster could not open a connection at all, for example because the server runs another API
+  version or its server key cannot be used. "This Mac" means the computer the job runs on. Check
+  `datafed user who` on a login node; do not upgrade the pinned datafed 5.1.0 without checking the
+  data layer against it.
+- `The datafed Python package is not available in this interpreter`: the job did not run in the
+  environment of step 4. Check `VENV_DIR` and `PYTHON_MODULE` in `classify_job.slurm`. (The detail
+  names `data_layer/setup_env.sh`, the instrument computer's way to make the environment.)
 - `There is no collection <root>-to-classify`, or a refusal by DataFed that names that
   collection: wrong `ROOT_ALIAS` or `CONTEXT`, or the instrument computer has not synced anything
   yet. The job creates nothing in that case.

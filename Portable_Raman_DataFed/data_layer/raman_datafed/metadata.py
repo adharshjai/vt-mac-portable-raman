@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from pathlib import Path
 
@@ -25,6 +26,10 @@ REQUIRED_OPERATOR_FIELDS = ("sample_id", "operator", "location")
 DARK_REAL, DARK_SIMULATED, DARK_UNKNOWN = "real", "simulated", "unknown"
 # The record id of the dark is put into a raw record after its size was checked.
 _ROOM_FOR_RECORD_IDS = 256
+# Whole numbers in the files are 64-bit, as the controller writes them and SQLite stores them.
+_WHOLE_RANGE = range(-2 ** 63, 2 ** 63)
+# The deepest nesting of arrays and objects Qt's JSON parser takes (QJsonDocument::fromJson).
+_QT_JSON_DEPTH = 1024
 
 _POINT_FILE = re.compile(r"^point_(\d{4,})\.json$")
 # The controller names a scan folder after its mode; used only for folders that say nothing else.
@@ -54,11 +59,31 @@ def read_json_object(path):
         value = json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError as error:
         raise MetadataError("%s does not exist" % path.name) from error
-    except (ValueError, OSError) as error:
+    except (ValueError, OSError, RecursionError) as error:
+        # RecursionError: nested deeper than the json module goes. That is a fault of this one file,
+        # which must not end the whole sync.
         raise MetadataError("%s cannot be read as JSON" % path.name, detail=str(error)) from error
     if not isinstance(value, dict):
         raise MetadataError("%s does not hold a JSON object" % path.name)
     return value
+
+
+def _broken(value):
+    """True when a text in this JSON value, a key included, holds a lone UTF-16 surrogate: half of a
+    character such as an emoji, as text cut in the middle of one leaves it. JSON can carry it as an
+    escape, but it has no UTF-8 form, so neither the ledger nor a catalog can store it."""
+    try:
+        json.dumps(value, ensure_ascii=False).encode("utf-8")
+    except UnicodeEncodeError:
+        return True
+    return False
+
+
+def _broken_problems(mapping, leave_out=()):
+    """One problem per key of a JSON object whose value, or whose own name, holds a broken character
+    (_broken). A broken name is called "a key", so that the broken text is not repeated."""
+    return ["%s holds a broken character" % ("a key" if _broken(key) else key)
+            for key, value in mapping.items() if key not in leave_out and (_broken(key) or _broken(value))]
 
 
 def point_files(folder):
@@ -83,6 +108,8 @@ def read_session(folder):
         raise MetadataError('session.json: schema is not "%s"' % SESSION_SCHEMA)
     if not _text(session.get("session_id")):
         raise MetadataError("session.json: session_id is missing")
+    if _broken(session["session_id"]):
+        raise MetadataError("session.json: session_id holds a broken character")
     return session
 
 
@@ -93,6 +120,10 @@ def read_point(path):
     for key in ("capture_id", "session_id"):
         if not _text(point.get(key)):
             raise MetadataError("%s: %s is missing" % (name, key))
+        # The ledger row and the record alias are keyed by these: with a broken one the capture
+        # cannot even wait in error/metadata.
+        if _broken(point[key]):
+            raise MetadataError("%s: %s holds a broken character" % (name, key))
     if not _whole(point.get("point_id")):
         raise MetadataError("%s: point_id is not a whole number" % name)
     intensity = point.get("intensity")
@@ -108,7 +139,9 @@ def _text(value):
 
 
 def _whole(value):
-    return isinstance(value, int) and not isinstance(value, bool)
+    # A larger number is no point number or step count; the ledger could not store it, nor could a
+    # step count be turned into millimetres.
+    return isinstance(value, int) and not isinstance(value, bool) and value in _WHOLE_RANGE
 
 
 def capture_problems(capture):
@@ -148,6 +181,7 @@ def capture_problems(capture):
     software = capture.get("software")
     if not isinstance(software, dict) and not (imported and software is None):
         problems.append("software is missing")
+    problems.extend(_broken_problems(capture))
     return problems
 
 
@@ -164,6 +198,53 @@ def dark_description(dark_path):
     return Path(dark_path).with_suffix(".json")
 
 
+def _refused_constant(name):
+    raise ValueError("%s is not a JSON number" % name)
+
+
+def _double(text):
+    """A JSON number with a fraction or an exponent, refused where Qt's parser refuses it: beyond the
+    range of a double (1e400), or so small that it reads as 0 although a digit of it is not (1e-400)."""
+    value = float(text)
+    if math.isinf(value) or (value == 0 and re.search("[1-9]", re.split("[eE]", text)[0])):
+        raise ValueError("%s is beyond the range of a double" % text)
+    return value
+
+
+def _integer_of_double_range(text):
+    """A JSON whole number, refused where Qt's parser refuses it: beyond the range of a double, into
+    which Qt turns a whole number that does not fit in 64 bits."""
+    value = int(text)
+    try:
+        float(value)
+    except OverflowError as error:
+        raise ValueError("%s is beyond the range of a double" % text) from error
+    return value
+
+
+def _depth(value):
+    """How deeply arrays and objects are nested in a JSON value, the outermost one counting 1."""
+    deepest, pending = 0, [(value, 1)]
+    while pending:
+        item, depth = pending.pop()
+        if isinstance(item, (dict, list)):
+            deepest = max(deepest, depth)
+            pending.extend((child, depth + 1) for child in (item.values() if isinstance(item, dict) else item))
+    return deepest
+
+
+def _read_like_the_controller(path):
+    """The JSON value of a dark's description, read as the controller reads it (darkKind() in
+    laser_test/main.cpp): the file as Python's json module reads it, less what Qt's parser refuses
+    on top of that, NaN and Infinity, a number beyond the range of a double and nesting deeper than
+    1024. Both then give a dark the same kind. Raises ValueError for what either refuses."""
+    value = json.loads(path.read_text(encoding="utf-8"), parse_constant=_refused_constant, parse_float=_double,
+                       parse_int=_integer_of_double_range)
+    if _depth(value) > _QT_JSON_DEPTH:
+        raise ValueError("%s is nested more than %d deep" % (path.name, _QT_JSON_DEPTH))
+    return value
+
+
 def dark_kind(dark_path):
     """(DARK_REAL, DARK_SIMULATED or DARK_UNKNOWN, why it is unknown or None) for a dark spectrum file.
 
@@ -176,13 +257,14 @@ def dark_kind(dark_path):
     if description == Path(dark_path):
         return DARK_UNKNOWN, "a dark named %s has no room for a description beside it" % description.name
     try:
-        content = json.loads(description.read_text(encoding="utf-8"))
+        content = _read_like_the_controller(description)
     except FileNotFoundError:
         if not description.is_symlink():
             return DARK_REAL, None
         # A link to nothing is a description that cannot be read, as the controller sees it too.
         return DARK_UNKNOWN, "%s cannot be read" % description.name
-    except (OSError, ValueError):
+    except (OSError, ValueError, RecursionError):
+        # RecursionError: nested deeper than the json module goes, which Qt's parser refuses too.
         return DARK_UNKNOWN, "%s cannot be read" % description.name
     simulated = content.get("simulated") if isinstance(content, dict) else None
     backend = simulated.get("backend") if isinstance(simulated, dict) else None
@@ -262,7 +344,8 @@ def build_raw_metadata(home, session_folder, point, point_path):
     `dark.record` is left null: the caller fills it in once the dark record exists in the catalog.
     """
     capture = point.get("capture")
-    problems = capture_problems(capture)
+    # The other keys of the point go into the record and the ledger too.
+    problems = capture_problems(capture) + _broken_problems(point, leave_out=("capture",))
     if problems:
         raise MetadataError(
             "%s cannot be registered: %s" % (Path(point_path).name, "; ".join(problems)),
@@ -338,9 +421,16 @@ def plan_completion(folder, supplied):
     points, errors = [], []
     for path in files:
         try:
-            points.append((path, read_point(path)))
+            point = read_point(path)
         except MetadataError as error:
             errors.append({"file": path.name, "message": str(error)})
+            continue
+        # Completing a point writes it again as UTF-8, which a broken character has no form in.
+        broken = _broken_problems(point, leave_out=("capture",))
+        if broken:
+            errors.append({"file": path.name, "message": "; ".join(broken)})
+            continue
+        points.append((path, point))
     if not points:
         raise MetadataError(
             "No point file in %s is a raw spectrum" % folder.name,

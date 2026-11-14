@@ -30,8 +30,10 @@ parts the edition needs: the Qt controller, the Mac-native capture backend and m
 the classifier model. It adds:
 
 - **Who, what, where.** The window has a Sample group. Sample ID, Operator and Location are
-  required; Notes is optional. Each field takes at most 200 characters. A scan does not start
-  while a required field is empty. Operator and Location are remembered between starts.
+  required; Notes is optional. Each field takes at most 200 characters, counted in UTF-16 units as
+  `raman_sim_runner` counts them: an emoji counts two, and one that does not fit whole is left out.
+  A scan does not start while a required field is empty. Operator and Location are remembered
+  between starts.
 - **More in every file.** Each scan folder gets a `session.json`, and each `point_NNNN.json` gets a
   `capture` block: the four fields, the laser power level, the instrument, whether the simulators
   were used, and the dark spectrum the session is paired with. Each dark spectrum gets a
@@ -157,10 +159,10 @@ use; in a new deploy folder it says `no simulated dark yet`, and Capture Dark is
 highlighted button. Press Capture Dark. Then choose X axis in the box beside 1D Scan and press
 **1D Scan**, or press the single button **Start Z scan then 2D scan**. When the scan has ended (the
 chart title then says how it ended and which point was saved last), open the Data tab: it syncs
-by itself, after the scan and every 30 s while something waits. When the new rows say Uploaded
-(or after one more Sync now), press Classify now, then open the Review tab. Press Laser OFF when
-you are done. The window was not started this way while the edition was rehearsed; its code ran in
-the test programs (see [What was verified](#13-what-was-verified)).
+by itself after the scan, and then every 30 s while a sync has something to move on. When the new
+rows say Uploaded (or after one more Sync now), press Classify now, then open the Review tab.
+Press Laser OFF when you are done. The window was not started this way while the edition was
+rehearsed; its code ran in the test programs (see [What was verified](#13-what-was-verified)).
 
 **The Simulation Studio**, from `deploy-macos/`:
 
@@ -291,7 +293,7 @@ or `raman_sim_runner` until you run `build_macos.sh` again.
 | step | in the window | in the code | command |
 |---|---|---|---|
 | Capture | Sample group, Laser ON, Capture Dark, 1D Scan or the single button Start Z scan then 2D scan, Capture Spectrum | `laser_test/main.cpp`: `captureMetadata()`, `publishSessionFile()`, `handleScanPoint()`, `captureSingleSpectrum()`, `captureDarkMeasurement()` | `raman_sim_runner` (simulated) |
-| Register | Data tab: runs by itself after each scan and every 30 s while something waits; Sync now | `data_layer/raman_datafed/sync.py`, with `metadata.py`, `ledger.py`, `local_catalog.py`, `datafed_catalog.py` | `sync` |
+| Register | Data tab: runs by itself after each scan and every 30 s while a sync has something to move on ([Offline](#7-going-live-with-datafed)); Sync now | `data_layer/raman_datafed/sync.py`, with `metadata.py`, `ledger.py`, `local_catalog.py`, `datafed_catalog.py` | `sync` |
 | Classify | Data tab: Classify now (runs on this Mac) | `job.py`, `classifier.py`; on ARC `arc_job.py` and `data_layer/arc/classify_job.slurm` | `classify` |
 | Link | Data tab: select a row; PROVENANCE (DERIVED FROM) on the right | `job.py` saves each prediction with its three links; `commands_core.py` reads the chain | `provenance --record ID` |
 | Review | Review tab: Confirm (it names the class it records), Relabel with a class, or Mark unusable; the reviewer is the Operator field | `review.py`; in the window `laser_test/data_panels.h` | `review-list`, `review-show`, `review-set` |
@@ -306,7 +308,8 @@ failed for it. Each capture moves through these states in the local ledger,
 `error` until a later sync retries it. The classifier is the PCA-SVM model in
 `models/pca_svm_pure_20260922` with a threshold of 0.8. A prediction is `confident` (a material),
 `background` (DI water), `low_confidence` (top score below 0.8, needs review) or `rejected`
-(spectrum unusable, or no dark of its kind; needs review).
+(spectrum unusable, or no dark of its kind; needs review). The window and the Studio never show a
+score below the threshold rounded up: 0.797 reads 0.797, not 0.80.
 
 ## 6. The Simulation Studio
 
@@ -335,7 +338,11 @@ starts ends by itself after 15 minutes without use; `studio.sh` runs until Ctrl-
    the point file, ACK OK); in LIVE it shows the log of the last run started with Play, while a
    scan in the window logs to the window's Activity tab. The Sample ID, Operator and Location
    fields, the scan type and the laser power are those of the next run. Ground truth splits each
-   point: the plate's material on the left, the prediction on the right.
+   point: the plate's material on the left, the prediction on the right. It is shown only for the
+   spectra of sessions whose `session.json` says that both helper programs simulated, the session
+   on show and the 12 newest. The others, such as a session with the real spectrometer, are left
+   out of the count of predictions that agree with it ("N not known to be simulated, left out"),
+   and their record says which instrument was real.
 2. **Data pipeline.** The five steps as lanes over where they happen: the laptop, DataFed with
    Globus, the ARC cluster and the reviewer. Each square is one spectrum. Select one to see its
    record: ids, aliases, metadata, upload task, and the provenance chain from the prediction back to
@@ -350,12 +357,15 @@ starts ends by itself after 15 minutes without use; `studio.sh` runs until Ctrl-
 
 **What DataFed and Globus add.** Switch on **Without DataFed and Globus** in the third panel to see
 the same loop with files in folders: copied by hand, no record ids, no search across sessions,
-results that do not say which spectrum, dark or model they came from, and no review queue. Globus
-moves each file off the laptop as a transfer with a task id that can be checked. DataFed gives each
-spectrum a record that can be found by its metadata. An analysis that runs somewhere else, such as
-on ARC, comes back linked to exactly the inputs it used, and a person sees what waits for a decision.
-That is what an automated experiment needs before the next scan can be planned from the last one
-without anyone collecting files by hand. In this edition Plan and Decide are still a person, and the
+results that do not say which spectrum, dark or model they came from, and no review queue. In LIVE
+the local demo catalog gives the same records, links and review queue on this Mac alone: this
+edition's data layer makes them with either catalog. DataFed and Globus make them reachable from
+ARC and other people, with file transfers that resume. Globus moves each file off the laptop as a
+transfer with a task id that can be checked. DataFed gives each spectrum a record that can be
+found by its metadata. An analysis that runs somewhere else, such as on ARC, comes back linked to
+exactly the inputs it used, and a person sees what waits for a decision. That is what an automated
+experiment needs before the next scan can be planned from the last one without anyone collecting
+files by hand. In this edition Plan and Decide are still a person, and the
 ARC step has not been run.
 
 ## 7. Going live with DataFed
@@ -428,6 +438,11 @@ datalayer sync
 DataFed mode `status` and `sync` contact it too, and so do the window and the Studio, which run
 them. Back to the demo catalog: `datalayer config --set mode=local-demo`.
 
+Until the first sync after a switch, the Data tab marks its rows as those of the catalog used
+before: the column header reads "State (previous catalog)", the record ids move into the tool
+tips, and the DATA pill says "not synced yet". The window runs that sync by itself within 30 s,
+and it registers every capture in the catalog now in use.
+
 **Simulated captures stay on this Mac.** At the first sync after the switch, the real captures in
 `deploy-macos/scan_sessions/` are registered in DataFed. Captures made in simulation are not: they
 stay on this Mac, are not marked failed and use up none of their attempts. `datalayer status` and
@@ -470,14 +485,18 @@ for its spectra and one for its predictions ([PROTOCOL.md](data_layer/PROTOCOL.m
 
 **Offline.** When DataFed cannot be reached, captures wait on this Mac in the ledger.
 `datalayer status` then names the problem (in DataFed mode "DataFed cannot be reached (...)", in
-the demo "The catalog cannot be reached.") and adds "N capture(s) wait for the next sync.", and the
-window's DATA pill shows how many wait to be synced ("N to sync"). The window keeps syncing every
-30 s while something waits. The first sync that reaches DataFed registers and uploads what waited.
-Uploads are Globus transfers that run on their own; no command waits for one, and the next sync
-picks up the result. A review recorded offline is queued and sent by the next sync; until then the
-Review tab says it is kept on this Mac, and afterwards when it was sent. A capture that
-fails is tried again by later syncs, 5 times; Sync now (`sync --retry-failed`) tries again after
-that. You can watch all this in the demo catalog, from `deploy-macos/`:
+the demo "The catalog cannot be reached.") and adds "N capture(s) wait for the next sync.". The
+window's DATA pill shows how many a sync can move on ("N to sync") and, as "N stuck", what no sync
+moves by itself: a capture without its Sample ID, Operator or Location (Import scan folder), or a
+capture or review that failed 5 times (Sync now). The window syncs every 30 s while a sync has
+something to move on (status `sync_work`). With DataFed it looks for predictions made elsewhere,
+such as by the ARC job, only every 5 minutes: press Sync now to look at once. Captures held back,
+missing their fields or past their 5 attempts do not keep it syncing. The first sync that reaches
+DataFed registers and uploads what waited. Uploads are Globus transfers that run on their own; no
+command waits for one, and the next sync picks up the result. A review recorded offline is queued
+and sent by the next sync; until then the Review tab says it is kept on this Mac, and afterwards
+when it was sent. A capture that fails is tried again by later syncs, 5 times; Sync now (`sync
+--retry-failed`) tries again after that. You can watch all this in the demo catalog, from `deploy-macos/`:
 
 ```bash
 datalayer offline --on
@@ -513,10 +532,10 @@ allocation allows, against two records per spectrum (the spectrum and its predic
 and allocation, a `/projects` directory shared through Globus, the files, the Python environment,
 DataFed on ARC, one transfer by hand, the batch script `classify_job.slurm`, and how to read its
 output. The job takes the spectra waiting in DataFed, classifies them on a compute node and saves
-each prediction with its three links; the next sync on this Mac picks the predictions up. It
-downloads each spectrum on its own through Globus: at least 4 s per spectrum, probably 10 to 30 s
-(not measured). The script's 30 minutes therefore suit about 50 spectra; that README says how to
-set the number or the time.
+each prediction with its three links; the next sync on this Mac picks the predictions up (the
+window looks for them within 5 minutes, Sync now at once). It downloads each spectrum on its own
+through Globus: at least 4 s per spectrum, probably 10 to 30 s (not measured). The script's 30
+minutes therefore suit about 50 spectra; that README says how to set the number or the time.
 
 Not verified: nothing was run on ARC, under Slurm, against DataFed or with Globus. The job's logic
 was tested on this Mac against the demo catalog and an in-memory stand-in for DataFed. The batch
@@ -553,7 +572,10 @@ What is different with real instruments in this edition:
   paired with the newest real dark in `deploy-macos/dark_measurements/` (a dark without a `.json`
   counts as real), and a simulated dark is never used for it. The title row of the Capture group
   names the dark the next scan will use; `no real dark yet` means that it would have none, and the
-  classifier would reject its spectra. The window does not ask for a fresh dark.
+  classifier would reject its spectra. The window does not ask for a fresh dark. A fresh one also
+  covers a simulated dark whose save was cut short: Capture Dark writes the dark's `.txt` before
+  its `.json`, and a simulated dark left without its `.json` by a crash, a kill or a power cut in
+  between counts as real.
 - At start-up the capture backend reads the module's identity with two read-only calls (those of
   its menu item 1) and prints a `MODULE_INFO` line. Only the simulated device has answered them so far.
 - The `simulated` flag of every record follows each helper program's own rule for choosing its
@@ -639,13 +661,19 @@ set_aside_<date>_<time>/                         data you set aside (Troubleshoo
   and the spectra taken with it are rejected ("the dark spectrum ... was never uploaded") and go to
   the review list. A spectrum is classified once, so these stay rejected even if the file comes
   back later; a person decides in the Review tab.
+- **A capture's Error says "... holds a broken character".** Its point file holds half of a
+  character, such as an emoji cut in two by a program that wrote the file; the window no longer
+  writes one. Such text cannot be stored in a catalog, and Import scan folder keeps the values
+  already in the file. Correct the named field in that `point_NNNN.json` with a text editor (the
+  broken half shows as an escape such as `\ud83d`); the next sync reads the file again.
 - **Classify says spectra were skipped or left for later.** Their uploads have not finished. Sync once
   more (Sync now, or wait 30 s in the window), then classify again.
 - **"The data layer did not answer in time" after Classify now or Sync now.** The window stops a
   Classify now after 10 minutes and a sync after 3 minutes; what was done is kept. See [Time
   limits](#7-going-live-with-datafed).
 - **The Studio's Play says the run did not start: the controller lock is held.** The window, or another
-  run, is open in this deploy folder. Close it or wait for it.
+  run, is open in this deploy folder. Close it or wait for it. When it says instead that
+  `controller.lock` cannot be created, the deploy folder is not writable: fix its permissions.
 - **"Controller already running" or "Original controller running".** Another window of this edition,
   a runner, or the original controller is open. See [Two locks](#1-what-this-edition-is).
 - **"Controller lock not available" or "Original controller lock not available".** The named lock
@@ -666,8 +694,9 @@ set_aside_<date>_<time>/                         data you set aside (Troubleshoo
 - **Port 8765 is in use.** The Studio server takes the next free port up to 8784. The first line it
   prints names the address.
 - **Disk use.** Every start of the window or the runner leaves a `scan_sessions/_backend_<id>` folder
-  (about 1.3 MB after a 2D scan), and every hardware check or test run a `_hwcheck_<time>` folder.
-  Both can be deleted while no controller runs.
+  (about 1.3 MB after a 2D scan), and every hardware check a `_hwcheck_<time>` folder
+  (`build_macos.sh --test` keeps its own in `.build/test-logs/hardware_check_deploy/`). Both can be
+  deleted while no controller runs.
 - **Start with an empty data folder.** Quit the window, the Studio and any runner first. This moves
   every scan, dark, catalog entry and setting of the deploy folder, and the log, into a new folder
   `set_aside_<date>_<time>` inside `deploy-macos/`; the programs make new ones:
@@ -688,13 +717,16 @@ set_aside_<date>_<time>/                         data you set aside (Troubleshoo
 On this Mac, with nothing attached, both simulation variables at `1` and the local demo catalog:
 
 - The build and every test suite of `build_macos.sh --test`, except the two device self-tests:
-  every suite passed, in about 11 minutes, also in the last two full runs, made after the review
-  fixes as the final check before hand-over.
+  every suite passed, in about 11 minutes, also in the two full runs made after the first round of
+  review fixes and in the one made after the second round and the changes that completed it.
 - A rehearsal from `deploy-macos/`: a 1D X scan (13 spectra, 2 to review), a single capture made
   offline and registered on reconnect, a 2D scan (124 spectra, 5 to review), reviews online and
   offline, provenance, the Studio server's API, and the Studio page in a browser with the real runner,
   including Play, Stop and a run refused by the lock.
-- The window's code through its test programs, offscreen, also against the real data layer.
+- The window's code through its test programs, offscreen, against a stand-in data layer
+  (`laser_test/tests/fake_data_layer.py`). Against the real data layer it ran only through scratch
+  drivers: in the rehearsal, before the review fixes, and after them for a sync, Classify now and
+  reviews made offline and sent by a later sync, and for a change of catalog settings.
 - The pairing of darks by kind and the holding back of simulated captures in DataFed mode, in the
   test programs of the controller, the runner, the end-to-end run and the data layer (DataFed
   against stand-ins only).
@@ -704,12 +736,12 @@ On this Mac, with nothing attached, both simulation variables at `1` and the loc
   all --simulate --dark`, and `studio.sh --no-open`. The `config --set` and `doctor` commands of
   section 7 and the move of the troubleshooting list were run in scratch copies of
   `deploy-macos/`, so they changed nothing in the deploy folder.
-- The final check before hand-over, in scratch copies of `deploy-macos/`: the runner's 1D X scan
-  with sync, sync, classify and review-list (13 predictions, points 10 and 13 to review); a dark
-  without a `.json`, so of the real kind, dated later than the simulated ones, which a new
-  simulated session did not use; `status` in DataFed mode holding a simulated capture back, with
-  the DataFed client kept from loading; and the Studio server starting a single capture and
-  stopping a 1D scan.
+- The checks after each round of review fixes, in scratch copies of `deploy-macos/`: the
+  runner's 1D X scan with sync, sync, classify and review-list (13 predictions, points 10 and 13 to
+  review); a dark without a `.json`, so of the real kind, dated later than the simulated ones,
+  which a new simulated session did not use; `status` in DataFed mode holding the simulated
+  captures back, with the DataFed client kept from loading; and the Studio server starting a single
+  capture and stopping a 1D scan.
 
 Before hand-over, the simulated data of the rehearsal and checks (scan folders, darks, the demo
 catalog with its ledger, and the log) was moved out of `deploy-macos/`; `status` there then

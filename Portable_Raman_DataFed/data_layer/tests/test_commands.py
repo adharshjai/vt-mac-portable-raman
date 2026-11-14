@@ -16,7 +16,7 @@ from raman_datafed.ledger import STATES
 from raman_datafed.metadata import MetadataError
 
 STATUS_KEYS = {"mode", "mode_label", "demo", "online", "user", "context", "endpoint", "counts", "pending",
-               "held_simulated", "sync_work", "last_sync_utc", "problems"}
+               "held_simulated", "sync_work", "catalog_changed", "last_sync_utc", "problems"}
 SYNC_KEYS = {"online", "ingested", "registered", "uploads_started", "uploads_done", "predictions_found",
              "reviews_sent", "held_simulated", "errors", "status"}
 
@@ -48,8 +48,8 @@ class Status(CommandCase):
         self.assertEqual((status["mode"], status["demo"], status["online"]), ("local-demo", True, True))
         self.assertIn("nothing is sent anywhere", status["mode_label"])
         self.assertEqual(list(status["counts"]), list(STATES))
-        self.assertEqual((status["pending"], status["held_simulated"], status["sync_work"], status["last_sync_utc"],
-                          status["problems"]), (0, 0, 0, None, []))
+        self.assertEqual((status["pending"], status["held_simulated"], status["sync_work"], status["catalog_changed"],
+                          status["last_sync_utc"], status["problems"]), (0, 0, 0, False, None, []))
 
     def test_sync_work_leaves_out_what_a_sync_cannot_move_on(self):
         settings = load_settings(self.home)
@@ -117,6 +117,60 @@ class Status(CommandCase):
         problems = commands_core.cmd_status(Namespace(), self.ctx)["problems"]
         self.assertEqual(len(problems), 1)
         self.assertIn("the next sync registers every capture", problems[0])
+
+    def test_after_a_change_of_catalog_status_counts_as_the_next_sync_will(self):
+        session = support.make_session(self.home, points=3)
+        support.make_session(self.home, folder="old_scan", points=1, with_capture=False)
+        self.sync()
+        self.sync()
+        for capture_id in session["capture_ids"]:
+            raw = self.ctx.catalog.get_record(raw_alias(capture_id))
+            support.save_prediction(self.ctx.catalog, "raman-portable", raw, "confident")
+        settled = self.sync()["status"]
+        self.assertEqual((settled["counts"]["accepted"], settled["pending"], settled["sync_work"]), (3, 1, 0))
+        self.assertFalse(settled["catalog_changed"])
+
+        commands_core.cmd_config(Namespace(set=[["datafed.root_alias=second-root"]]), self.ctx)
+        status = commands_core.cmd_status(Namespace(), self.ctx)
+        # Nothing is in the new catalog yet: the window must not read "synced", and its periodic sync must run.
+        self.assertEqual((status["pending"], status["sync_work"], status["held_simulated"]), (4, 3, 0))
+        # The rows themselves are not changed by a status; the window marks them as the previous catalog's.
+        self.assertEqual((status["counts"]["accepted"], status["counts"]["error"]), (3, 1))
+        self.assertTrue(status["catalog_changed"])
+        self.assertIn("The catalog settings changed: the next sync registers every capture in", status["problems"][0])
+        self.assertIn("1 capture(s) cannot be registered as their files are", status["problems"][1])
+
+        result = self.sync()
+        self.assertEqual((result["registered"], result["status"]["pending"], result["status"]["counts"]["uploading"]),
+                         (3, 4, 3))
+        self.assertFalse(result["status"]["catalog_changed"])
+        commands_core.cmd_config(Namespace(set=[["datafed.root_alias=raman-portable"]]), self.ctx)
+        status = commands_core.cmd_status(Namespace(), self.ctx)
+        self.assertEqual((status["sync_work"], status["catalog_changed"]), (3, True))
+
+    def test_a_change_of_catalog_marks_nothing_while_there_is_no_capture(self):
+        self.sync()
+        commands_core.cmd_config(Namespace(set=[["datafed.root_alias=second-root"]]), self.ctx)
+        status = commands_core.cmd_status(Namespace(), self.ctx)
+        self.assertEqual((status["total"], status["catalog_changed"], status["sync_work"], status["problems"]),
+                         (0, False, 0, []))
+
+    def test_failures_in_the_catalog_used_before_are_not_reported_after_a_change(self):
+        settings = load_settings(self.home)
+        settings.set("sync.max_attempts", 1)
+        settings.save()
+        self.ctx.reload()
+        lost = support.make_session(self.home, points=1)
+        self.sync()
+        lost["files"][0].unlink()
+        problems = self.sync()["status"]["problems"]
+        self.assertIn("failed 1 times and are no longer retried", problems[0])
+
+        commands_core.cmd_config(Namespace(set=[["datafed.root_alias=second-root"]]), self.ctx)
+        status = commands_core.cmd_status(Namespace(), self.ctx)
+        self.assertEqual(len(status["problems"]), 1, status["problems"])
+        self.assertIn("The catalog settings changed", status["problems"][0])
+        self.assertEqual((status["pending"], status["sync_work"]), (1, 1))
 
     def test_invalid_settings_stop_commands_that_act_on_them(self):
         (self.home / "datafed_config.json").write_text(json.dumps({"mode": "cloud"}), encoding="utf-8")
@@ -399,6 +453,33 @@ class ImportSession(CommandCase):
         clash = support.write_dark(support.make_home(self), name=support.DARK_NAME, level=1)
         with self.assertRaisesRegex(CommandError, "different file"):
             self.run_import(self.legacy(folder="clash", points=1)["folder"], dark_file=str(clash))
+
+    def test_a_dark_whose_description_cannot_be_read_is_not_imported(self):
+        """Such a dark is of unknown kind and paired with nothing; copied alone it would count as real."""
+        session = self.legacy(folder="old_real_scan", points=1)
+        dark = support.write_dark(self.outside, name="dark_20261101_090000_000.txt", simulated=None)
+        description = dark.with_suffix(".json")
+        unreadable = [lambda: description.symlink_to(self.outside / "nowhere.json"), description.mkdir]
+        if os.geteuid() != 0:
+            unreadable.append(lambda: (description.write_text("{}", encoding="utf-8"), description.chmod(0)))
+        for make in unreadable:
+            make()
+            with self.assertRaises(CommandError) as raised:
+                self.run_import(session["folder"], simulated="no", dark_file=str(dark))
+            self.assertEqual(str(raised.exception), "The description dark_20261101_090000_000.json beside the dark "
+                                                    "cannot be read; nothing was imported")
+            self.assertIn("would count as real", raised.exception.detail)
+            self.assertFalse((self.home / "scan_sessions").exists())
+            self.assertEqual(sorted(path.name for path in (self.home / "dark_measurements").iterdir()),
+                             sorted([support.DARK_NAME, "dark_20261113_101400_001.json"]))
+            if description.is_dir():
+                description.rmdir()
+            else:
+                description.unlink()
+        # A dark without any description is real, here as where it came from.
+        result = self.run_import(session["folder"], simulated="no", dark_file=str(dark))
+        self.assertEqual((result["ingested"], result["errors"]), (1, []))
+        self.assertFalse((self.home / "dark_measurements" / description.name).exists())
 
 
 class Config(CommandCase):

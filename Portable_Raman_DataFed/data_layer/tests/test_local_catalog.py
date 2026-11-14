@@ -184,6 +184,26 @@ class Records(LocalCatalogCase):
         self.assertEqual(fit_title("S" * 100, " point 3 [simulated]"), "S" * 57 + "... point 3 [simulated]")
         self.assertEqual(fit_title("\U0001F52C" * 40, " point 3"), "\U0001F52C" * 34 + "... point 3")
 
+    def test_a_tail_too_long_to_keep_whole_is_shortened_and_the_simulated_mark_stays(self):
+        # An imported session folder may have a long name; the title of its collection carries it.
+        folder = "measurements of the plate from the old instrument, second day, repeated after cleaning"
+        long_tail = " - %s [simulated]" % folder
+        for head, tail in (("S-1", long_tail), ("Predictions S-1", long_tail), ("S" * 200, long_tail),
+                           ("S-1", " - " + "\U0001F52C" * 50 + " [simulated]")):
+            title = fit_title(head, tail)
+            self.assertLessEqual(title_length(title), 80, title)
+            self.assertTrue(title.endswith("... [simulated]"), title)
+            self.assertTrue(title.startswith(head[:3]), title)
+            # Both catalogs fit every title they are given once more; that changes nothing now.
+            self.assertEqual(fit_title(title), title)
+        self.assertEqual(fit_title("S-1", " - " + "x" * 90), "S-1 - " + "x" * 71 + "...")
+        # A whole title given again keeps its mark when it has to be shortened.
+        self.assertEqual(fit_title("T" * 100 + " [simulated]"), "T" * 65 + "... [simulated]")
+        self.catalog.ensure_collection("spectra", "Spectra")
+        record = self.catalog.create_record("rs-folder", "S-1 - %s [simulated]" % folder, {}, "spectra")
+        self.assertTrue(record.title.endswith("... [simulated]"))
+        self.assertEqual(title_length(record.title), 80)
+
     def test_interrupted_creation_is_finished_by_the_retry(self):
         self.catalog.ensure_collection("spectra", "Spectra")
         with mock.patch.object(LocalDemoCatalog, "_save", side_effect=KeyboardInterrupt()):
