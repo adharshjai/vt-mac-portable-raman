@@ -1,0 +1,27 @@
+#!/bin/bash
+# Launcher for the Mac-native capture backend (PORT_SPEC.md section 1 / 4).
+# The Qt controller starts this with the working directory set to scan_sessions/_backend_<uuid>/;
+# the program uses relative paths (command.txt, command_completed.txt, capture_results/), so the
+# cwd is left untouched and the arguments are passed through unchanged.
+# The build script substitutes @DOTNET@ with the absolute dotnet path. When the placeholder is
+# still present (or points nowhere) the usual install locations are tried, since a GUI app
+# launches us without a shell PATH.
+DOTNET="@DOTNET@"
+case "$DOTNET" in @*) DOTNET="" ;; esac
+if [ -z "$DOTNET" ] || [ ! -x "$DOTNET" ]; then
+    DOTNET=""
+    for candidate in "${DOTNET_ROOT:+$DOTNET_ROOT/dotnet}" "$HOME/.dotnet/dotnet" \
+                     /usr/local/share/dotnet/dotnet /opt/homebrew/bin/dotnet /usr/local/bin/dotnet \
+                     "$(command -v dotnet 2>/dev/null)"; do
+        if [ -n "$candidate" ] && [ -x "$candidate" ]; then DOTNET="$candidate"; break; fi
+    done
+fi
+if [ -z "$DOTNET" ]; then
+    echo "[Error] dotnet runtime not found (set DOTNET_ROOT or install .NET 9)." >&2
+    exit 127
+fi
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+HERE="$(cd "$(dirname "$0")" && pwd)"
+# Safety stop: the process to watch. The controller passes its own pid; otherwise it is our parent.
+export RAMAN_CONTROLLER_PID="${RAMAN_CONTROLLER_PID:-$PPID}"
+exec "$DOTNET" "$HERE/SampleApl.dll" "$@"

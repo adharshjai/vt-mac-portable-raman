@@ -1,0 +1,25 @@
+{
+  "schema": "raman-virtual-sample/1",
+  "description": "Virtual 25 mm x 25 mm plate used only by the simulators. Bands cross the 1D scans (0 to 24 mm); two droplets sit inside the 2D scan area (2 to 3 mm in X and Y).",
+  "travel_mm": {"x": [0, 25], "y": [0, 25], "z": [0, 25]},
+  "steps_per_mm": 34700,
+  "start_position_mm": {"x": 2.5, "y": 2.5, "z": 4.0},
+  "focus": {"z_focus_mm": 4.0, "half_width_mm": 0.1},
+  "background": "di_water",
+  "materials": {
+    "r6g": {"label": "Rhodamine 6G", "color": "#d9542b"},
+    "methylene_blue": {"label": "Methylene blue", "color": "#2f7fd6"},
+    "adenine": {"label": "Adenine", "color": "#2a9d7c"},
+    "di_water": {"label": "DI water (blank)", "color": "#aab6c2"}
+  },
+  "regions": [
+    {"name": "R6G band", "material": "r6g", "shape": "frame", "inner_mm": 5, "outer_mm": 11},
+    {"name": "Methylene blue band", "material": "methylene_blue", "shape": "frame", "inner_mm": 11, "outer_mm": 17},
+    {"name": "Adenine band", "material": "adenine", "shape": "frame", "inner_mm": 17, "outer_mm": 23},
+    {"name": "R6G droplet", "material": "r6g", "shape": "circle", "center_mm": [2.36, 2.42], "radius_mm": 0.24},
+    {"name": "Methylene blue droplet", "material": "methylene_blue", "shape": "circle", "center_mm": [2.72, 2.66], "radius_mm": 0.2}
+  ],
+  "edge_blend_mm": {"frame": 3.4, "circle": 0.105},
+  "power_scale": {"LOW": 0.35, "MEDIUM": 0.65, "HIGH": 1.0},
+  "noise_counts_rms": 2
+}

@@ -1,0 +1,1036 @@
+ASSEMBLY wrrusb2a, Version=1.0.0.3, Culture=neutral, PublicKeyToken=null  references: System.Windows.Forms, mscorlib, System, System.Drawing
+
+class <PrivateImplementationDetails>{147A69A4-FEA8-4DA0-8C0B-05C79C809082}
+    field static <PrivateImplementationDetails>{147A69A4-FEA8-4DA0-8C0B-05C79C809082}.__StaticArrayInitTypeSize=1658 $$method0x600008b-1
+    field static <PrivateImplementationDetails>{147A69A4-FEA8-4DA0-8C0B-05C79C809082}.__StaticArrayInitTypeSize=1658 $$method0x600008b-2
+
+struct <PrivateImplementationDetails>{147A69A4-FEA8-4DA0-8C0B-05C79C809082}.__StaticArrayInitTypeSize=1658 [StructLayout(Explicit, Pack=1, Size=1658, CharSet=Ansi)]
+
+class WRRUSB2_DLL.CamDevice
+    field public System.Int64 m_lFreq
+    field public System.Int64 m_lStartTime
+    field public System.Boolean m_bBoardType
+    field public System.Int64 m_lReadOutTime
+    field public System.Boolean m_bFirmCurrupted
+    field public System.Int64 m_lCaptureMode
+    field public System.Boolean m_bCaptureFlag
+    field public System.Int64 m_lSerialNo
+    field public System.Int64 m_nCaptureIndex
+    field public System.Int64 m_nCaptureFrame
+    field public System.Int64 m_nDataCount
+    field public System.Int64 m_nTransmit
+    field public System.Int64 m_nSendFrameCount
+    field public System.Boolean m_bCaptureErrFlag
+    field public System.Double m_dExposureCycle
+    field public System.Double m_dExposureTime
+    field public System.Int64 m_nCaptureMode
+    field public System.Double m_dUpperExposure
+    field public System.Double m_dLowerExposure
+    field public System.Double m_dUpperCycle
+    field public System.Double m_dLowerCycle
+    field public System.Threading.Mutex m_objDevMutex
+    field public System.Int64 m_lADOffset
+    field public System.Int64 m_nTrrigerMode
+    field public System.Int64 m_lIODirection
+    field public System.Int64 m_lSignalPower
+    field public System.Int64 m_lLDPower
+    field public System.Int64 m_lLDPowerEnable
+    field public System.Int64 m_lLDTargetTemp
+    field public System.Int64 m_lLDTecEnable
+    field public System.Int64 m_lIgnore
+    field System.Object m_objSync
+    field public WRRUSB2_DLL.WinUSB winusb
+    field public System.Byte eOut
+    field public System.Byte eIn1
+    field public System.Byte eIn2
+    field public WRRUSB2_DLL.USBRemovableCheck m_USBRMVCHK
+    field System.Int64 m_nCapturedFrame
+    field WRRUSB2_DLL.ImageBuffer m_objImageBuffer
+    field WRRUSB2_DLL.Usb2Struct.CModuleProperty m_objModuleProperty
+    field System.Int64 m_lImageSizeX
+    field System.Int64 m_lImageSizeY
+    field System.Int64 m_lFirmMajor
+    field System.Int64 m_lFirmMinor
+    field System.Boolean m_bAbortCapture
+    field System.String m_strUnitID
+    field WRRUSB2_DLL.Usb2Struct.HeaderInfo m_objInfo
+    field static System.Threading.ManualResetEvent m_objEventImgReady
+    field static System.Threading.ManualResetEvent m_objEventValidBegin
+    field static System.Threading.ManualResetEvent m_objEventLostFrame
+    field static System.Threading.Mutex m_objMutex
+    field public static System.UInt32 REC_STATUS_START = 256
+    field public static System.String MUTEX_KEY = WRRUSB2CLR
+    field static System.Int32 REPEAT_MAX_TIME = 100
+    field static System.Int32 MAX_DATA_INDEX = 100
+    field static System.Int32 D_RETRY_EXPOSURETIME = 7000000
+    public System.Boolean AbortCapture()
+    public System.Boolean AlocImageBuffer(System.Int64 nBuffer)
+    public System.Int64 CaptureStop()
+    public System.Boolean CheckDevice()
+    public System.Int64 GetBufferSize()
+    public System.Boolean GetCaptureStatus(ref System.Int64 lRemainFrameCount, ref System.Int64 lLatestCapturedIndex, ref System.Int64 lAllocateBufferSize)
+    public System.Boolean GetCCDSize(ref System.Int64 x, ref System.Int64 y)
+    public System.Boolean GetDeviceInfo()
+    public System.Int64 GetFirmUpStatus(System.UInt32 dwDataSize)
+    public System.Void GetFirmVer(ref System.Int64 rlMajor, ref System.Int64 rlMinor)
+    public System.Boolean GetImageData(System.Int64 nBufferNo, System.UInt16[] pBuffer, System.Int64 frame, System.UInt64[] pTime)
+    public System.Boolean GetImageHeader(System.Int64 nBufferNo, System.UInt16[] pBuffer, System.Int64 frame)
+    public System.Boolean GetImageSize(ref System.Int64 x, ref System.Int64 y)
+    private System.Boolean GetModuleProperty(WRRUSB2_DLL.Usb2Struct.CModuleProperty CModuleProperty)
+    private System.Int64 InitializeBoard()
+    public System.Boolean IsInGaAs()
+    public System.Boolean IsRemoveDevice()
+    public System.Boolean OpenDevice()
+    PINVOKE [DllImport("kernel32.dll", EntryPoint="QueryPerformanceCounter", CharSet=None, SetLastError=False, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean QueryPerformanceCounter(out ref System.Int64 lpPerformanceCount)
+    public System.Boolean QueryPerformanceCounterWrap(ref System.Int64 lCounter)
+    PINVOKE [DllImport("kernel32.dll", EntryPoint="QueryPerformanceFrequency", CharSet=None, SetLastError=False, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean QueryPerformanceFrequency(out ref System.Int64 lpFrequency)
+    public System.Boolean QueryPerformanceFrequencyWrap(ref System.Int64 lFreq)
+    public System.Int64 RecImageData()
+    public System.Boolean ReleaseBuffer()
+    public System.Boolean SentCommand(System.UInt32 dwCommand, System.Char[] lpWriteBuffer, System.UInt32 nNumberOfBytesToWrite, ref System.Char[] lpRecBuffer, System.UInt32 nNumberOfBytesToRead, ref System.UInt64 lpNumberOfBytesRead)
+    public System.Boolean SetCaptureFlag(System.Boolean bFlag)
+    public System.Boolean SetCaptureMode(System.Int64 lCaptureMode)
+    public System.Boolean SetEventHandle(System.Int64 nId, System.Threading.ManualResetEvent hEvent)
+    public System.Boolean SetImageSize(System.Int64 x, System.Int64 y)
+    public System.Void SetUnitID(System.String strUnitID)
+    ctor()
+
+class WRRUSB2_DLL.ChngType
+    public static System.UInt64 AryByteCharToLong(System.Char[] chr)
+    public static System.Int64[] AryCharToAryLong(System.Char[] chr, System.Int32 ArySize)
+    public static System.UInt64[] AryCharToAryLongWithSwap(System.Char[] chr, System.Int32 ArySize)
+    public static System.UInt16[] AryCharToAryShort(System.Char[] chr, System.Int32 ArySize)
+    public static System.Void AryCharToAryShort(System.Char[] chr, System.UInt16[] arysht, System.Int32 ArySize)
+    public static System.UInt16[] AryCharToAryShortWithSwap(System.Char[] chr, System.Int32 ArySize)
+    public static System.Double AryCharToDouble(System.Char[] chr)
+    public static System.Int32 AryCharToInt(System.Char[] chr)
+    public static System.UInt64 AryCharToLong(System.Char[] chr)
+    public static System.UInt64 AryCharToLongFix(System.Char[] chr)
+    public static System.UInt64 AryCharToLongWithSwap(System.Char[] chr)
+    public static System.UInt16 AryCharToShort(System.Char[] chr)
+    public static System.UInt16 AryCharToShortWithSwap(System.Char[] chr)
+    public static System.String AryCharToString(System.Char[] chr, System.Int32 length)
+    public static System.String AryCharToStringNotNull(System.Char[] chr, System.Int32 length)
+    public static System.Char[] AryIntToAryChar(System.Int32[] aryInt)
+    public static System.Char[] AryIntToAryChar1byte(System.Int32[] aryInt)
+    public static System.Char[] AryLongToAryChar(System.UInt64[] lng, System.Int32 ArySize)
+    public static System.Char[] AryShortToAryChar(System.UInt16[] sht, System.Int32 ArySize)
+    public static System.Char[] DoubleToAryChar(System.Double dbl)
+    public static System.Char[] IntToAryChar(System.Int32 source)
+    public static System.Char[] LongToAryChar(System.UInt64 lng)
+    public static System.Char[] ShortToAryChar(System.UInt16 sht)
+    public static System.Char[] ShortToAryCharWithSwap(System.UInt16 sht)
+    public static System.Char ShortToChar(System.Int16 source)
+    public static System.Char[] StringToAryChar(System.String str, System.Int32 length)
+    ctor()
+
+public struct WRRUSB2_DLL.ChngType.DtoAC [StructLayout(Explicit, Pack=0, Size=0, CharSet=Ansi)]
+    field public System.Char b0 @0
+    field public System.Char b1 @1
+    field public System.Char b2 @2
+    field public System.Char b3 @3
+    field public System.Char b4 @4
+    field public System.Char b5 @5
+    field public System.Char b6 @6
+    field public System.Char b7 @7
+    field public System.Double l @0
+
+class WRRUSB2_DLL.FileIO
+    field static System.Int32 FILE_ATTRIBUTE_NORMAL = 128
+    field static System.Int32 FILE_FLAG_OVERLAPPED = 1073741824
+    field static System.Int32 FILE_SHARE_READ = 1
+    field static System.Int32 FILE_SHARE_WRITE = 2
+    field static System.UInt32 GENERIC_READ = 2147483648
+    field static System.UInt32 GENERIC_WRITE = 1073741824
+    field static System.Int32 INVALID_HANDLE_VALUE = -1
+    field static System.Int32 OPEN_EXISTING = 3
+    PINVOKE [DllImport("kernel32", EntryPoint="CloseHandle", CharSet=Auto, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean CloseHandle(Microsoft.Win32.SafeHandles.SafeFileHandle hObject)
+    PINVOKE [DllImport("kernel32.dll", EntryPoint="CreateFile", CharSet=Auto, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] Microsoft.Win32.SafeHandles.SafeFileHandle CreateFile(System.String lpFileName, System.UInt32 dwDesiredAccess, System.Int32 dwShareMode, System.IntPtr lpSecurityAttributes, System.Int32 dwCreationDisposition, System.Int32 dwFlagsAndAttributes, System.Int32 hTemplateFile)
+    ctor()
+
+public class WRRUSB2_DLL.FirmVerUp : System.Windows.Forms.Form
+    field System.ComponentModel.IContainer components
+    field System.Windows.Forms.Label label1
+    field System.Windows.Forms.ProgressBar progressBar1
+    field System.Windows.Forms.Label label2
+    internal System.Void Dispose(System.Boolean disposing)
+    public System.Void FirmUpDlg_Create()
+    public System.Void FirmUpDlg_Destroy()
+    public System.Boolean FirmUpDlg_SetParsent(System.Int32 nPar)
+    private System.Void InitializeComponent()
+    ctor()
+
+class WRRUSB2_DLL.FWriteR18u
+    field public System.Byte[] byFWriteR18u
+    field public System.Byte[] byFWriteR18u30000
+    field public static System.UInt32 TTF_BYFWRITER18U_LEN = 1658
+    ctor()
+
+class WRRUSB2_DLL.ImageBuffer
+    field public System.UInt32 m_nBufferCount
+    field public System.UInt32 m_nImageDataSize
+    field System.Char[] m_arycImageData
+    field System.Char[] m_arycHeadData
+    field System.UInt64[] m_aryulTimeData
+    field System.Threading.Mutex m_objMutex
+    field WRRUSB2_DLL.Usb2Struct.HeaderInfo m_objInfo
+    field public System.Int64 DEFAULT_IMAGE_DATA_SIZE
+    field public static System.Int64 DATA_SIZE = 2
+    field public static System.Int64 HEADER_SIZE = 256
+    field public static System.Int64 HEADER_INFOSIZE = 2
+    public System.Boolean AlocBuffer(System.UInt32 n, System.Int64 lTransmit)
+    public System.Void ClearData(System.UInt32 dwBufferNo, System.UInt32 no, System.UInt32 dwDataLen)
+    private System.Boolean DeleteBuffer()
+    public System.Boolean GetData(System.UInt32 dwBufferNo, System.UInt32 no, System.Char[] pwBuffer, System.UInt32 dwDataLen, System.UInt64[] pTime, System.Int64 frame)
+    public System.Boolean GetHeader(System.UInt32 dwBufferNo, System.Char[] pwBuffer, System.UInt32 dwDataLen, System.Int64 frame)
+    public System.Boolean ReleaseBuffer()
+    public System.Boolean SetData(System.UInt32 dwBufferNo, System.UInt32 no, System.Char[] pwBuffer, System.UInt32 dwDataLen, System.UInt64 lTime)
+    public System.Boolean SetHeader(System.UInt32 dwBufferNo, System.Char[] pwBuffer, System.UInt32 dwDataLen)
+    public System.Void Swap(System.Char[] data)
+    ctor()
+
+class WRRUSB2_DLL.ModuleComm
+    field public static System.Int32 ERR_OUT_OF_RANGE = -2
+    field public static System.Int32 ERR_FEATURE_NOT_AVAILABLE = -12
+    field public static System.Int32 ERR_INSUFFICIENT_MEMORY = -11
+    field public static System.Int32 ERR_UNSUPPORTED_EVENT_ID = -8
+    field public static System.String STR_MODELNAME = C9260
+    field public static System.String STR_FPS_MODELNAME = C9732
+    field public static System.Int32 SIZE_MODEL_NAME = 10
+    field public static System.UInt32 SFILE_START_ADDRESS = 131072
+    field public static System.UInt32 SFILE_START_ADDRESS_30000 = 196608
+    field public static System.UInt32 SFILE_END_ADDRESS = 524287
+    field public static System.UInt32 SFILE_VERSION_ADDRESS = 65906
+    field public static System.UInt32 SFILE_MAX_SIZE = 524288
+    field public static System.UInt32 IMAGE_STATUS_ENDOFFRAME = 128
+    field public static System.UInt32 IMAGE_STATUS_ABOART = 384
+    field public static System.UInt32 IMAGE_STATUS_DATAOK = 640
+    field public static System.UInt32 IMAGE_STATUS_DATAPEND = 896
+    field public static System.UInt32 IMAGE_STATUS_READOUT_TIME = 1152
+    field public static System.UInt32 IMAGE_STATUS_LOST_OF_FRAME = 1408
+    field public static System.Int32 DEVICE_ID_STRING_LEN = 32
+    ctor()
+
+public class WRRUSB2_DLL.ModuleComm.CAMERA_BINNING
+    field public System.UInt16 wBinX
+    field public System.UInt16 wBinY
+    field public System.UInt16 wPosX
+    field public System.UInt16 wPosY
+    field public System.UInt16 wSizeX
+    field public System.UInt16 wSizeY
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public class WRRUSB2_DLL.ModuleComm.CAMERA_COMM_FORMAT
+    field public System.Int64 dwCommand
+    field public System.Int64 dwLen
+    field public System.Char[] byData
+    public System.Void GetArrayChar(System.Char[] data)
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public class WRRUSB2_DLL.ModuleComm.CAMERA_DEVICEID_FORMAT
+    field public System.Char[] stCompany
+    field public System.Char[] stModel
+    field public System.Char[] stFirmVersion
+    field public System.Char[] stSerial
+    public static System.Int32 GetSize()
+    ctor()
+
+public class WRRUSB2_DLL.ModuleComm.CAMERA_READOUT_TIME
+    field public System.UInt16 wSTATUS
+    field public System.UInt16 wTimeH
+    field public System.UInt16 wTimeL
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public enum WRRUSB2_DLL.ModuleComm.DeviceComm
+    COM_INIT_BOARD = 0
+    COM_GET_MODULE_INFO = 1
+    COM_GET_SPECTRO_INFO = 2
+    COM_GET_MODULE_PROPERTY = 3
+    COM_GET_DATAPOS_PROPERTY = 4
+    COM_GET_DATACOUNT_PROPERTY = 5
+    COM_GET_DATATRANSMIT_PROPERTY = 6
+    COM_GET_DATATRIGGEROFFSET_PROPERTY = 7
+    COM_GET_EXPOSURE_PROPERTY = 8
+    COM_GET_GAIN_PROPERTY = 9
+    COM_GET_ADOFFSET_PROPERTY = 10
+    COM_GET_COOLING_PROPERTY = 11
+    COM_GET_WAVELENGTH_PROPERTY = 12
+    COM_GET_IMAGE_SIZE = 13
+    COM_GET_READOUT_TIME = 14
+    COM_GET_CAPTURE_MODE = 15
+    COM_SET_CAPTURE_MODE = 16
+    COM_GET_DATA_POS = 17
+    COM_SET_DATA_POS = 18
+    COM_GET_DATA_COUNT = 19
+    COM_SET_DATA_COUNT = 20
+    COM_GET_DATA_TRANSMIT = 21
+    COM_SET_DATA_TRANSMIT = 22
+    COM_GET_DATA_TRIGGER_OFFSET = 23
+    COM_SET_DATA_TRIGGER_OFFSET = 24
+    COM_GET_EXPOSURE_TIME = 25
+    COM_SET_EXPOSURE_TIME = 26
+    COM_GET_EXPOSURE_CYCLE = 27
+    COM_SET_EXPOSURE_CYCLE = 28
+    COM_GET_TRIGGER_MODE = 29
+    COM_SET_TRIGGER_MODE = 30
+    COM_GET_TRIGGER_POLARITY = 31
+    COM_SET_TRIGGER_POLARITY = 32
+    COM_GET_TRIGGER_OUTPUT = 33
+    COM_SET_TRIGGER_OUTPUT = 34
+    COM_GET_BINNING_SUB = 35
+    COM_SET_BINNING_SUB = 36
+    COM_GET_GAIN = 37
+    COM_SET_GAIN = 38
+    COM_GET_AD_OFFSET = 39
+    COM_SET_AD_OFFSET = 40
+    COM_GET_CALIB_COEFFICIENT = 41
+    COM_GET_COOLING_TEMP = 42
+    COM_SET_COOLING_TEMP = 43
+    COM_GET_COOLING_STATUS = 44
+    COM_SET_COLING_STATUS = 45
+    COM_GET_CURRENT_TEMP = 46
+    COM_START_CAPTURE = 47
+    COM_FIRE_TRIGGER = 48
+    COM_ABORT_CAPTURE = 49
+    COM_GET_CAPTURE_STATUS = 50
+    COM_GET_E2PROM = 51
+    COM_SET_E2PROM = 52
+    COM_GET_PORT_ERROR = 53
+    COM_SET_PORT_SETTING = 54
+    COM_SENT_STRING = 55
+    COM_REC_STRING = 56
+    COM_FLUSH_PORT = 57
+    COM_REBOOT = 58
+    COM_SET_CALIB_COEFFICIENT = 59
+    COM_GET_E2PROM_SIZE = 60
+    COM_GET_STATUS_REQUEST = 61
+    COM_GET_DEFECTIVE_PIXEL = 62
+    COM_GET_GET_STATUS_DATA = 63
+    COM_GET_SHOTDOWN_PELTIER = 64
+    COM_GET_IODIRECTION = 65
+    COM_SET_IODIRECTION = 66
+    COM_GET_SIGNAL_POWER = 67
+    COM_SET_SIGNAL_POWER = 68
+    COM_GET_LD_POWER = 69
+    COM_SET_LD_POWER = 70
+    COM_GET_LD_SERIAL = 71
+    COM_SET_LD_SERIAL = 72
+    COM_GET_RTSNOISE_COUNT = 73
+    COM_GET_RTSNOISE = 74
+    COM_SET_RTSNOISE = 75
+    COM_CLEAR_RTSNOISE = 76
+    COM_GET_RTSNOISE_ENABLE = 77
+    COM_SET_RTSNOISE_ENABLE = 78
+    COM_GET_LD_POWER_ENABLE = 80
+    COM_SET_LD_POWER_ENABLE = 81
+    COM_GET_I2C_ALARM = 82
+    COM_GET_I2C_LD_ENABLE = 83
+    COM_SET_I2C_LD_ENABLE = 84
+    COM_GET_I2C_LD_POWER = 85
+    COM_SET_I2C_LD_POWER = 86
+    COM_GET_I2C_LD_TARGET = 87
+    COM_SET_I2C_LD_TARGET = 88
+    COM_GET_I2C_LD_TEMP = 89
+    COM_GET_I2C_LD_BOARDTEMP = 90
+    COM_GET_I2C_LD_CONTROL_ENABLE = 91
+    COM_SET_I2C_LD_CONTROL_ENABLE = 92
+    COM_SENT_RW_SOFT_ST = 4096
+    COM_SENT_RW_SOFT_DA = 4097
+    COM_SENT_RW_SOFT_ED = 4098
+    COM_SENT_EXEDATA_ST = 4099
+    COM_SENT_EXEDATA_DA = 4100
+    COM_GET_BOOT_VER = 8192
+
+class WRRUSB2_DLL.SetupAPI
+    field static System.Int32 D_INVALID_HANDLE_VALUE = -1
+    field static System.String D_HPK29_USB1DEVICE_GUID = 88DC0D16-F5F0-4836-B6D0-89FD7C3495F3
+    field static System.Int32 D_WIN32_LASTERROR_SUCCESS = 0
+    field static System.Int32 D_WIN32_LASTERROR_INSUFFICIENT_BUFFER = 122
+    field static System.Int32 DBT_DEVICEARRIVAL = 32768
+    field static System.Int32 DBT_DEVICEREMOVECOMPLETE = 32772
+    field static System.Int32 DBT_DEVTYP_DEVICEINTERFACE = 5
+    field static System.Int32 DBT_DEVTYP_HANDLE = 6
+    field static System.Int32 DEVICE_NOTIFY_ALL_INTERFACE_CLASSES = 4
+    field static System.Int32 DEVICE_NOTIFY_SERVICE_HANDLE = 1
+    field static System.Int32 DEVICE_NOTIFY_WINDOW_HANDLE = 0
+    field static System.Int32 WM_DEVICECHANGE = 537
+    field static System.Int32 DIGCF_PRESENT = 2
+    field static System.Int32 DIGCF_DEVICEINTERFACE = 16
+    PINVOKE [DllImport("user32.dll", EntryPoint="RegisterDeviceNotification", CharSet=Auto, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.IntPtr RegisterDeviceNotification(System.IntPtr hRecipient, System.IntPtr NotificationFilter, System.Int32 Flags)
+    PINVOKE [DllImport("setupapi.dll", EntryPoint="SetupDiCreateDeviceInfoList", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Int32 SetupDiCreateDeviceInfoList(ref System.Guid ClassGuid, System.Int32 hwndParent)
+    PINVOKE [DllImport("setupapi.dll", EntryPoint="SetupDiDestroyDeviceInfoList", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Int32 SetupDiDestroyDeviceInfoList(System.IntPtr DeviceInfoSet)
+    PINVOKE [DllImport("setupapi.dll", EntryPoint="SetupDiEnumDeviceInterfaces", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean SetupDiEnumDeviceInterfaces(System.IntPtr DeviceInfoSet, System.IntPtr DeviceInfoData, ref System.Guid InterfaceClassGuid, System.Int32 MemberIndex, ref WRRUSB2_DLL.SetupAPI.SP_DEVICE_INTERFACE_DATA DeviceInterfaceData)
+    PINVOKE [DllImport("setupapi.dll", EntryPoint="SetupDiGetClassDevs", CharSet=Auto, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.IntPtr SetupDiGetClassDevs(ref System.Guid ClassGuid, System.IntPtr Enumerator, System.IntPtr hwndParent, System.Int32 Flags)
+    PINVOKE [DllImport("setupapi.dll", EntryPoint="SetupDiGetDeviceInterfaceDetail", CharSet=Auto, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean SetupDiGetDeviceInterfaceDetail(System.IntPtr DeviceInfoSet, ref WRRUSB2_DLL.SetupAPI.SP_DEVICE_INTERFACE_DATA DeviceInterfaceData, System.IntPtr DeviceInterfaceDetailData, System.Int32 DeviceInterfaceDetailDataSize, ref System.Int32 RequiredSize, System.IntPtr DeviceInfoData)
+    PINVOKE [DllImport("user32.dll", EntryPoint="UnregisterDeviceNotification", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean UnregisterDeviceNotification(System.IntPtr Handle)
+    ctor()
+
+class WRRUSB2_DLL.SetupAPI.DEV_BROADCAST_DEVICEINTERFACE
+    field System.Int32 dbcc_size
+    field System.Int32 dbcc_devicetype
+    field System.Int32 dbcc_reserved
+    field System.Guid dbcc_classguid
+    field System.Int16 dbcc_name
+    ctor()
+
+class WRRUSB2_DLL.SetupAPI.DEV_BROADCAST_DEVICEINTERFACE_1
+    field System.Int32 dbcc_size
+    field System.Int32 dbcc_devicetype
+    field System.Int32 dbcc_reserved
+    field System.Byte[] dbcc_classguid [MarshalAs(ByValArray, SizeConst=16, ArraySubType=U1)]
+    field System.Char[] dbcc_name [MarshalAs(ByValArray, SizeConst=255)]
+    ctor()
+
+class WRRUSB2_DLL.SetupAPI.DEV_BROADCAST_HDR
+    field System.Int32 dbch_size
+    field System.Int32 dbch_devicetype
+    field System.Int32 dbch_reserved
+    ctor()
+
+struct WRRUSB2_DLL.SetupAPI.SP_DEVICE_INTERFACE_DATA [StructLayout(Sequential, Pack=0, Size=0, CharSet=Ansi)]
+    field System.Int32 cbSize
+    field System.Guid InterfaceClassGuid
+    field System.Int32 Flags
+    field System.IntPtr Reserved
+
+class WRRUSB2_DLL.SformatFile
+    field System.Char[] m_pRomBuffer
+    field System.UInt32 m_dwDataSize
+    field public static System.UInt32 CHECK_SUM_VALUE = 65535
+    public System.Boolean CheckFileSum(System.UInt32 dwStart, System.UInt32 dwEnd)
+    internal System.Void Finalize()
+    public System.UInt32 GetDataSize()
+    public System.Boolean GetFirmVersion(System.UInt32 dwAddress, ref System.Int64 dwMajor, ref System.Int64 dwMinor)
+    public System.Boolean ReadSfile(System.String pFileName, System.UInt32 dwBufferSize)
+    private System.Boolean ReadSfileLine(System.String pBuffer)
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct
+    field public static System.Int64 LONG_MAX = 2147483647
+    field public static System.Double USB2_MICRO_SEC = 1000000
+    field public static System.Int32 USB2_IDEVENT_IMAGEREADY = 0
+    field public static System.Int32 USB2_IDEVENT_VVALIDBEGIN = 1
+    field public static System.Int32 USB2_IDEVENT_LOSTFRAME = 2
+    field public static System.String USB2_MODULE_INFO_DRIVER = 1.00
+    field public static System.String USB2_MODULE_INFO_LIBRARY = 1.00
+    field public static System.String D_TYPE_CMOS_2048PIXEL = F4
+    field public static System.String D_TYPE_CMOS_1024PIXEL = F3
+    field public static System.String D_TYPE_CCD_2048PIXEL = B4
+    field public static System.String D_TYPE_INGAS_512PIXEL = G2
+    field public static System.String D_TYPE_INGAS_OLD_512PIXEL = C2
+    field public static System.String D_TYPE_COOLED_INGAS_256PIXEL = D1
+    field public static System.String D_TYPE_COOLED_INGAS_512PIXEL = E2
+    field public static System.UInt32 USB2_TRIGGER_OUTPUT_OFF = 1
+    field public static System.UInt32 USB2_TRIGGER_OUTPUT_ON = 3
+    field public static System.UInt32 EDGE_TRIGGER_LOW = 1
+    field public static System.UInt32 EDGE_TRIGGER_HIGH = 3
+    field public static System.UInt32 GAIN_SENSOR_LOW = 0
+    field public static System.UInt32 GAIN_SENSOR_HIGH = 1
+    field public static System.UInt32 IODIRECTION_MIN = 0
+    field public static System.UInt32 IODIRECTION_MAX = 63
+    field public static System.UInt32 SIGNAL_POWER_MIN = 0
+    field public static System.UInt32 SIGNAL_POWER_MAX = 63
+    field public static System.UInt32 LD_POWER_OFF = 0
+    field public static System.UInt32 LD_POWER_LOW = 1
+    field public static System.UInt32 LD_POWER_MIDDLE = 2
+    field public static System.UInt32 LD_POWER_HIGH = 3
+    field public static System.UInt32 SIGNAL_LDPOWER_MIN = 0
+    field public static System.UInt32 SIGNAL_LDPOWER_MAX = 63
+    field public static System.UInt32 LD_SERIAL_MIN = 0
+    field public static System.UInt32 LD_SERIAL_MAX = 255
+    field public static System.UInt32 GAIN_CIRCUIT_MIN = 1
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct.CAdOffsetProperty
+    field public System.Int32 lower
+    field public System.Int32 upper
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct.CCoolingProperty
+    field public System.Double lower
+    field public System.Double upper
+    field public System.Double step
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct.CDataPositionProperty
+    field public System.Int32 lowerposition
+    field public System.Int32 upperposition
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct.CDataTriggerOffsetProperty
+    field public System.Int32 lower
+    field public System.Int32 upper
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct.CExposureProperty
+    field public System.Double lowertime
+    field public System.Double uppertime
+    field public System.Double timestep
+    field public System.Double lowercycle
+    field public System.Double uppercycle
+    field public System.Double cyclestep
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct.CModuleInformation
+    field public System.String vender
+    field public System.String product
+    field public System.String serial
+    field public System.String firmware
+    field public System.String driver
+    field public System.String library
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void Set(WRRUSB2_DLL.Usb2Struct.CModuleInformation ModuleInfo)
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct.CModuleProperty
+    field public System.Int32 pixel
+    field public System.Int32 resolution
+    field public System.Int32 capturemode
+    field public System.Int32 binningmode
+    field public System.Int32 triggermode
+    field public System.Int32 triggerpolarity
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct.CSpectroInformation
+    field public System.String unit
+    field public System.String sensor
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public enum WRRUSB2_DLL.Usb2Struct.Cusb2Err
+    usb2Success = 0
+    usb2Err_unsuccess = 1
+    usb2Err_notList = 2
+    usb2Err_notAccess = 3
+    usb2Err_notFrame = 4
+    usb2Err_notAcPower = 5
+    usb2Err_notImage = 6
+    usb2Err_notBuffer = 7
+    usb2Err_notData = 8
+    usb2Err_notDownload = 9
+    usb2Err_invalidDeviceIndex = 10
+    usb2Err_invalidMode = 11
+    usb2Err_invalidParameter = 12
+    usb2Err_invalidTriggermode = 13
+    usb2Err_invalidTriggerpolarity = 14
+    usb2Err_invalidTriggeroutput = 15
+    usb2Err_invalidBinning = 16
+    usb2Err_invalidPosition = 17
+    usb2Err_invalidSize = 18
+    usb2Err_invalidGain = 19
+    usb2Err_invalidOffset = 20
+    usb2Err_invalidCoolingstatus = 21
+    usb2Err_invalidFrame = 22
+    usb2Err_invalidEventID = 23
+    usb2Err_invalidEventhandle = 24
+    usb2Err_invalidData = 25
+    usb2Err_invalidIndex = 26
+    usb2Err_invalidNumber = 27
+    usb2Err_invalidAddress = 28
+    usb2Err_invalidLength = 29
+    usb2Err_overTime = 30
+    usb2Err_underTime = 31
+    usb2Err_overTemperature = 32
+    usb2Err_underTemperature = 33
+    usb2Err_overArea = 34
+    usb2Err_nowCapturing = 35
+    usb2Err_nowFirmUpdate = 36
+    usb2Err_initialized = 37
+    usb2Err_opened = 38
+    usb2Err_existDevice = 39
+    usb2Err_FirmCorrupted = 40
+    usb2Err_ReadImageStatus = 41
+    usb2Err_InvalidEepromParameter = 42
+
+public class WRRUSB2_DLL.Usb2Struct.CWaveLengthProperty
+    field public System.Int32 lowerwavelength
+    field public System.Int32 upperwavelength
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct.HeaderInfo
+    field System.UInt16 state
+    field System.UInt16 x
+    field System.UInt16 y
+    field System.UInt16 packet
+    field System.UInt16 mode
+    field System.UInt16 trigger
+    field System.UInt16 polarity
+    field System.UInt16[] reserve
+    field System.UInt16 start
+    field System.UInt16 num
+    field System.UInt16 transmit
+    field System.UInt16 offset
+    field System.UInt16[] reserve2
+    field public System.UInt64 header
+    field public System.UInt64[] data
+    public System.Void GetArrayChar(ref System.Char[] data)
+    public static System.Int32 GetSize()
+    public System.Void SetArrayChar(System.Char[] data)
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct.Reserved
+    field public System.String parameterA
+    field public System.String parameterB
+    field public System.String parameterC
+    field public System.String parameterD
+    field public System.String parameterE
+    field public System.Int32 parameterF
+    field public System.Int32 parameterG
+    field public System.Int32 parameterH
+    field public System.Int32 parameterI
+    field public System.Int32 parameterJ
+    field public System.Double parameterK
+    field public System.Double parameterL
+    field public System.Double parameterM
+    field public System.Double parameterN
+    field public System.Double parameterO
+    public static System.Int32 GetSize()
+    ctor()
+
+public class WRRUSB2_DLL.Usb2Struct.ReturnValue
+    field public static System.UInt16 USBDEV_SUCCESS = 0
+    field public static System.UInt16 USBDEV_INVALID_HANDLE = 1
+    field public static System.UInt16 USBDEV_UNSUCCESS = 2
+    field public static System.UInt16 USBDEV_INVALID_VALUE = 3
+    field public static System.UInt16 USBDEV_CHECK_NORMAL = 11
+    field public static System.UInt16 USBDEV_CHECK_INVALID = 12
+    field public static System.UInt16 USBDEV_CHECK_REMOVE = 13
+    field public static System.UInt16 USBDEV_CHECK_OTHER = 14
+    field public static System.UInt16 USBDEV_RESET_ERROR = 15
+    field public static System.UInt16 USBDEV_BULK_SIZE_ERROR = 20
+    field public static System.UInt16 USBDEV_BULK_READ_ERROR = 21
+    field public static System.UInt16 USBDEV_BULK_NOT_UPDATED = 23
+    field public static System.UInt16 USBDEV_ADC_OUTPUT_ERROR = 31
+    field public static System.UInt16 USBDEV_ADC_OUTPUT_OK = 32
+    field public static System.UInt16 USBDEV_ADC_NO_FUNCTION = 33
+    field public static System.UInt16 USBDEV_TIME_OVER_ERROR = 101
+    field public static System.UInt16 USBDEV_TIME_UNDER_ERROR = 102
+    field public static System.UInt16 USBDEV_TIME_SET_ERROR = 103
+    field public static System.UInt16 USBDEV_SET_GAIN_ERROR = 104
+    field public static System.UInt16 USBDEV_GET_TEMP_ERROR = 105
+    field public static System.UInt16 USBDEV_SET_TRIGGER_ERROR = 106
+    field public static System.UInt16 USBDEV_RW_EEP_ADDR_ERROR = 201
+    field public static System.UInt16 USBDEV_RW_EEP_SIZE_ERROR = 202
+    field public static System.UInt16 USBDEV_RW_EEP_OVER_ERROR = 203
+    field public static System.UInt16 USBDEV_RW_EEP_ERROR = 204
+    field public static System.Int32 INVALID_HANDLE_VALUE = -1
+
+public class WRRUSB2_DLL.Usb2Struct.UNIT_PARAMETER
+    field public System.Double dblIntegrationTime
+    field public System.Int64 lGain
+    field public System.Int64 lTriggerEdge
+    field public System.Int64 lTriggerMode
+    ctor()
+
+public enum WRRUSB2_DLL.Usb2Struct.Usb2CaptureMode
+    CAPTURE_MDOE_START = 0
+    CAPTURE_MDOE_SINGLE_SHOT = 0
+    CAPTURE_MDOE_FREE_RUN = 1
+    CAPTURE_MDOE_TRIGGER = 2
+    CAPTURE_MDOE_EDGE = 3
+    CAPTURE_MDOE_UNKNOWN1 = 4
+    CAPTURE_MDOE_UNKNOWN2 = 5
+    CAPTURE_MDOE_UNKNOWN3 = 6
+    CAPTURE_MDOE_UNKNOWN4 = 7
+    CAPTURE_MDOE_UNKNOWN5 = 8
+    CAPTURE_MDOE_UNKNOWN6 = 9
+    CAPTURE_MDOE_END = 10
+
+public enum WRRUSB2_DLL.Usb2Struct.Usb2GainMode
+    GAIN_MODE_START = 0
+    GAIN_MODE_SENSOR = 0
+    GAIN_MODE_CIRCUIT = 1
+    GAIN_MODE_END = 2
+
+public enum WRRUSB2_DLL.Usb2Struct.Usb2IngassGainMode
+    D_SENOSORGAINMODE_PF1 = 0
+    D_SENOSORGAINMODE_PF2 = 1
+    D_SENOSORGAINMODE_PF3 = 2
+    D_SENOSORGAINMODE_PF4 = 3
+    D_SENOSORGAINMODE_NOTHING = 255
+
+public enum WRRUSB2_DLL.Usb2Struct.Usb2TriggerMode
+    TRIGGER_MDOE_START = 0
+    TRIGGER_MDOE_SYNCHRO_INTERNAL = 0
+    TRIGGER_MDOE_ASYNCHRONOUS_SOFTWARE = 1
+    TRIGGER_MDOE_SYNCHRO_SOFTWARE = 2
+    TRIGGER_MDOE_ASYNCHRONOUS_EXTERNAL_EDGE_SENSE = 3
+    TRIGGER_MDOE_ASYNCHRONOUS_EXTERNAL_LEVEL_SENSE = 4
+    TRIGGER_MDOE_SYNCHRO_EXTERNAL_EDGE_SENSE = 5
+    TRIGGER_MDOE_SYNCHRO_EXTERNAL_LEVEL_SENSE = 6
+    TRIGGER_MDOE_SYNCHRO_EXTERNAL_PULSE = 7
+    TRIGGER_MDOE_END = 8
+
+class WRRUSB2_DLL.UsbDevice
+    public System.Int32 getDeviceList()
+    ctor()
+
+public class WRRUSB2_DLL.USBRemovableCheck : System.Windows.Forms.Form
+    field System.String m_strDevicePath
+    field System.Boolean m_bRemove
+    field System.IntPtr m_deviceNotificationHandle
+    field System.ComponentModel.IContainer components
+    field public static System.Int32 WRR_DEVICECHANGE = 537
+    field public static System.Int32 WRR_SHNOTIFY = 1025
+    field public static System.Int32 WRR_DEVICEARRIVAL = 32768
+    field public static System.Int32 WRR_DEVICEREMOVECOMPLETE = 32772
+    field public static System.Int32 WRR_DEVTYP_DEVICEINTERFACE = 5
+    internal System.Void Dispose(System.Boolean disposing)
+    internal System.Void Finalize()
+    private System.Void InitializeComponent()
+    private System.Boolean IsDeviceNameMatch(System.Windows.Forms.Message msg)
+    public System.Boolean IsRemoveDevice()
+    private System.Void OnDeviceChange(System.Windows.Forms.Message msg)
+    private System.UInt32 RegisterChangeNotify()
+    private System.Boolean RegisterForDeviceNotifications()
+    public System.Void SetDevicePath(System.String devicePath)
+    PINVOKE [DllImport("shell32.dll", EntryPoint="#2", CharSet=Auto, SetLastError=False, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.UInt32 SHChangeNotifyRegister(System.IntPtr hWnd, WRRUSB2_DLL.USBRemovableCheck.SHCNF fSources, WRRUSB2_DLL.USBRemovableCheck.SHCNE fEvents, System.UInt32 wMsg, System.Int32 cEntries, WRRUSB2_DLL.USBRemovableCheck.SHChangeNotifyEntry pFsne)
+    PINVOKE [DllImport("shell32.dll", EntryPoint="#4", CharSet=Auto, SetLastError=False, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean SHChangeNotifyUnregister(System.Byte hNotify)
+    internal System.Void WndProc(ref System.Windows.Forms.Message m)
+    ctor()
+
+struct WRRUSB2_DLL.USBRemovableCheck.DEV_BROADCAST_DEVICEINTERFACE_1 [StructLayout(Sequential, Pack=0, Size=0, CharSet=Auto)]
+    field System.Int32 dbcc_size
+    field System.Int32 dbcc_devicetype
+    field System.Int32 dbcc_reserved
+    field System.Byte[] dbcc_classguid [MarshalAs(ByValArray, SizeConst=16, ArraySubType=U1)]
+    field System.Byte[] dbcc_name [MarshalAs(ByValArray, SizeConst=255)]
+
+struct WRRUSB2_DLL.USBRemovableCheck.SHChangeNotifyEntry [StructLayout(Sequential, Pack=0, Size=0, CharSet=Ansi)]
+    field System.IntPtr pIdl
+    field System.Boolean Recursively [MarshalAs(Bool)]
+
+public enum WRRUSB2_DLL.USBRemovableCheck.SHCNE
+    SHCNE_MEDIAINSERTED = 32
+    SHCNE_MEDIAREMOVED = 64
+
+public enum WRRUSB2_DLL.USBRemovableCheck.SHCNF
+    SHCNF_IDLIST = 0
+    SHCNF_PATHA = 1
+    SHCNF_PRINTERA = 2
+    SHCNF_DWORD = 3
+    SHCNF_PATHW = 5
+    SHCNF_PRINTERW = 6
+    SHCNF_TYPE = 255
+    SHCNF_FLUSH = 4096
+    SHCNF_FLUSHNOWAIT = 8192
+
+class WRRUSB2_DLL.WinUSB
+    field Microsoft.Win32.SafeHandles.SafeFileHandle hUsb
+    field System.IntPtr hWinUsb
+    field System.Char[] bulkOutPipeId
+    field System.Char[] bulkInPipeId
+    field System.Char[] interOutPipeId
+    field System.Char[] interInPipeId
+    field System.UInt16[] bulkOutPipeMaxPktSize
+    field System.UInt16[] bulkInPipeMaxPktSize
+    field System.UInt16[] interOutPipeMaxPktSize
+    field System.UInt16[] interInPipeMaxPktSize
+    field System.Object m_objSync
+    field public System.Int32 m_nDevNum
+    field public System.String m_strDevicePath
+    field static System.Int32 SUCCESS
+    field static System.Int32 DEVICE_NOT_FOUND
+    field static System.Int32 WINUSB_INITIALIZE_ERROR
+    field static System.Int32 DEVICE_DESCRIPTOR_NOT_FOUND
+    field static System.Int32 INTERFACE_DESCRIPTOR_NOT_FOUND
+    field static System.Int32 ENDPOINT_ANALYSIS_ERROR
+    field static System.Int32 WINUSB_CLOSE_ERROR
+    field static System.Int32 DEVICE_CLOSE_ERROR
+    field static System.UInt32 FILE_ATTRIBUTE_NORMAL = 128
+    field static System.UInt32 FILE_FLAG_OVERLAPPED = 1073741824
+    field static System.UInt32 ERROR_INSUFFICIENT_BUFFER = 122
+    field static System.Byte USB_DEVICE_DESCRIPTOR_TYPE = 1
+    field static System.Byte USB_ENDPOINT_DIRECTION_MASK = 128
+    internal System.Void Finalize()
+    private System.Boolean getDevicePath(System.Guid interfaceGuid, ref System.String devicePath, System.Int32 bufLen)
+    private Microsoft.Win32.SafeHandles.SafeFileHandle openDevice(System.Boolean bSync)
+    public System.UInt16 USB_ControlInRequest(System.IntPtr hDeviceHandle, System.Byte byRequest, System.UInt16 usValue, System.UInt16 usIndex, System.UInt16 usLength, ref System.Byte[] arybyBuffer)
+    public System.UInt16 USB_ControlOutRequest(System.IntPtr hDeviceHandle, System.Byte byRequest, System.UInt16 usValue, System.UInt16 usIndex, System.UInt16 usLength, ref System.Byte[] arybyBuffer)
+    private System.Boolean UsbEndpointDirection_In(System.Byte addr)
+    private System.Boolean UsbEndpointDirection_Out(System.Byte addr)
+    public System.Boolean WinUSB_checkDevice()
+    public System.Int32 WinUSB_close()
+    public System.Byte WinUSB_getBulkInPipeId(System.Int32 pipeNum)
+    public System.Byte WinUSB_getBulkOutPipeId(System.Int32 pipeNum)
+    public System.Byte WinUSB_getInterInPipeId(System.Int32 pipeNum)
+    public System.Byte WinUSB_getInterOutPipeId(System.Int32 pipeNum)
+    public System.Int32 WinUSB_init()
+    public System.Boolean WinUSB_readPipe(System.Byte pipeId, System.Byte[] buffer, ref System.UInt32 bufferLength, System.IntPtr overlapped)
+    public System.Boolean WinUSB_resetPipe(System.Byte pipeId)
+    public System.Boolean WinUSB_writePipe(System.Byte pipeId, System.Byte[] buffer, ref System.UInt32 bufferLength, System.IntPtr overlapped)
+    ctor(System.Int32 nDevIndex)
+    ctor()
+
+class WRRUSB2_DLL.WinUSBDevice
+    field WRRUSB2_DLL.WinUSBDevice.devInfo myDevInfo
+    field static System.UInt32 DEVICE_SPEED = 1
+    field static System.Byte USB_ENDPOINT_DIRECTION_MASK = 128
+    internal System.Void CloseDeviceHandle()
+    internal System.Boolean Do_Control_Read_Transfer(ref System.Byte[] dataStage)
+    internal System.Boolean Do_Control_Write_Transfer(System.Byte[] dataStage)
+    internal System.Boolean GetDeviceHandle(System.String devicePathName)
+    internal System.Boolean InitializeDevice()
+    internal System.Boolean IsWindowsXpOrLater()
+    internal System.Boolean QueryDeviceSpeed()
+    internal System.Void ReadViaBulkTransfer(System.Byte pipeID, System.UInt32 bytesToRead, ref System.Byte[] buffer, ref System.UInt32 bytesRead, ref System.Boolean success)
+    internal System.Void ReadViaInterruptTransfer(System.Byte pipeID, System.UInt32 bytesToRead, ref System.Byte[] buffer, ref System.UInt32 bytesRead, ref System.Boolean success)
+    internal System.Boolean SendViaBulkTransfer(ref System.Byte[] buffer, System.UInt32 bytesToWrite)
+    internal System.Boolean SendViaInterruptTransfer(ref System.Byte[] buffer, System.UInt32 bytesToWrite)
+    public System.Boolean SetPipePolicy(System.Byte pipeId, System.UInt32 policyType, System.Byte value)
+    private System.Boolean SetPipePolicy(System.Byte pipeId, System.UInt32 policyType, System.UInt32 value)
+    public System.Boolean UsbEndpointDirectionIn(System.Int32 addr)
+    public System.Boolean UsbEndpointDirectionOut(System.Int32 addr)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_ControlTransfer", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_ControlTransfer(System.IntPtr InterfaceHandle, WRRUSB2_DLL.WinUSBDevice.WINUSB_SETUP_PACKET SetupPacket, System.Byte[] Buffer, System.UInt32 BufferLength, ref System.UInt32 LengthTransferred, System.IntPtr Overlapped)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_Free", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_Free(System.IntPtr InterfaceHandle)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_GetDescriptor", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_GetDescriptor(System.IntPtr InterfaceHandle, System.Byte DescriptorType, System.Byte index, System.UInt16 languageID, ref WRRUSB2_DLL.WinUSBDevice.USB_DEVICE_DESCRIPTOR buffer, System.UInt32 bufferLength, ref System.UInt32 lengthTransferred)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_Initialize", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_Initialize(Microsoft.Win32.SafeHandles.SafeFileHandle DeviceHandle, ref System.IntPtr InterfaceHandle)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_QueryDeviceInformation", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_QueryDeviceInformation(System.IntPtr InterfaceHandle, System.UInt32 InformationType, ref System.UInt32 BufferLength, ref System.Byte Buffer)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_QueryInterfaceSettings", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_QueryInterfaceSettings(System.IntPtr InterfaceHandle, System.Byte AlternateInterfaceNumber, ref WRRUSB2_DLL.WinUSBDevice.USB_INTERFACE_DESCRIPTOR UsbAltInterfaceDescriptor)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_QueryPipe", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_QueryPipe(System.IntPtr InterfaceHandle, System.Byte AlternateInterfaceNumber, System.Byte PipeIndex, ref WRRUSB2_DLL.WinUSBDevice.WINUSB_PIPE_INFORMATION PipeInformation)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_ReadPipe", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_ReadPipe(System.IntPtr InterfaceHandle, System.Byte PipeID, System.Byte[] Buffer, System.UInt32 BufferLength, ref System.UInt32 LengthTransferred, System.IntPtr Overlapped)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_ResetPipe", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_ResetPipe(System.IntPtr InterfaceHandle, System.Byte PipeID)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_SetPipePolicy", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_SetPipePolicy(System.IntPtr InterfaceHandle, System.Byte PipeID, System.UInt32 PolicyType, System.UInt32 ValueLength, ref System.Byte Value)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_SetPipePolicy", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_SetPipePolicy1(System.IntPtr InterfaceHandle, System.Byte PipeID, System.UInt32 PolicyType, System.UInt32 ValueLength, ref System.UInt32 Value)
+    PINVOKE [DllImport("winusb.dll", EntryPoint="WinUsb_WritePipe", CharSet=None, SetLastError=True, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Boolean WinUsb_WritePipe(System.IntPtr InterfaceHandle, System.Byte PipeID, System.Byte[] Buffer, System.UInt32 BufferLength, ref System.UInt32 LengthTransferred, System.IntPtr Overlapped)
+    ctor()
+
+struct WRRUSB2_DLL.WinUSBDevice.devInfo [StructLayout(Sequential, Pack=0, Size=0, CharSet=Ansi)]
+    field Microsoft.Win32.SafeHandles.SafeFileHandle deviceHandle
+    field System.IntPtr winUsbHandle
+    field System.Byte bulkInPipe
+    field System.Byte bulkOutPipe
+    field System.Byte interruptInPipe
+    field System.Byte interruptOutPipe
+    field System.UInt32 devicespeed
+
+enum WRRUSB2_DLL.WinUSBDevice.POLICY_TYPE
+    SHORT_PACKET_TERMINATE = 1
+    AUTO_CLEAR_STALL = 2
+    PIPE_TRANSFER_TIMEOUT = 3
+    IGNORE_SHORT_PACKETS = 4
+    ALLOW_PARTIAL_READS = 5
+    AUTO_FLUSH = 6
+    RAW_IO = 7
+
+struct WRRUSB2_DLL.WinUSBDevice.USB_CONFIGURATION_DESCRIPTOR [StructLayout(Sequential, Pack=0, Size=0, CharSet=Ansi)]
+    field System.Byte bLength
+    field System.Byte bDescriptorType
+    field System.UInt16 wTotalLength
+    field System.Byte bNumInterfaces
+    field System.Byte bConfigurationValue
+    field System.Byte iConfiguration
+    field System.Byte bmAttributes
+    field System.Byte MaxPower
+
+struct WRRUSB2_DLL.WinUSBDevice.USB_DEVICE_DESCRIPTOR [StructLayout(Sequential, Pack=0, Size=0, CharSet=Ansi)]
+    field System.Byte bLength
+    field System.Byte bDescriptorType
+    field System.UInt16 bcdUSB
+    field System.Byte bDeviceClass
+    field System.Byte bDeviceSubClass
+    field System.Byte bDeviceProtocol
+    field System.Byte bMaxPacketSize0
+    field System.UInt16 idVendor
+    field System.UInt16 idProduct
+    field System.UInt16 bcdDevice
+    field System.Byte iManufacturer
+    field System.Byte iProduct
+    field System.Byte iSerialNumber
+    field System.Byte bNumConfigurations
+
+enum WRRUSB2_DLL.WinUSBDevice.USB_DEVICE_SPEED
+    UsbLowSpeed = 1
+    UsbFullSpeed = 2
+    UsbHighSpeed = 3
+
+struct WRRUSB2_DLL.WinUSBDevice.USB_INTERFACE_DESCRIPTOR [StructLayout(Sequential, Pack=0, Size=0, CharSet=Ansi)]
+    field System.Byte bLength
+    field System.Byte bDescriptorType
+    field System.Byte bInterfaceNumber
+    field System.Byte bAlternateSetting
+    field System.Byte bNumEndpoints
+    field System.Byte bInterfaceClass
+    field System.Byte bInterfaceSubClass
+    field System.Byte bInterfaceProtocol
+    field System.Byte iInterface
+
+enum WRRUSB2_DLL.WinUSBDevice.USBD_PIPE_TYPE
+    UsbdPipeTypeControl = 0
+    UsbdPipeTypeIsochronous = 1
+    UsbdPipeTypeBulk = 2
+    UsbdPipeTypeInterrupt = 3
+
+struct WRRUSB2_DLL.WinUSBDevice.WINUSB_PIPE_INFORMATION [StructLayout(Sequential, Pack=0, Size=0, CharSet=Ansi)]
+    field WRRUSB2_DLL.WinUSBDevice.USBD_PIPE_TYPE PipeType
+    field System.Byte PipeId
+    field System.UInt16 MaximumPacketSize
+    field System.Byte Interval
+
+struct WRRUSB2_DLL.WinUSBDevice.WINUSB_SETUP_PACKET [StructLayout(Sequential, Pack=1, Size=0, CharSet=Ansi)]
+    field System.Byte RequestType
+    field System.Byte Request
+    field System.UInt16 Value
+    field System.UInt16 Index
+    field System.UInt16 Length
+
+public class WRRUSB2_DLL.WRRUSB2
+    field WRRUSB2_DLL.UsbDevice m_objUsbDevices
+    field WRRUSB2_DLL.CamDevice[] m_objCamDevice
+    field System.Int64[] m_arylSerialNo
+    field System.Int64[] m_arylDeviceNo
+    field System.Boolean[] m_arybOpen
+    field System.Int32 m_nConnectCamCount
+    field System.String m_strMyPath
+    field System.Threading.ManualResetEvent m_mreThreadStart
+    field System.Boolean m_bFirmUpdate
+    field System.Threading.Thread[] m_arytCapThread
+    field System.Int64 m_nSerialNo
+    field WRRUSB2_DLL.FirmVerUp m_objFirmVerUp
+    field System.Object m_objSync
+    field System.Int64 m_lRTSNoisePixelCount
+    field System.Collections.Generic.List`1[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]] m_lstnRTSNoisePixel
+    field static System.Int32 MAX_CAMERA_DEVICE = 8
+    field static System.UInt32 USER_AREA_TOP = 384
+    field static System.UInt32 MAX_PATH = 260
+    field static System.String STR_INIFILE_NAME = \HUSBDCAM.ini
+    private System.Boolean AddCamDevice(ref System.Int32 rnCameraCount)
+    private System.Void CaptureThread()
+    private System.Boolean ChangeSerialToDeviceNo(System.Int64 lSerial, ref System.Int32 rnDeviceNo)
+    private System.Void DeleteObject()
+    internal System.Void Finalize()
+    private System.Int64 GetBootSize(System.Int64 id, ref System.Int32 nBootSize)
+    private System.Boolean GetModelNo(System.Int32 nDeviceNo, System.String pszFirmModelName, System.UInt32 dwBufferSize)
+    PINVOKE [DllImport("kernel32.dll", EntryPoint="GetPrivateProfileString", CharSet=None, SetLastError=False, CallingConvention=Winapi, ExactSpelling=False, PreserveSig=True)] System.Int32 GetPrivateProfileString(System.Char[] lpAppName, System.Char[] lpKeyName, System.Char[] lpDefault, System.Char[] lpReturnedString, System.UInt64 nSize, System.Char[] lpFileName)
+    private System.Int64 RecImageData(System.Int64 lSirialNo)
+    private System.Boolean SentRomData(System.Int32 nDeviceNo, System.String stPath, System.Int64 nDialogFlag)
+    private System.Boolean SentRomRWSoft(System.Int32 nDeviceNo, System.Boolean b30000)
+    private System.Void UpdateDeviceState()
+    public System.Int64 USB2_allocateBuffer(System.Int64 id, System.Int64 frame)
+    public System.Int64 USB2_captureStart(System.Int64 id, System.Int64 frame)
+    public System.Int64 USB2_captureStop(System.Int64 id)
+    public System.Int64 USB2_clearRTSNoisePixel(System.Int64 id)
+    public System.Int64 USB2_close(System.Int64 id)
+    public System.Int64 USB2_downloadFirmware(System.Int64 id, System.String path, System.Int64 flag)
+    public System.Int64 USB2_fireTrigger(System.Int64 id)
+    public System.Int64 USB2_getAdOffset(System.Int64 id, ref System.Int64 offset)
+    public System.Int64 USB2_getAdOffsetProperty(System.Int64 id, ref WRRUSB2_DLL.Usb2Struct.CAdOffsetProperty CAdOffsetProperty)
+    public System.Int64 USB2_getBinningSubarray(System.Int64 id, ref System.Int64 binningX, ref System.Int64 binningY, ref System.Int64 positionX, ref System.Int64 positionY, ref System.Int64 sizeX, ref System.Int64 sizeY)
+    public System.Int64 USB2_GetBootVersion(System.Int64 id, ref System.String strVersion)
+    public System.Int64 USB2_getCalibrationCoefficient(System.Int64 id, System.Int64 index, System.Double[] coefficient)
+    public System.Int64 USB2_getCaptureMode(System.Int64 id, ref System.Int64 mode)
+    public System.Int64 USB2_getCaptureStatus(System.Int64 id, ref System.Int64 frame, ref System.Int64 index)
+    public System.Int64 USB2_getCoolingProperty(System.Int64 id, ref WRRUSB2_DLL.Usb2Struct.CCoolingProperty CCoolingProperty)
+    public System.Int64 USB2_getCoolingStatus(System.Int64 id, ref System.Int64 on_off)
+    public System.Int64 USB2_getCoolingTemperature(System.Int64 id, ref System.Double temperature)
+    public System.Int64 USB2_getCurrentTemperature(System.Int64 id, ref System.Double temperature)
+    public System.Int64 USB2_getDataCount(System.Int64 id, ref System.Int64 count)
+    public System.Int64 USB2_getDataCountProperty(System.Int64 id, ref System.Int64 DataCountProperty)
+    public System.Int64 USB2_getDataPosition(System.Int64 id, ref System.Int64 position)
+    public System.Int64 USB2_getDataPositionProperty(System.Int64 id, ref WRRUSB2_DLL.Usb2Struct.CDataPositionProperty CDataPositionProperty)
+    public System.Int64 USB2_getDataTransmit(System.Int64 id, ref System.Int64 transmit)
+    public System.Int64 USB2_getDataTransmitProperty(System.Int64 id, ref System.Int64 DataTransmitProperty)
+    public System.Int64 USB2_getDataTriggerOffset(System.Int64 id, ref System.Int64 offset)
+    public System.Int64 USB2_getDataTriggerOffsetProperty(System.Int64 id, ref WRRUSB2_DLL.Usb2Struct.CDataTriggerOffsetProperty CDataTriggerOffsetProperty)
+    public System.Int64 USB2_GetDefectivePixel(System.Int64 id, ref System.Int32[] hlDefectivePixel)
+    public System.Int64 USB2_getExposureCycle(System.Int64 id, ref System.Double sec)
+    public System.Int64 USB2_getExposureProperty(System.Int64 id, ref WRRUSB2_DLL.Usb2Struct.CExposureProperty CExposureProperty)
+    public System.Int64 USB2_getExposureTime(System.Int64 id, ref System.Double sec)
+    public System.Int64 USB2_getGain(System.Int64 id, System.Int64 mode, ref System.Int64 gain)
+    public System.Int64 USB2_getGainProperty(System.Int64 id, System.Int64 mode, ref System.Int64 GainProperty)
+    public System.Int64 USB2_getImageData(System.Int64 id, ref System.UInt16[] imageData, System.Int64 index, System.Int64 frame, ref System.UInt64[] time)
+    public System.Int64 USB2_getImageHeaderData(System.Int64 id, ref System.UInt16[] headerData, ref System.UInt16[] imageData, System.Int64 index, System.Int64 frame, ref System.UInt64[] time)
+    public System.Int64 USB2_getImageSize(System.Int64 id, ref System.Int64 sizeX, ref System.Int64 sizeY)
+    public System.Int64 USB2_getIODirection(System.Int64 id, ref System.Int64 direction)
+    public System.Int64 USB2_getLDAlarm(System.Int64 id, ref System.Int64 LDAlarm)
+    public System.Int64 USB2_getLDBoardTemp(System.Int64 id, ref System.Int64 LDBoardTemp)
+    public System.Int64 USB2_getLDPower(System.Int64 id, ref System.Int64 LDpower)
+    public System.Int64 USB2_getLDPowerEnable(System.Int64 id, ref System.Int64 PowerEnable)
+    public System.Int64 USB2_getLDTargetTemp(System.Int64 id, ref System.Int64 LDTargetTemp)
+    public System.Int64 USB2_getLDTecEnable(System.Int64 id, ref System.Int64 LDTecEnable)
+    public System.Int64 USB2_getLDTemp(System.Int64 id, ref System.Int64 LDTemp)
+    public System.Int64 USB2_getModuleConnectionList(System.Int16[] list, ref System.UInt16 number)
+    public System.Int64 USB2_getModuleInformation(System.Int64 id, ref WRRUSB2_DLL.Usb2Struct.CModuleInformation information)
+    public System.Int64 USB2_getModuleProperty(System.Int64 id, ref WRRUSB2_DLL.Usb2Struct.CModuleProperty CModuleProperty)
+    public System.Int64 USB2_getModuleReadoutTime(System.Int64 id, ref System.Double sec)
+    public System.Int64 USB2_getRTSNoiseIgnore(System.Int64 id, ref System.Int64 Ignore)
+    public System.Int64 USB2_getRTSNoisePixel(System.Int64 id, ref System.Int32[] pixelIndex)
+    public System.Int64 USB2_getRTSNoisePixelCount(System.Int64 id, ref System.Int64 count)
+    public System.Int64 USB2_getSignalPower(System.Int64 id, ref System.Int64 power)
+    public System.Int64 USB2_getSpectroInformation(System.Int64 id, ref WRRUSB2_DLL.Usb2Struct.CSpectroInformation information)
+    public System.Int64 USB2_GetStatusData(System.Int64 id, ref System.UInt16 usMode, ref System.UInt16 usPeltier, ref System.UInt16 usThermistor, ref System.UInt16 usFan, ref System.UInt16 usScounter)
+    public System.Int64 USB2_GetStatusRequest(System.Int64 id, ref System.Char flag)
+    public System.Int64 USB2_getTriggerMode(System.Int64 id, ref System.Int64 mode)
+    public System.Int64 USB2_getTriggerOutput(System.Int64 id, ref System.Int64 output)
+    public System.Int64 USB2_getTriggerPolarity(System.Int64 id, ref System.Int64 polarity)
+    public System.Int64 USB2_getWaveLengthProperty(System.Int64 id, ref WRRUSB2_DLL.Usb2Struct.CWaveLengthProperty CWaveLengthProperty)
+    public System.Int64 USB2_initialize()
+    public System.Int64 USB2_open(System.Int64 id)
+    public System.Int64 USB2_readEeprom(System.Int64 id, System.UInt16 address, ref System.Char[] data, System.UInt32 length)
+    public System.Int64 USB2_readEepromUserArea(System.Int64 id, System.UInt16 address, ref System.Char[] data, System.UInt32 length)
+    public System.Int64 USB2_recvLDSerial(System.Int64 id, ref System.Int64 LDSerialData)
+    public System.Int64 USB2_releaseBuffer(System.Int64 id)
+    public System.Int64 USB2_reserved(WRRUSB2_DLL.Usb2Struct.Reserved reserved)
+    public System.Int64 USB2_sendLDSerial(System.Int64 id, System.Int64 LDSerialData)
+    public System.Int64 USB2_setAdOffset(System.Int64 id, System.Int64 offset)
+    public System.Int64 USB2_setBinningSubarray(System.Int64 id, System.Int64 binningX, System.Int64 binningY, System.Int64 positionX, System.Int64 positionY, System.Int64 sizeX, System.Int64 sizeY)
+    public System.Int64 USB2_SetCalibrationCoefficient(System.Int64 id, System.Int64 index, System.Double[] coefficient)
+    public System.Int64 USB2_setCaptureMode(System.Int64 id, System.Int64 mode)
+    public System.Int64 USB2_setCoolingStatus(System.Int64 id, System.Int64 on_off)
+    public System.Int64 USB2_setCoolingTemperature(System.Int64 id, System.Double temperature)
+    public System.Int64 USB2_setDataCount(System.Int64 id, System.Int64 count)
+    public System.Int64 USB2_setDataPosition(System.Int64 id, System.Int64 position)
+    public System.Int64 USB2_setDataTransmit(System.Int64 id, System.Int64 transmit)
+    public System.Int64 USB2_setDataTriggerOffset(System.Int64 id, System.Int64 offset)
+    public System.Int64 USB2_setEventHandle(System.Int64 id, System.Int64 eventid, System.Threading.ManualResetEvent hEvent)
+    public System.Int64 USB2_setExposureCycle(System.Int64 id, System.Double sec)
+    public System.Int64 USB2_setExposureTime(System.Int64 id, System.Double sec)
+    public System.Int64 USB2_setGain(System.Int64 id, System.Int64 mode, System.Int64 gain)
+    public System.Int64 USB2_setIODirection(System.Int64 id, System.Int64 direction)
+    public System.Int64 USB2_setLDPower(System.Int64 id, System.Int64 LDpower)
+    public System.Int64 USB2_setLDPowerEnable(System.Int64 id, System.Int64 PowerEnable)
+    public System.Int64 USB2_setLDTargetTemp(System.Int64 id, System.Int64 LDTargetTemp)
+    public System.Int64 USB2_setLDTecEnable(System.Int64 id, System.Int64 LDTecEnable)
+    public System.Int64 USB2_setRTSNoiseIgnore(System.Int64 id, System.Int64 Ignore)
+    public System.Int64 USB2_setRTSNoisePixel(System.Int64 id, System.Int32[] pixelIndex)
+    public System.Int64 USB2_setSignalPower(System.Int64 id, System.Int64 power)
+    public System.Int64 USB2_setTriggerMode(System.Int64 id, System.Int64 mode)
+    public System.Int64 USB2_setTriggerOutput(System.Int64 id, System.Int64 output)
+    public System.Int64 USB2_setTriggerPolarity(System.Int64 id, System.Int64 polarity)
+    public System.Int64 USB2_ShutDownPeltiter(System.Int64 id, System.Char cEnable)
+    public System.Int64 USB2_uninitialize()
+    public System.Int64 USB2_writeEeprom(System.Int64 id, System.UInt16 address, ref System.Char[] data, System.UInt32 length)
+    public System.Int64 USB2_writeEepromUserArea(System.Int64 id, System.UInt16 address, ref System.Char[] data, System.UInt32 length)
+    ctor()

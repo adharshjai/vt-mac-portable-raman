@@ -1,0 +1,377 @@
+== assembly references ==
+  System.Windows.Forms 2.0.0.0 token=B77A5C561934E089
+  mscorlib 2.0.0.0 token=B77A5C561934E089
+  System 2.0.0.0 token=B77A5C561934E089
+  System.Drawing 2.0.0.0 token=B03F5F7F11D50A3A
+== type references ==
+  [System.Windows.Forms] System.Windows.Forms.Form
+  [mscorlib] System.ValueType
+  [mscorlib] System.Enum
+  [mscorlib] System.Object
+  [System.Windows.Forms] System.Windows.Forms.Message
+  [System] System.ComponentModel.IContainer
+  [System.Windows.Forms] System.Windows.Forms.Label
+  [System.Windows.Forms] System.Windows.Forms.ProgressBar
+  [mscorlib] System.Guid
+  [mscorlib] System.Threading.ManualResetEvent
+  [mscorlib] System.Threading.Thread
+  [mscorlib] System.Collections.Generic.List`1
+  [mscorlib] Microsoft.Win32.SafeHandles.SafeFileHandle
+  [mscorlib] System.Threading.Mutex
+  [mscorlib] System.Runtime.InteropServices.OutAttribute
+  [mscorlib] System.Reflection.AssemblyTitleAttribute
+  [mscorlib] System.Reflection.AssemblyProductAttribute
+  [mscorlib] System.Reflection.AssemblyDescriptionAttribute
+  [mscorlib] System.Reflection.AssemblyConfigurationAttribute
+  [mscorlib] System.Reflection.AssemblyCompanyAttribute
+  [mscorlib] System.Reflection.AssemblyCopyrightAttribute
+  [mscorlib] System.Reflection.AssemblyTrademarkAttribute
+  [mscorlib] System.Reflection.AssemblyCultureAttribute
+  [mscorlib] System.Runtime.InteropServices.ComVisibleAttribute
+  [mscorlib] System.Runtime.InteropServices.GuidAttribute
+  [mscorlib] System.Reflection.AssemblyVersionAttribute
+  [mscorlib] System.Reflection.AssemblyFileVersionAttribute
+  [mscorlib] System.Diagnostics.DebuggableAttribute
+  [nested in System.Diagnostics.DebuggableAttribute] System.Diagnostics.DebuggableAttribute+DebuggingModes
+  [mscorlib] System.Runtime.CompilerServices.CompilationRelaxationsAttribute
+  [mscorlib] System.Runtime.CompilerServices.RuntimeCompatibilityAttribute
+  [mscorlib] System.Runtime.InteropServices.DllImportAttribute
+  [System] System.ComponentModel.Component
+  [mscorlib] System.Exception
+  [mscorlib] System.IntPtr
+  [mscorlib] System.Type
+  [mscorlib] System.RuntimeTypeHandle
+  [mscorlib] System.Byte
+  [mscorlib] System.Runtime.InteropServices.Marshal
+  [mscorlib] System.Text.Encoding
+  [mscorlib] System.String
+  [System.Windows.Forms] System.Windows.Forms.Control
+  [mscorlib] System.IDisposable
+  [System.Drawing] System.Drawing.SizeF
+  [System.Windows.Forms] System.Windows.Forms.ContainerControl
+  [System.Windows.Forms] System.Windows.Forms.AutoScaleMode
+  [System.Drawing] System.Drawing.Size
+  [mscorlib] System.Runtime.InteropServices.StructLayoutAttribute
+  [mscorlib] System.Runtime.InteropServices.LayoutKind
+  [mscorlib] System.Runtime.InteropServices.MarshalAsAttribute
+  [mscorlib] System.Runtime.InteropServices.UnmanagedType
+  [mscorlib] System.Int32
+  [System.Drawing] System.Drawing.Point
+  [nested in System.Windows.Forms.Control] System.Windows.Forms.Control+ControlCollection
+  [mscorlib] System.Int64
+  [mscorlib] System.Boolean
+  [mscorlib] System.Threading.WaitHandleCannotBeOpenedException
+  [System.Windows.Forms] System.Windows.Forms.MessageBox
+  [System.Windows.Forms] System.Windows.Forms.DialogResult
+  [System.Windows.Forms] System.Windows.Forms.MessageBoxButtons
+  [mscorlib] System.Threading.EventWaitHandle
+  [mscorlib] System.Char
+  [mscorlib] System.Convert
+  [mscorlib] System.IO.File
+  [mscorlib] System.IO.FileStream
+  [mscorlib] System.IO.FileMode
+  [mscorlib] System.IO.StreamReader
+  [mscorlib] System.IO.Stream
+  [mscorlib] System.IO.TextReader
+  [mscorlib] System.IO.SeekOrigin
+  [mscorlib] System.Array
+  [mscorlib] System.OutOfMemoryException
+  [mscorlib] System.Collections.Generic.IEnumerable`1
+  [mscorlib] System.Threading.WaitHandle
+  [mscorlib] System.Threading.Monitor
+  [mscorlib] System.Threading.ThreadStart
+  [mscorlib] System.BitConverter
+  [mscorlib] System.Math
+  [mscorlib] System.UInt16
+  [mscorlib] System.Runtime.CompilerServices.CompilerGeneratedAttribute
+  [mscorlib] System.Runtime.CompilerServices.RuntimeHelpers
+  [mscorlib] System.RuntimeFieldHandle
+  [mscorlib] System.ArgumentException
+  [mscorlib] System.UInt64
+  [mscorlib] System.Runtime.InteropServices.FieldOffsetAttribute
+  [mscorlib] System.Runtime.InteropServices.SafeHandle
+  [mscorlib] System.Environment
+  [mscorlib] System.OperatingSystem
+  [mscorlib] System.Version
+  [mscorlib] System.Globalization.NumberStyles
+  [mscorlib] System.UInt32
+== member references (external members used by this assembly) ==
+  method System.Runtime.InteropServices.OutAttribute::.ctor (0 params, instance)
+  method System.Reflection.AssemblyTitleAttribute::.ctor (1 params, instance)
+  method System.Reflection.AssemblyProductAttribute::.ctor (1 params, instance)
+  method System.Reflection.AssemblyDescriptionAttribute::.ctor (1 params, instance)
+  method System.Reflection.AssemblyConfigurationAttribute::.ctor (1 params, instance)
+  method System.Reflection.AssemblyCompanyAttribute::.ctor (1 params, instance)
+  method System.Reflection.AssemblyCopyrightAttribute::.ctor (1 params, instance)
+  method System.Reflection.AssemblyTrademarkAttribute::.ctor (1 params, instance)
+  method System.Reflection.AssemblyCultureAttribute::.ctor (1 params, instance)
+  method System.Runtime.InteropServices.ComVisibleAttribute::.ctor (1 params, instance)
+  method System.Runtime.InteropServices.GuidAttribute::.ctor (1 params, instance)
+  method System.Reflection.AssemblyVersionAttribute::.ctor (1 params, instance)
+  method System.Reflection.AssemblyFileVersionAttribute::.ctor (1 params, instance)
+  method System.Diagnostics.DebuggableAttribute::.ctor (1 params, instance)
+  method System.Runtime.CompilerServices.CompilationRelaxationsAttribute::.ctor (1 params, instance)
+  method System.Runtime.CompilerServices.RuntimeCompatibilityAttribute::.ctor (0 params, instance)
+  method System.Runtime.InteropServices.DllImportAttribute::.ctor (1 params, instance)
+  method System.Windows.Forms.Form::.ctor (0 params, instance)
+  method System.ComponentModel.Component::Finalize (0 params, instance)
+  method System.Windows.Forms.Message::get_Msg (0 params, instance)
+  method System.Windows.Forms.Form::WndProc (1 params, instance)
+  method System.Windows.Forms.Message::get_WParam (0 params, instance)
+  method System.IntPtr::ToInt32 (0 params, instance)
+  method typespec::.ctor (0 params, instance)
+  method System.Type::GetTypeFromHandle (1 params, static)
+  method System.Windows.Forms.Message::GetLParam (1 params, instance)
+  method System.Windows.Forms.Message::get_LParam (0 params, instance)
+  method System.Runtime.InteropServices.Marshal::PtrToStructure (2 params, static)
+  method typespec::Add (1 params, instance)
+  method System.Text.Encoding::GetEncoding (1 params, static)
+  method typespec::ToArray (0 params, instance)
+  method System.Text.Encoding::GetString (1 params, instance)
+  method System.String::IndexOf (1 params, instance)
+  method System.String::Substring (2 params, instance)
+  method System.String::ToLower (0 params, instance)
+  method System.String::Compare (2 params, static)
+  method System.Runtime.InteropServices.Marshal::SizeOf (1 params, static)
+  method System.Guid::.ctor (1 params, instance)
+  method System.Runtime.InteropServices.Marshal::AllocHGlobal (1 params, static)
+  method System.Runtime.InteropServices.Marshal::StructureToPtr (3 params, static)
+  method System.Windows.Forms.Control::get_Handle (0 params, instance)
+  method System.IDisposable::Dispose (0 params, instance)
+  method System.Windows.Forms.Form::Dispose (1 params, instance)
+  method System.Drawing.SizeF::.ctor (2 params, instance)
+  method System.Windows.Forms.ContainerControl::set_AutoScaleDimensions (1 params, instance)
+  method System.Windows.Forms.ContainerControl::set_AutoScaleMode (1 params, instance)
+  method System.Drawing.Size::.ctor (2 params, instance)
+  method System.Windows.Forms.Form::set_ClientSize (1 params, instance)
+  method System.Windows.Forms.Control::set_Name (1 params, instance)
+  method System.Windows.Forms.Control::set_Text (1 params, instance)
+  method System.Windows.Forms.Control::ResumeLayout (1 params, instance)
+  method System.Runtime.InteropServices.StructLayoutAttribute::.ctor (1 params, instance)
+  method System.Runtime.InteropServices.MarshalAsAttribute::.ctor (1 params, instance)
+  method System.Windows.Forms.ProgressBar::set_Minimum (1 params, instance)
+  method System.Windows.Forms.ProgressBar::set_Maximum (1 params, instance)
+  method System.Windows.Forms.ProgressBar::set_Value (1 params, instance)
+  method System.Windows.Forms.Control::BringToFront (0 params, instance)
+  method System.Windows.Forms.Control::Invalidate (0 params, instance)
+  method System.Int32::ToString (0 params, instance)
+  method System.String::Format (2 params, static)
+  method System.Windows.Forms.Control::Refresh (0 params, instance)
+  method System.Windows.Forms.Label::.ctor (0 params, instance)
+  method System.Windows.Forms.ProgressBar::.ctor (0 params, instance)
+  method System.Windows.Forms.Control::SuspendLayout (0 params, instance)
+  method System.Windows.Forms.Control::set_AutoSize (1 params, instance)
+  method System.Drawing.Point::.ctor (2 params, instance)
+  method System.Windows.Forms.Control::set_Location (1 params, instance)
+  method System.Windows.Forms.Control::set_Size (1 params, instance)
+  method System.Windows.Forms.Control::set_TabIndex (1 params, instance)
+  method System.Windows.Forms.Control::get_Controls (0 params, instance)
+  method System.Windows.Forms.Control+ControlCollection::Add (1 params, instance)
+  method System.Windows.Forms.Control::PerformLayout (0 params, instance)
+  method System.Object::.ctor (0 params, instance)
+  method typespec::.ctor (0 params, instance)
+  method System.Threading.ManualResetEvent::.ctor (1 params, instance)
+  method System.Object::Finalize (0 params, instance)
+  method System.String::Format (3 params, static)
+  method System.Threading.Mutex::OpenExisting (1 params, static)
+  method System.String::get_Chars (1 params, instance)
+  method System.Windows.Forms.MessageBox::Show (3 params, static)
+  method System.Threading.EventWaitHandle::Set (0 params, instance)
+  method System.Convert::ToString (1 params, static)
+  method System.String::Substring (1 params, instance)
+  method System.String::ToCharArray (2 params, instance)
+  method System.Object::ToString (0 params, instance)
+  method System.String::get_Length (0 params, instance)
+  method System.String::ToCharArray (0 params, instance)
+  method System.String::.ctor (3 params, instance)
+  method System.IO.File::Exists (1 params, static)
+  method System.IO.FileStream::.ctor (2 params, instance)
+  method System.IO.StreamReader::.ctor (1 params, instance)
+  method System.IO.TextReader::ReadLine (0 params, instance)
+  method System.IO.StreamReader::get_BaseStream (0 params, instance)
+  method System.IO.Stream::Seek (2 params, instance)
+  method System.Array::Resize (2 params, static)
+  method System.Threading.Thread::Sleep (1 params, static)
+  method System.IO.TextReader::Close (0 params, instance)
+  method System.Array::Copy (5 params, static)
+  method System.Threading.Mutex::.ctor (2 params, instance)
+  method typespec::AddRange (1 params, instance)
+  method System.Threading.Mutex::ReleaseMutex (0 params, instance)
+  method System.Threading.WaitHandle::Close (0 params, instance)
+  method System.Array::Copy (5 params, static)
+  method System.Array::Clear (3 params, static)
+  method System.Threading.Monitor::Enter (1 params, static)
+  method System.Threading.ThreadStart::.ctor (2 params, instance)
+  method System.Threading.Thread::.ctor (1 params, instance)
+  method System.Threading.EventWaitHandle::Reset (0 params, instance)
+  method System.Threading.Thread::Start (0 params, instance)
+  method System.Threading.WaitHandle::WaitOne (0 params, instance)
+  method System.Threading.Monitor::Exit (1 params, static)
+  method System.BitConverter::GetBytes (1 params, static)
+  method System.Math::Pow (2 params, static)
+  method typespec::Add (1 params, instance)
+  method typespec::ToArray (0 params, instance)
+  method typespec::Contains (1 params, instance)
+  method System.Exception::.ctor (1 params, instance)
+  method typespec::Clear (0 params, instance)
+  method System.Array::Copy (3 params, static)
+  method System.Windows.Forms.Control::Show (0 params, instance)
+  field System.String::Empty
+  method System.String::op_Equality (2 params, static)
+  method System.Windows.Forms.Form::Close (0 params, instance)
+  method System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor (0 params, instance)
+  method System.Runtime.CompilerServices.RuntimeHelpers::InitializeArray (2 params, static)
+  method System.ArgumentException::.ctor (1 params, instance)
+  method System.String::.ctor (1 params, instance)
+  method System.Char::ToString (0 params, instance)
+  method System.String::Concat (2 params, static)
+  method System.BitConverter::GetBytes (1 params, static)
+  method System.Array::Reverse (1 params, static)
+  method System.BitConverter::ToChar (2 params, static)
+  method System.BitConverter::GetBytes (1 params, static)
+  method System.Runtime.InteropServices.FieldOffsetAttribute::.ctor (1 params, instance)
+  field System.IntPtr::Zero
+  method System.Runtime.InteropServices.SafeHandle::get_IsInvalid (0 params, instance)
+  method System.Runtime.InteropServices.SafeHandle::Close (0 params, instance)
+  method System.Convert::ToUInt16 (1 params, static)
+  method System.Convert::ToByte (1 params, static)
+  method System.Convert::ToUInt32 (1 params, static)
+  method System.Convert::ToByte (1 params, static)
+  method System.Environment::get_OSVersion (0 params, static)
+  method System.Version::.ctor (2 params, instance)
+  method System.OperatingSystem::get_Version (0 params, instance)
+  method System.Version::op_GreaterThanOrEqual (2 params, static)
+  method System.Convert::ToUInt32 (1 params, static)
+  method System.Runtime.InteropServices.SafeHandle::get_IsClosed (0 params, instance)
+  method System.IntPtr::op_Explicit (1 params, static)
+  method System.Runtime.InteropServices.Marshal::GetLastWin32Error (0 params, static)
+  method System.IntPtr::get_Size (0 params, static)
+  field System.Runtime.InteropServices.Marshal::SystemDefaultCharSize
+  method System.Runtime.InteropServices.Marshal::WriteInt32 (2 params, static)
+  method System.IntPtr::ToInt64 (0 params, instance)
+  method System.IntPtr::.ctor (1 params, instance)
+  method System.Runtime.InteropServices.Marshal::PtrToStringAuto (1 params, static)
+  method System.IntPtr::op_Explicit (1 params, static)
+  method System.String::op_Inequality (2 params, static)
+  method System.String::Concat (2 params, static)
+  method System.UInt16::Parse (2 params, static)
+  method System.UInt32::Parse (2 params, static)
+  method System.Threading.Mutex::.ctor (0 params, instance)
+  method System.Text.Encoding::get_Default (0 params, static)
+  method System.Text.Encoding::GetBytes (1 params, instance)
+  method System.String::TrimEnd (1 params, instance)
+  method System.String::IndexOf (1 params, instance)
+  method System.Int64::Parse (1 params, static)
+== type definitions ==
+  <Module>  [NotPublic] fields=0 methods=0
+  WRRUSB2_DLL.USBRemovableCheck : System.Windows.Forms.Form  [Public, BeforeFieldInit] fields=9 methods=13
+  DEV_BROADCAST_DEVICEINTERFACE_1 : System.ValueType  [NestedAssembly, SequentialLayout, Sealed, AutoClass, BeforeFieldInit] fields=5 methods=0
+  SHChangeNotifyEntry : System.ValueType  [NestedAssembly, SequentialLayout, Sealed, BeforeFieldInit] fields=2 methods=0
+  SHCNF : System.Enum  [NestedPublic, Sealed] fields=10 methods=0
+  SHCNE : System.Enum  [NestedPublic, Sealed] fields=3 methods=0
+  WRRUSB2_DLL.FirmVerUp : System.Windows.Forms.Form  [Public, BeforeFieldInit] fields=4 methods=6
+  WRRUSB2_DLL.SetupAPI : System.Object  [Sealed, BeforeFieldInit] fields=14 methods=8
+  DEV_BROADCAST_DEVICEINTERFACE : System.Object  [NestedAssembly, SequentialLayout, BeforeFieldInit] fields=5 methods=1
+  DEV_BROADCAST_DEVICEINTERFACE_1 : System.Object  [NestedAssembly, SequentialLayout, AutoClass, BeforeFieldInit] fields=5 methods=1
+  DEV_BROADCAST_HDR : System.Object  [NestedAssembly, SequentialLayout, BeforeFieldInit] fields=3 methods=1
+  SP_DEVICE_INTERFACE_DATA : System.ValueType  [NestedAssembly, SequentialLayout, Sealed, BeforeFieldInit] fields=4 methods=0
+  WRRUSB2_DLL.WRRUSB2 : System.Object  [Public, BeforeFieldInit] fields=19 methods=108
+  WRRUSB2_DLL.FWriteR18u : System.Object  [BeforeFieldInit] fields=3 methods=1
+  WRRUSB2_DLL.ChngType : System.Object  [BeforeFieldInit] fields=0 methods=27
+  DtoAC : System.ValueType  [NestedPublic, ExplicitLayout, Sealed, BeforeFieldInit] fields=9 methods=0
+  WRRUSB2_DLL.WinUSBDevice : System.Object  [Sealed, BeforeFieldInit] fields=3 methods=28
+  devInfo : System.ValueType  [NestedAssembly, SequentialLayout, Sealed, BeforeFieldInit] fields=7 methods=0
+  POLICY_TYPE : System.Enum  [NestedAssembly, Sealed] fields=8 methods=0
+  USBD_PIPE_TYPE : System.Enum  [NestedAssembly, Sealed] fields=5 methods=0
+  USB_DEVICE_SPEED : System.Enum  [NestedAssembly, Sealed] fields=4 methods=0
+  USB_CONFIGURATION_DESCRIPTOR : System.ValueType  [NestedAssembly, SequentialLayout, Sealed, BeforeFieldInit] fields=8 methods=0
+  USB_INTERFACE_DESCRIPTOR : System.ValueType  [NestedAssembly, SequentialLayout, Sealed, BeforeFieldInit] fields=9 methods=0
+  WINUSB_PIPE_INFORMATION : System.ValueType  [NestedAssembly, SequentialLayout, Sealed, BeforeFieldInit] fields=4 methods=0
+  WINUSB_SETUP_PACKET : System.ValueType  [NestedAssembly, SequentialLayout, Sealed, BeforeFieldInit] fields=5 methods=0
+  USB_DEVICE_DESCRIPTOR : System.ValueType  [NestedAssembly, SequentialLayout, Sealed, BeforeFieldInit] fields=14 methods=0
+  WRRUSB2_DLL.Usb2Struct : System.Object  [Public, BeforeFieldInit] fields=33 methods=1
+  Usb2GainMode : System.Enum  [NestedPublic, Sealed] fields=5 methods=0
+  Usb2IngassGainMode : System.Enum  [NestedPublic, Sealed] fields=6 methods=0
+  Usb2CaptureMode : System.Enum  [NestedPublic, Sealed] fields=13 methods=0
+  Usb2TriggerMode : System.Enum  [NestedPublic, Sealed] fields=11 methods=0
+  Cusb2Err : System.Enum  [NestedPublic, Sealed] fields=44 methods=0
+  CModuleInformation : System.Object  [NestedPublic, BeforeFieldInit] fields=6 methods=5
+  CSpectroInformation : System.Object  [NestedPublic, BeforeFieldInit] fields=2 methods=4
+  CModuleProperty : System.Object  [NestedPublic, BeforeFieldInit] fields=6 methods=4
+  CDataPositionProperty : System.Object  [NestedPublic, BeforeFieldInit] fields=2 methods=4
+  CDataTriggerOffsetProperty : System.Object  [NestedPublic, BeforeFieldInit] fields=2 methods=4
+  CExposureProperty : System.Object  [NestedPublic, BeforeFieldInit] fields=6 methods=4
+  CAdOffsetProperty : System.Object  [NestedPublic, BeforeFieldInit] fields=2 methods=4
+  CCoolingProperty : System.Object  [NestedPublic, BeforeFieldInit] fields=3 methods=4
+  CWaveLengthProperty : System.Object  [NestedPublic, BeforeFieldInit] fields=2 methods=4
+  Reserved : System.Object  [NestedPublic, BeforeFieldInit] fields=15 methods=2
+  HeaderInfo : System.Object  [NestedPublic, BeforeFieldInit] fields=15 methods=4
+  ReturnValue : System.Object  [NestedPublic, Abstract, Sealed, BeforeFieldInit] fields=26 methods=0
+  UNIT_PARAMETER : System.Object  [NestedPublic, BeforeFieldInit] fields=4 methods=1
+  WRRUSB2_DLL.ModuleComm : System.Object  [BeforeFieldInit] fields=19 methods=1
+  DeviceComm : System.Enum  [NestedPublic, Sealed] fields=99 methods=0
+  CAMERA_READOUT_TIME : System.Object  [NestedPublic, BeforeFieldInit] fields=3 methods=4
+  CAMERA_COMM_FORMAT : System.Object  [NestedPublic, BeforeFieldInit] fields=3 methods=3
+  CAMERA_BINNING : System.Object  [NestedPublic, BeforeFieldInit] fields=6 methods=4
+  CAMERA_DEVICEID_FORMAT : System.Object  [NestedPublic, BeforeFieldInit] fields=4 methods=2
+  WRRUSB2_DLL.WinUSB : System.Object  [BeforeFieldInit] fields=26 methods=19
+  WRRUSB2_DLL.SformatFile : System.Object  [BeforeFieldInit] fields=3 methods=7
+  WRRUSB2_DLL.FileIO : System.Object  [Sealed, BeforeFieldInit] fields=8 methods=3
+  WRRUSB2_DLL.ImageBuffer : System.Object  [BeforeFieldInit] fields=11 methods=10
+  WRRUSB2_DLL.UsbDevice : System.Object  [BeforeFieldInit] fields=0 methods=2
+  WRRUSB2_DLL.CamDevice : System.Object  [BeforeFieldInit] fields=56 methods=31
+  <PrivateImplementationDetails>{147A69A4-FEA8-4DA0-8C0B-05C79C809082} : System.Object  [NotPublic] fields=2 methods=0
+  __StaticArrayInitTypeSize=1658 : System.ValueType  [NestedPrivate, ExplicitLayout, Sealed] fields=0 methods=0
+== P/Invoke (ImplMap) ==
+  shell32.dll :: #2  managed=SHChangeNotifyRegister  attrs=CharSetMask, CallingConventionWinApi
+  shell32.dll :: #4  managed=SHChangeNotifyUnregister  attrs=CharSetMask, CallingConventionWinApi
+  user32.dll :: RegisterDeviceNotification  managed=RegisterDeviceNotification  attrs=CharSetMask, SetLastError, CallingConventionWinApi
+  setupapi.dll :: SetupDiCreateDeviceInfoList  managed=SetupDiCreateDeviceInfoList  attrs=SetLastError, CallingConventionWinApi
+  setupapi.dll :: SetupDiDestroyDeviceInfoList  managed=SetupDiDestroyDeviceInfoList  attrs=SetLastError, CallingConventionWinApi
+  setupapi.dll :: SetupDiEnumDeviceInterfaces  managed=SetupDiEnumDeviceInterfaces  attrs=SetLastError, CallingConventionWinApi
+  setupapi.dll :: SetupDiGetClassDevs  managed=SetupDiGetClassDevs  attrs=CharSetMask, SetLastError, CallingConventionWinApi
+  setupapi.dll :: SetupDiGetDeviceInterfaceDetail  managed=SetupDiGetDeviceInterfaceDetail  attrs=CharSetMask, SetLastError, CallingConventionWinApi
+  user32.dll :: UnregisterDeviceNotification  managed=UnregisterDeviceNotification  attrs=SetLastError, CallingConventionWinApi
+  kernel32.dll :: GetPrivateProfileString  managed=GetPrivateProfileString  attrs=CallingConventionWinApi
+  winusb.dll :: WinUsb_ControlTransfer  managed=WinUsb_ControlTransfer  attrs=SetLastError, CallingConventionWinApi
+  winusb.dll :: WinUsb_Free  managed=WinUsb_Free  attrs=SetLastError, CallingConventionWinApi
+  winusb.dll :: WinUsb_Initialize  managed=WinUsb_Initialize  attrs=SetLastError, CallingConventionWinApi
+  winusb.dll :: WinUsb_QueryDeviceInformation  managed=WinUsb_QueryDeviceInformation  attrs=SetLastError, CallingConventionWinApi
+  winusb.dll :: WinUsb_QueryInterfaceSettings  managed=WinUsb_QueryInterfaceSettings  attrs=SetLastError, CallingConventionWinApi
+  winusb.dll :: WinUsb_QueryPipe  managed=WinUsb_QueryPipe  attrs=SetLastError, CallingConventionWinApi
+  winusb.dll :: WinUsb_ReadPipe  managed=WinUsb_ReadPipe  attrs=SetLastError, CallingConventionWinApi
+  winusb.dll :: WinUsb_ResetPipe  managed=WinUsb_ResetPipe  attrs=SetLastError, CallingConventionWinApi
+  winusb.dll :: WinUsb_GetDescriptor  managed=WinUsb_GetDescriptor  attrs=SetLastError, CallingConventionWinApi
+  winusb.dll :: WinUsb_SetPipePolicy  managed=WinUsb_SetPipePolicy  attrs=SetLastError, CallingConventionWinApi
+  winusb.dll :: WinUsb_SetPipePolicy  managed=WinUsb_SetPipePolicy1  attrs=SetLastError, CallingConventionWinApi
+  winusb.dll :: WinUsb_WritePipe  managed=WinUsb_WritePipe  attrs=SetLastError, CallingConventionWinApi
+  kernel32.dll :: CreateFile  managed=CreateFile  attrs=CharSetMask, SetLastError, CallingConventionWinApi
+  kernel32 :: CloseHandle  managed=CloseHandle  attrs=CharSetMask, SetLastError, CallingConventionWinApi
+  kernel32.dll :: QueryPerformanceFrequency  managed=QueryPerformanceFrequency  attrs=CallingConventionWinApi
+  kernel32.dll :: QueryPerformanceCounter  managed=QueryPerformanceCounter  attrs=CallingConventionWinApi
+== user strings ==
+  shift-jis
+   
+  88DC0D16-F5F0-4836-B6D0-89FD7C3495F3
+  USBRemovableCheck
+  {0}%
+  label1
+  Downloading...
+  progressBar1
+  label2
+  FirmVerUp
+  Firmware Update
+  {0} {1}
+  WRRUSB2CLR
+  Is the size in the boot part 30000?
+  FirmUpdate
+  C9732
+  C9260
+  \HUSBDCAM.ini
+  FW
+  1.00
+  ノイズ画素インデックス配列の設定に失敗しました。
+  char(2bytes)配列の長さがulong(8bytes)への変換に適切(長さ4)ではありません。
+  引数の配列の長さが、この関数には適切ではありません。他の変換関数を使用してください。
+  char(2bytes)配列の長さがint(4bytes)への変換に適切(長さ2)ではありません。
+  G2
