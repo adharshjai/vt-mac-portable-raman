@@ -22,6 +22,7 @@
 #include <QScrollArea>
 #include <QSplitter>
 #include <QStackedLayout>
+#include <QStackedWidget>
 #include <QTableWidget>
 #include <QTextEdit>
 #include <QTreeWidget>
@@ -427,10 +428,15 @@ private:
     double limit = 0;
 };
 
+// Uploads of finished sessions to ARC, the lower part of the Data tab behind its ARC upload button.
+// It shows its uploads with the table, the facts box and the words above.
+#include "arc_panel.h"
+
 // The two tabs and what drives them: the status, the lists, the actions. One object for both,
 // because they show the same captures and every action in one changes what the other shows.
 class DataPanels : public QObject {
     friend struct HandshakeTest;
+    friend struct ArcUiTest;
 
 public:
     // operatorField: the Operator field of the window; its text is the reviewer of a review.
@@ -471,19 +477,26 @@ public:
         refresh();
         autoSync.start();
         updateControls();
+        arcPageShown();
     }
     // The window says whether an acquisition is under way: a scan, a capture, a laser command. A sync
     // that starts by itself waits until none is, so that no process is started in the middle of one.
     void setAcquisitionBusy(bool busy) {
         acquisitionBusy = busy;
         if (!busy && syncDue) syncWhenIdle();
+        if (arcPanel) arcPanel->setAcquisitionBusy(busy);
     }
     // A scan or a single capture has ended: its points are registered now, not at the next interval.
-    void captureFinished() { syncWhenIdle(); }
+    // Its session is offered for ARC as well.
+    void captureFinished() {
+        syncWhenIdle();
+        if (arcPanel) arcPanel->captureFinished();
+    }
     // One of the two tabs has come to the front. Another program may have changed the catalog since
     // (the Simulation Studio, a classifier job): read the rows again, unless that has just been done.
     void pageShown() {
         if (isStarted && (!lastRefresh.isValid() || lastRefresh.elapsed() > 3000)) refresh();
+        arcPageShown();
     }
 
     void openStudio(const StudioLauncher::Done& done) { studio->open(done); }
@@ -523,11 +536,21 @@ public:
         captureProvenance->setGraph(captureGraph);
         showReviewList();
         reviewProvenance->setGraph(reviewGraph);
+        arcPanel->applyTheme();
+        colourArcToggle();
+    }
+
+protected:
+    // The ARC page comes into view or leaves it: its toggle, the Data tab, the window.
+    bool eventFilter(QObject* watched, QEvent* event) override {
+        if (arcPanel && watched == arcPanel->page() && (event->type() == QEvent::Show || event->type() == QEvent::Hide)) arcPageShown();
+        return QObject::eventFilter(watched, event);
     }
 
 private:
     static constexpr int kListLimit = 500;
     static constexpr qint64 kPredictionPollMs = 5 * 60 * 1000;
+    static inline const QString kArcToggleTip = "Show the uploads of finished sessions to ARC. Press again to show the captures.";
 
     // ------------------------------------------------------------------ what the status says
 
@@ -614,6 +637,7 @@ private:
     void setStatus(const QJsonObject& newStatus) {
         status = newStatus;
         statusProblem.clear();
+        arcPanel->statusUpdated(status);
         showStatus();
     }
     void showStatus() {
@@ -981,10 +1005,14 @@ private:
         importButton->setToolTip("Add a scan folder that was recorded earlier, or by the original controller.");
         offlineButton = new QPushButton("Go offline");
         offlineButton->setToolTip("Local demo only: pretend the catalog cannot be reached. Captures then wait on this Mac.");
+        // Below them, across both columns: the switch between the captures and the uploads to ARC.
+        arcToggle = new QPushButton("ARC upload"); arcToggle->setObjectName("arcToggle"); arcToggle->setCheckable(true);
+        arcToggle->setToolTip(kArcToggleTip);
         auto* actions = new QGridLayout; actions->setHorizontalSpacing(8); actions->setVerticalSpacing(6);
         actions->addWidget(syncButton, 0, 0); actions->addWidget(classifyButton, 0, 1);
         actions->addWidget(importButton, 1, 0); actions->addWidget(offlineButton, 1, 1);
-        actions->setRowStretch(2, 1);
+        actions->addWidget(arcToggle, 2, 0, 1, 2);
+        actions->setRowStretch(3, 1);
         connect(syncButton, &QPushButton::clicked, this, [this] { sync(true); });
         connect(classifyButton, &QPushButton::clicked, this, [this] { classify(); });
         connect(offlineButton, &QPushButton::clicked, this, [this] { setOffline(!catalogOffline()); });
@@ -1020,10 +1048,48 @@ private:
         auto* split = new DetailsSplitter;
         split->addWidget(captureTable); split->addWidget(detailsScroll);
 
+        // The lower area: the captures with their details (shown first), or the ARC page while its
+        // button is down. The ARC page starts nothing until it is first shown.
+        arcPanel = new ArcPanel(dataLayer, this);
+        arcPanel->countsChanged = [this](int unfinished, int attention) {
+            arcUnfinished = unfinished;
+            arcAttention = attention;
+            colourArcToggle();
+        };
+        arcPanel->page()->installEventFilter(this);
+        lowerStack = new QStackedWidget;
+        lowerStack->addWidget(split); lowerStack->addWidget(arcPanel->page());
+        connect(arcToggle, &QPushButton::toggled, this, [this](bool on) { lowerStack->setCurrentIndex(on ? 1 : 0); arcPageShown(); });
+
         layout->addLayout(top);
-        layout->addWidget(split, 1);
+        layout->addWidget(lowerStack, 1);
         showProvenance(QJsonObject(), QString());
         return page;
+    }
+
+    // The ARC page reads and polls only while it is in view, and not before the panels have started.
+    void arcPageShown() {
+        if (arcPanel) arcPanel->setShown(isStarted && arcPanel->page()->isVisible());
+    }
+    // Uploads that need the person (failed, waiting for a decision, not watched, a failed check: status's
+    // arc_attention) colour the ARC upload button in the danger tone, uploads that are not finished in the
+    // warn tone: the button says that something waits there although the page is not in view. The counts
+    // come from the status calls the window makes anyway, and from the ARC page, which reads them again at
+    // the idle rate while it is hidden and the button has a colour (fix plan I2).
+    void colourArcToggle() {
+        if (!arcToggle) return;
+        const UiTheme& theme = uiTheme();
+        const bool needed = arcAttention > 0, waiting = !needed && arcUnfinished > 0;
+        setStyleProperty(arcToggle, "tone", needed ? QVariant("danger") : waiting ? QVariant("warn") : QVariant());
+        const QColor fill = needed ? theme.dangerFill : theme.warnFill, ink = needed ? theme.dangerInk : theme.warnInk;
+        arcToggle->setStyleSheet(!needed && !waiting ? QString()
+            : QString("QPushButton { background: %1; border-color: %2; color: %2; font-weight: 600; } "
+                      "QPushButton:checked { border-width: 2px; padding: 2px 9px; }").arg(fill.name(), ink.name()));
+        arcToggle->setToolTip(needed ? (arcAttention == 1 ? QString("1 upload to ARC needs you. Press to see it.")
+                                                          : QString("%1 uploads to ARC need you. Press to see them.").arg(arcAttention))
+                              : !waiting ? kArcToggleTip
+                              : arcUnfinished == 1 ? QString("1 upload to ARC is not finished. Press to see it.")
+                                                   : QString("%1 uploads to ARC are not finished. Press to see them.").arg(arcUnfinished));
     }
 
     QJsonObject selectedCapture() const {
@@ -1556,6 +1622,11 @@ private:
     QSet<QString> reviewsKept;                // predictions whose review is kept on this Mac until a sync sends it
     QString resultFor, resultDecision;        // the prediction the review result line is about, and what was decided
     QPointer<QDialog> importDialog;
+    ArcPanel* arcPanel = nullptr;             // the ARC page; none without a data layer
+    QPushButton* arcToggle = nullptr;
+    QStackedWidget* lowerStack = nullptr;     // the captures (page 0) or the ARC page (page 1)
+    int arcUnfinished = 0;                    // uploads to ARC in a working state, uncertain or conflict
+    int arcAttention = 0;                     // uploads to ARC that need the person (status.arc_attention)
 
     QWidget *dataTab = nullptr, *reviewTab = nullptr;
     QLabel *catalogBadge = nullptr, *catalogLabel = nullptr, *provenanceNote = nullptr, *provenancePaneTitle = nullptr;

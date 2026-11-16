@@ -333,6 +333,27 @@ svg .t-num { font-variant-numeric: tabular-nums; }
 .pill.crit { background: var(--crit-soft); color: var(--crit); border-color: transparent; }
 .pill.good { background: var(--good-soft); color: var(--good); border-color: transparent; }
 
+/* ---- 2 the upload to ARC: a strip of its own under the lanes ---- */
+.arcstrip {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; align-items: center;
+  margin: 6px 0; padding-top: 6px; border-top: 1px solid var(--line-soft);
+}
+.archead { grid-column: 1 / -1; display: flex; align-items: center; gap: 4px 12px; flex-wrap: wrap; min-height: 26px; }
+.archead h3 { margin: 0; font-size: 11px; line-height: 1; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; white-space: nowrap; }
+.arcstrip figure { grid-column: 1 / -1; overflow-x: auto; overscroll-behavior-x: contain; }
+#arcLane { width: calc(706 * var(--u)); min-width: 640px; max-width: none; }
+.arcstrip .event { margin: 0; }
+.arcstrip .row { justify-content: flex-end; flex-wrap: wrap; }
+.arcband { fill: var(--surface-2); stroke: var(--muted); stroke-width: 1; }
+.arcband.ssh { stroke-dasharray: 5 3; }
+.arcp { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+.arcp.run { stroke: var(--accent); }
+.arcp.ok { stroke: var(--good); }
+.arcp.wait { stroke: var(--warn-mark); stroke-dasharray: 3 2; }
+.arcp.bad { stroke: var(--crit); }
+.arcmark { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.arcsep { stroke: var(--line); stroke-dasharray: 2 2; }
+
 /* ---- 3 the bigger picture ---- */
 .loop { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding-left: 24px; }
 .loop::before {
@@ -373,14 +394,15 @@ svg .t-num { font-variant-numeric: tabular-nums; }
 .term { text-decoration: underline dotted var(--muted); text-underline-offset: 2px; cursor: help; }
 
 @media (min-width: 1220px) {
-  :root { --u: clamp(1px, min(calc((100vh - 226px) / 540), calc((100vw - 406px) / 820)), 1.5px); }
+  /* Height: 588 units of drawings (map 240, lanes 176, ARC lane 48, record 124) and 303 px of the rest. */
+  :root { --u: clamp(1px, min(calc((100vh - 303px) / 588), calc((100vw - 406px) / 820)), 1.5px); }
   .ibody { flex-wrap: nowrap; }
   .ticker { height: calc(240 * var(--u) - 52px); }
   .rowB { grid-template-columns: max-content minmax(0, 1fr); }
   /* The loop beside it can be the taller panel; the record view then takes the spare height. */
   .pipeline { width: calc(706 * var(--u) + 26px); display: flex; flex-direction: column; }
   .steps { display: none; }
-  .scrollx { overflow-x: visible; }
+  .scrollx, .arcstrip figure { overflow-x: visible; }
   .inspector { flex: 1 1 auto; flex-wrap: nowrap; align-items: stretch; }
   .factcol { height: auto; min-height: calc(124 * var(--u)); }
   .pop { position: relative; }
@@ -570,6 +592,24 @@ svg .t-num { font-variant-numeric: tabular-nums; }
         </div>
       </figure>
       <p class="event" id="event"></p>
+      <div class="arcstrip" id="arcStrip" aria-labelledby="h-arc">
+        <div class="archead">
+          <h3 id="h-arc">Upload to ARC</h3>
+          <label class="field" for="arcTransport">With <select id="arcTransport">
+            <option value="globus">Globus</option><option value="ssh">SSH</option></select></label>
+          <button type="button" class="btn" id="btnArcUpload">Upload to ARC (demo)</button>
+          <label class="switch" for="arcAuto" id="arcAutoLabel"><input type="checkbox" role="switch" id="arcAuto" checked> Upload after each scan</label>
+          <label class="switch" for="arcDrop" id="arcDropLabel"><input type="checkbox" role="switch" id="arcDrop"> Drop the connection</label>
+        </div>
+        <figure><svg id="arcLane" viewBox="0 0 706 48" role="img" aria-label="Upload to ARC: the session moves from the laptop to the team folder on ARC, through Globus or over SSH, waits in _incoming while it is checked, and is renamed into place."></svg></figure>
+        <p class="event" id="arcLine"></p>
+        <div class="row">
+          <button type="button" class="btn" id="btnArcCheck">Check status</button>
+          <button type="button" class="btn" id="btnArcRetry">Retry same request</button>
+          <button type="button" class="btn" id="btnArcKeep">Keep as new copy</button>
+          <button type="button" class="btn" id="btnArcStop">Stop upload</button>
+        </div>
+      </div>
       <div class="inspector">
         <figure>
           <svg id="chain" viewBox="0 0 286 112" role="img" aria-label="Provenance of the selected spectrum: the prediction is derived from the raw spectrum, the model version and the dark spectrum."></svg>
@@ -2129,6 +2169,547 @@ globalThis.STUDIO_EMBED = {
     };
   }
 
+  // ---- Uploads to ARC: the demo of the upload strip (design 15.1) --------------------------
+  // The labels of the states of an upload. data_layer/PROTOCOL.md 5.6 and arc_records.STATE_LABELS
+  // hold the same table, and test_arc_contract.py compares the three, so this one is written as
+  // JSON. "transferring" is named after its transport.
+  const ARC_STATE_LABELS = {
+    "queued": "Waiting to start",
+    "waiting_for_terminal": "Waiting for Terminal",
+    "preparing": "Preparing the files",
+    "signing_in": "Signing in",
+    "checking": "Checking ARC",
+    "submitting": "Handing over to Globus",
+    "transferring": {"globus": "Copying with Globus", "ssh": "Copying over SSH"},
+    "verifying": "Checking the copy on ARC",
+    "placing": "Putting the copy in place",
+    "uncertain": "Not sure Globus got it",
+    "conflict": "Name already on ARC",
+    "verified": "On ARC, checked",
+    "failed": "Failed",
+    "stopped": "Stopped"
+  };
+  // The display state the demo can reach beside the stored ones: an upload on ARC whose newest Check
+  // status found its folder missing or different. It stays "verified"; the data layer shows it the same way.
+  const ARC_DISPLAY_LABELS = {
+    "check_failed": "On ARC, last check failed"
+  };
+  const ARC_WORKING = ['queued', 'waiting_for_terminal', 'preparing', 'signing_in', 'checking', 'submitting', 'transferring', 'verifying', 'placing'];
+  // ms of demo time per step; transferring takes its time per file, submitting per request sent.
+  const ARC_STEP_MS = {
+    globus: { preparing: 600, signing_in: 1200, checking: 500, submitting: 300, transferring: 80, verifying: 400, placing: 200 },
+    ssh: { preparing: 600, signing_in: 1500, checking: 300, transferring: 60, verifying: 400, placing: 200 }
+  };
+  // The teaching fault of each transport (design 12): Globus loses the reply to its request, SSH its connection.
+  const ARC_FAULTS = { globus: 'lose_submit_reply', ssh: 'drop_connection' };
+  const ARC_LISTED = 8, ARC_EVENTS = 30, ARC_LAST_COPY = 99;
+  // Sizes in bytes, about what the controller writes: a point file holds 2048 counts. The handshake
+  // files of a scan are advanced.txt, laser_log_combined.txt, request.txt and response.txt; the dark
+  // spectrum comes with its description.
+  const ARC_BYTES = { point: 29852, session: 2101, handshake: [2, 3000, 64, 64], dark: [512, 21034] };
+
+  // What an upload carries (design 15.1): its points, session.json, the four handshake files of a
+  // scan (none for a single capture), the dark spectrum (.txt and .json), the manifest and SHA256SUMS.
+  function arcFileSizes(points, scan) {
+    const sizes = [];
+    for (let i = 0; i < points; i++) sizes.push(ARC_BYTES.point);
+    sizes.push(ARC_BYTES.session);
+    if (scan) ARC_BYTES.handshake.forEach(function (size) { sizes.push(size); });
+    ARC_BYTES.dark.forEach(function (size) { sizes.push(size); });
+    const listed = sizes.length + 2;
+    sizes.push(400 + 110 * listed);
+    sizes.push(90 * (listed - 1));
+    return sizes;
+  }
+
+  // A demo of the uploads of finished sessions to ARC: the states, steps and checks of the data
+  // layer's uploads, with stand-ins for Globus and for ARC's folders. It keeps its own clock, moved
+  // only by advance(ms), and draws nothing from the seeded generator of createDemo, so the demo's
+  // own outputs stay the same with or without uploads. options: folder (the ARC folder on the
+  // cluster), collectionRoot (the cluster folder ARC's Globus collection shows as its top) and
+  // clockMs (demo time when it starts, so that its times read like those of the demo).
+  function createArcDemo(options) {
+    const settings = options || {};
+    const folder = String(settings.folder || '/projects/pcl_photonics/raman_globus_upload').replace(/\/+$/, '');
+    const root = String(settings.collectionRoot || '/projects');
+    // Studio sessions are simulated: they go to the separate folder simulated/ (design 4.4).
+    const base = folder + '/simulated';
+    // placed: the session folders in place on ARC; incoming: the files in each _incoming folder;
+    // submissions and tasks: what the stand-in for Globus keeps (request number -> task).
+    const A = { clock: Number(settings.clockMs) || 0, rev: 0, made: 0, uploads: [], placed: [], incoming: {}, submissions: {}, tasks: {} };
+
+    function iso(at) { return new Date(DEMO_EPOCH_MS + Math.round(at)).toISOString(); }
+    function short(id) { return String(id).slice(0, 4); }
+    function copy(value) { return Object.assign({}, value); }
+    // A request number or task id: a UUID made from a text, as reproducible as everything else here.
+    function uuidOf(text) {
+      const hex = sha256Hex(text);
+      return hex.slice(0, 8) + '-' + hex.slice(8, 12) + '-4' + hex.slice(13, 16) + '-' +
+        (8 + parseInt(hex.charAt(16), 16) % 4).toString(16) + hex.slice(17, 20) + '-' + hex.slice(20, 32);
+    }
+    // The Globus path of a cluster path (design 5): the collection shows `root` as its top.
+    function globusPath(clusterPath) {
+      if (root === '/') return clusterPath;
+      if (clusterPath === root) return '/';
+      return clusterPath.indexOf(root + '/') === 0 ? clusterPath.slice(root.length) : null;
+    }
+    function working(u) { return ARC_WORKING.indexOf(u.state) >= 0; }
+    function labelOf(u) {
+      const label = ARC_STATE_LABELS[u.state];
+      return typeof label === 'string' ? label : label[u.transport];
+    }
+    function incomingName(u) { return u.session.folder + '.' + u.id; }
+    function copiedOnArc(u) { return A.incoming[incomingName(u)] || 0; }
+    // Where the copy goes: the session's own name, or with Keep as new copy the first free name of
+    // <folder>, <folder>_copy2 ... <folder>_copy99, the plain name first.
+    function freeName(u) {
+      if (!u.newCopy) return u.session.folder;
+      for (let n = 1; n <= ARC_LAST_COPY; n++) {
+        const name = n === 1 ? u.session.folder : u.session.folder + '_copy' + n;
+        if (A.placed.indexOf(name) < 0) return name;
+      }
+      return null;
+    }
+    function find(id) {
+      for (let i = 0; i < A.uploads.length; i++) if (A.uploads[i].id === id) return A.uploads[i];
+      return null;
+    }
+
+    // One step of an upload, in words: the strip's line shows the newest. Progress within a step
+    // is not kept among the events, as the data layer keeps it in the record only.
+    function note(u, at, text, progress) {
+      u.step = text;
+      if (!progress) {
+        u.events.push({ utc: iso(at), state: u.state, text: text });
+        if (u.events.length > ARC_EVENTS) u.events.splice(0, u.events.length - ARC_EVENTS);
+      }
+      u.updated = at;
+      A.rev++;
+    }
+    function enter(u, state, at, text) {
+      u.state = state;
+      u.spent = 0;
+      note(u, at, text);
+    }
+
+    // ------------------------------------------------------------------ the steps
+    function signIn(u, at) {
+      enter(u, 'signing_in', at, u.transport === 'globus'
+        ? 'no Globus sign-in in the demo; a real upload opens a sign-in page in the browser'
+        : 'no VT password and no Duo in the demo; a real SSH upload asks for them in Terminal');
+    }
+
+    // After the sign-in the upload goes on where Retry same request or Keep as new copy said (design 7.7).
+    function signedIn(u, at) {
+      if (u.transport === 'globus') u.identity = 'demo (no account)';
+      const target = u.resumeAt || 'checking';
+      u.resumeAt = null;
+      if (target === 'placing') { place(u, at); return; }
+      if (target === 'verifying') { enter(u, 'verifying', at, 'checksums match for all ' + u.files + ' files'); return; }
+      if (target === 'submitting') {
+        enter(u, 'submitting', at, 'request number ' + short(u.request) + ' is sent again, the same as before');
+        return;
+      }
+      enter(u, 'checking', at, u.transport === 'globus'
+        ? 'Globus lists the upload copy and the ARC folder, and makes _incoming/' + incomingName(u)
+        : 'one SSH connection: the remote script makes _incoming/' + incomingName(u) + ' first');
+    }
+
+    function checked(u, at) {
+      if (u.transport === 'ssh') { startCopy(u, at, null); return; }
+      // Globus looks at the final name before anything is sent (design 7.4).
+      if (!u.newCopy && A.placed.indexOf(u.session.folder) >= 0) { conflict(u, at, 'checking'); return; }
+      if (!u.request) u.request = uuidOf(u.id + ' request ' + u.attempt);
+      enter(u, 'submitting', at, 'saved request number ' + short(u.request) + ' before sending it');
+    }
+
+    // One request to the stand-in for Globus. A request number it knows gets Duplicate and the same task.
+    function posted(u, at) {
+      const known = A.submissions[u.request];
+      if (known) {
+        u.posts.push({ utc: iso(at), outcome: 'duplicate' });
+        u.task = known;
+        startCopy(u, at, 'Globus answered Duplicate: already received, as task ' + short(known) + '. One copy');
+        return;
+      }
+      const task = uuidOf(u.id + ' task ' + u.attempt);
+      A.submissions[u.request] = task;
+      A.tasks[task] = { task_id: task, request: u.request, upload_id: u.id, attempt: u.attempt, status: 'ACTIVE', files: u.files, files_transferred: 0 };
+      u.sent = true;
+      if (u.fault === 'lose_submit_reply' && !u.faultUsed) {
+        u.faultUsed = true;
+        u.posts.push({ utc: iso(at), outcome: 'reply_lost' });
+        u.spent = 0;
+        note(u, at, 'the reply of Globus was lost, so it is not known whether it got the request; asking again with the same request number ' + short(u.request));
+        return;
+      }
+      u.posts.push({ utc: iso(at), outcome: 'accepted' });
+      u.task = task;
+      startCopy(u, at, 'Globus accepted task ' + short(task));
+    }
+
+    function startCopy(u, at, text) {
+      u.sent = true;
+      // A Globus task copies every file. Over SSH the remote script checks a complete copy in _incoming without
+      // receiving it, and otherwise receives every file again into the same folder (arc_remote.sh, step 2).
+      if (u.transport === 'ssh' && copiedOnArc(u) >= u.files) {
+        u.filesDone = u.files; u.bytesDone = u.bytes;
+        enter(u, 'verifying', at, 'checksums match for all ' + u.files + ' files');
+        return;
+      }
+      u.filesDone = 0; u.bytesDone = 0;
+      enter(u, 'transferring', at, text || 'sending ' + u.files + ' files over SSH into _incoming/' + incomingName(u));
+    }
+
+    function fileCopied(u, at) {
+      u.filesDone++;
+      u.bytesDone += u.sizes[u.filesDone - 1] || 0;
+      u.spent = 0;
+      A.incoming[incomingName(u)] = Math.max(copiedOnArc(u), u.filesDone);
+      const task = u.task ? A.tasks[u.task] : null;
+      if (task) task.files_transferred = u.filesDone;
+      if (u.fault === 'drop_connection' && !u.faultUsed && u.filesDone >= Math.floor(u.files / 2)) {
+        u.faultUsed = true;
+        fail(u, at, 'ssh_interrupted', 'The SSH connection ended during the upload.',
+          'Press Retry same request: all files are sent again, into the same folder.');
+        return;
+      }
+      if (u.filesDone < u.files) { note(u, at, u.filesDone + ' of ' + u.files + ' files copied', true); return; }
+      if (task) task.status = 'SUCCEEDED';
+      enter(u, 'verifying', at, 'checksums match for all ' + u.files + ' files');
+    }
+
+    // One rename puts the checked copy in place, under a free name only (design 4.8).
+    function place(u, at) {
+      u.state = 'placing';
+      u.spent = 0;
+      if (u.placedAs && A.placed.indexOf(u.placedAs) >= 0) { note(u, at, u.placedAs + ' is in place already'); return; }
+      const name = freeName(u);
+      if (name === null || A.placed.indexOf(name) >= 0) { conflict(u, at, 'placing'); return; }
+      A.placed.push(name);
+      delete A.incoming[incomingName(u)];
+      u.placedAs = name;
+      note(u, at, 'renamed _incoming/' + incomingName(u) + ' to ' + name);
+    }
+
+    function conflict(u, at, where) {
+      u.state = 'conflict';
+      u.conflictAt = where;
+      u.spent = 0;
+      note(u, at, where === 'checking'
+        ? 'the name ' + u.session.folder + ' is taken in the demo ARC folder, so nothing was sent; Keep as new copy puts this upload beside it'
+        : 'the name ' + (freeName(u) || u.session.folder) + ' is taken in the demo ARC folder; the checked copy waits in _incoming/' + incomingName(u));
+    }
+
+    function fail(u, at, reason, message, fix) {
+      u.endedIn = u.state;
+      u.error = { kind: 'upload', reason: reason, message: message, fix: fix, retryable: true };
+      u.state = 'failed';
+      note(u, at, message);
+    }
+
+    // The step that ends when the time of the current one is up.
+    function finish(u, at) {
+      switch (u.state) {
+        case 'queued':
+          enter(u, 'preparing', at, 'preparing the upload copy: the session and its dark spectrum, with a SHA-256 for every file');
+          break;
+        case 'preparing': signIn(u, at); break;
+        case 'signing_in': signedIn(u, at); break;
+        case 'checking': checked(u, at); break;
+        case 'submitting': posted(u, at); break;
+        case 'transferring': fileCopied(u, at); break;
+        case 'verifying':
+          u.verification = u.transport === 'globus'
+            ? { method: 'globus-checksum', algorithm: 'MD5', files: u.files, utc: iso(at) }
+            : { method: 'sha256-on-arc', algorithm: 'SHA-256', files: u.files, utc: iso(at) };
+          place(u, at);
+          break;
+        case 'placing': enter(u, 'verified', at, 'in the demo ARC folder, checked'); break;
+        default: break;
+      }
+    }
+
+    function advance(ms) {
+      const span = Math.max(0, Number(ms) || 0);
+      A.uploads.forEach(function (u) {
+        let used = 0;
+        for (let guard = 0; working(u) && guard < 100000; guard++) {
+          const need = Math.max(0, (u.state === 'queued' ? 0 : ARC_STEP_MS[u.transport][u.state] || 0) - u.spent);
+          if (used + need > span) { u.spent += span - used; break; }
+          used += need;
+          u.spent += need;
+          finish(u, A.clock + used);
+        }
+      });
+      A.clock += span;
+    }
+
+    // ------------------------------------------------------------------ what a person can do
+    function upload(session, transport, extra) {
+      const given = session || {};
+      if (given.active) return { ok: false, reason: 'running', text: 'Upload it when the scan has ended.' };
+      const name = typeof given.folder === 'string' ? given.folder : '';
+      if (!name) return { ok: false, reason: 'unknown_session', text: 'There is no session to upload yet.' };
+      if (transport !== 'globus' && transport !== 'ssh') return { ok: false, reason: 'usage', text: 'Send with Globus or SSH.' };
+      const fault = extra && extra.fault ? String(extra.fault) : null;
+      if (fault !== null && fault !== ARC_FAULTS[transport]) {
+        return { ok: false, reason: 'usage', text: 'The demo fault for ' + (transport === 'ssh' ? 'SSH' : 'Globus') + ' is ' + ARC_FAULTS[transport] + '.' };
+      }
+      // A session with an upload under way gets no second one: that one is shown (arc-upload's "existing").
+      for (let i = 0; i < A.uploads.length; i++) {
+        const open = A.uploads[i];
+        if (open.session.folder === name && (working(open) || open.state === 'uncertain' || open.state === 'conflict')) {
+          return { ok: true, id: open.id, existing: true };
+        }
+      }
+      A.made++;
+      const id = 'u' + sha256Hex(String(given.session_id || name) + ' ' + A.made).slice(0, 12);
+      const points = Math.max(0, Math.floor(Number(given.points) || 0));
+      const sizes = arcFileSizes(points, given.scan_mode !== 'single');
+      const u = {
+        id: id, created: A.clock, updated: A.clock, transport: transport, fault: fault, faultUsed: false,
+        session: { folder: name, session_id: given.session_id || null, scan_mode: given.scan_mode || null, sample_id: given.sample_id || null, points: points },
+        sizes: sizes, files: sizes.length, bytes: sizes.reduce(function (sum, size) { return sum + size; }, 0), filesDone: 0, bytesDone: 0,
+        state: 'queued', spent: 0, step: '', resumeAt: null, newCopy: false, placedAs: null, conflictAt: null, endedIn: null, sent: false,
+        error: null, attempt: 1, request: null, task: null, posts: [], earlier: [], events: [], checks: [], identity: null, verification: null
+      };
+      A.uploads.push(u);
+      note(u, A.clock, 'upload ' + id + ' of ' + name + ' is waiting to start');
+      return { ok: true, id: id, existing: false };
+    }
+
+    // The buttons an upload offers, as the data layer lists them (design 7.7).
+    function actionsOf(u) {
+      if (working(u)) return ['stop'];
+      if (u.state === 'uncertain') return ['retry', 'check', 'stop'];
+      if (u.state === 'conflict') return ['keep_copy', 'retry', 'stop'];
+      if (u.state === 'verified') return ['check', 'show_in_finder'];
+      const out = [];
+      if (u.state === 'stopped' || (u.error && u.error.retryable)) out.push('retry');
+      if (u.sent) out.push('check');
+      return out;
+    }
+
+    const ACTION_WORDS = { retry: 'retried', check: 'checked', stop: 'stopped', keep_copy: 'kept as a new copy' };
+    function permitted(id, action, reason) {
+      const u = find(id);
+      if (!u) return { refusal: { ok: false, reason: 'unknown_upload', text: 'There is no upload ' + id + ' here.' } };
+      if (actionsOf(u).indexOf(action) < 0) {
+        return { refusal: { ok: false, reason: reason, text: 'This upload cannot be ' + ACTION_WORDS[action] + ' while it is ' + labelOf(u) + '.' } };
+      }
+      return { upload: u };
+    }
+
+    function again(u, text) {
+      u.state = 'queued';
+      u.spent = 0;
+      u.error = null;
+      u.endedIn = null;
+      u.conflictAt = null;
+      note(u, A.clock, text);
+    }
+
+    // Retry same request: the same files, the same place on ARC and, for Globus, the same request
+    // number while it is unanswered (design 7.7).
+    function retry(id) {
+      const found = permitted(id, 'retry', 'not_retryable');
+      if (found.refusal) return found.refusal;
+      const u = found.upload;
+      if (u.transport === 'ssh') {
+        // A new connection; the files are sent again into the same _incoming folder.
+        u.attempt++;
+        again(u, 'Retry same request: attempt ' + u.attempt + ' sends the files again into the same _incoming folder');
+      } else if (u.state === 'conflict') {
+        u.resumeAt = u.conflictAt;
+        again(u, 'Retry same request: the name ' + u.session.folder + ' is looked at again');
+      } else if (u.task && A.tasks[u.task] && A.tasks[u.task].status === 'SUCCEEDED') {
+        // The copy was complete in _incoming before the stop: it is checked and put in place.
+        u.resumeAt = 'verifying';
+        again(u, 'Retry same request: the complete copy in _incoming/' + incomingName(u) + ' is checked and put in place');
+      } else if (u.task) {
+        // The task has ended: a new attempt copies the same files into the same _incoming folder.
+        u.earlier.push({ attempt: u.attempt, request: u.request, task: u.task });
+        u.attempt++;
+        u.request = null;
+        u.task = null;
+        u.posts = [];
+        u.resumeAt = 'checking';
+        again(u, 'Retry same request: attempt ' + u.attempt + ' copies the same files into the same _incoming folder');
+      } else if (u.request) {
+        u.resumeAt = 'submitting';
+        again(u, 'Retry same request: request number ' + short(u.request) + ' is sent again');
+      } else {
+        u.resumeAt = 'checking';
+        again(u, 'Retry same request: the upload starts again with the same files');
+      }
+      return { ok: true };
+    }
+
+    function keepCopy(id) {
+      const found = permitted(id, 'keep_copy', 'no_conflict');
+      if (found.refusal) return found.refusal;
+      const u = found.upload;
+      u.newCopy = true;
+      if (u.transport === 'ssh') u.attempt++;
+      else u.resumeAt = u.conflictAt === 'placing' ? 'placing' : 'checking';
+      const name = freeName(u);
+      again(u, name === u.session.folder ? 'Keep as new copy: the name ' + name + ' is free again, so it goes there'
+        : 'Keep as new copy: it goes beside ' + u.session.folder + ' as ' + (name || 'the next free name'));
+      return { ok: true };
+    }
+
+    function stop(id) {
+      const found = permitted(id, 'stop', 'nothing_to_stop');
+      if (found.refusal) return found.refusal;
+      const u = found.upload;
+      if (u.state === 'placing' && u.placedAs) {
+        // The rename was done when the stop came: the copy is in place under its name.
+        enter(u, 'verified', A.clock, 'the copy was in place as ' + u.placedAs + ' before the stop came; in the demo ARC folder, checked');
+        return { ok: true };
+      }
+      // A request whose reply was lost is settled first; a task that runs is cancelled (design 10.8).
+      if (!u.task && u.request && A.submissions[u.request]) u.task = A.submissions[u.request];
+      if (u.task && A.tasks[u.task] && A.tasks[u.task].status === 'ACTIVE') A.tasks[u.task].status = 'FAILED';
+      u.endedIn = u.state;
+      u.state = 'stopped';
+      u.spent = 0;
+      note(u, A.clock, copiedOnArc(u) > 0
+        ? 'stopped; the files already copied stay in _incoming/' + incomingName(u) + ', nothing was deleted'
+        : 'stopped before anything was sent');
+      return { ok: true };
+    }
+
+    // Check status: how the upload stands in the demo ARC folder. Nothing is sent and nothing moves. An
+    // upload whose folder is gone stays verified, and its item shows check_failed. The demo's check always
+    // looks ("looked": true; the data layer's check that could not look has "looked": false and a fix).
+    function check(id) {
+      const found = permitted(id, 'check', 'not_checkable');
+      if (found.refusal) return found.refusal;
+      const u = found.upload;
+      if (u.state === 'verified') {
+        const there = A.placed.indexOf(u.placedAs) >= 0;
+        u.checks.push({ utc: iso(A.clock), ok: there, looked: true, fix: null,
+          message: there ? 'Demo: still in the demo ARC folder: ' + u.files + ' files with the right sizes.'
+            : 'Demo: the folder ' + base + '/' + u.placedAs + ' is no longer in the demo ARC folder.' });
+        note(u, A.clock, there ? 'checked: ' + u.placedAs + ' is still in the demo ARC folder with all ' + u.files + ' files'
+          : 'checked: ' + u.placedAs + ' is no longer in the demo ARC folder');
+      } else {
+        note(u, A.clock, 'checked: ' + copiedOnArc(u) + ' of ' + u.files + ' files are in _incoming/' + incomingName(u) + '; nothing was put in place');
+      }
+      return { ok: true };
+    }
+
+    // What someone on ARC can do to a folder in place: move it away or delete it. The stand-in for
+    // ARC then no longer has it, so Check status finds it gone and its name is free again.
+    function removeFolder(name) {
+      const at = A.placed.indexOf(String(name));
+      if (at < 0) return { ok: false, reason: 'unknown_folder', text: 'There is no folder ' + name + ' in the demo ARC folder.' };
+      A.placed.splice(at, 1);
+      A.rev++;
+      return { ok: true };
+    }
+
+    // ------------------------------------------------------------------ what the strip shows
+    function messageOf(u, incoming) {
+      switch (u.state) {
+        case 'queued': return 'Demo: waiting to start.';
+        case 'preparing': return 'Demo: preparing the files: copying the session and its dark spectrum and computing a checksum for every file.';
+        case 'signing_in': return u.transport === 'globus' ? 'Demo: no sign-in. A real upload opens your browser here.'
+          : 'Demo: no Terminal and no password. A real SSH upload asks for your VT password and Duo in Terminal.';
+        case 'checking': return 'Demo: checking the upload copy and the demo ARC folder.';
+        case 'submitting': return 'Demo: handing the copy to Globus.';
+        case 'transferring':
+          if (u.transport === 'globus') return 'Demo: copying with Globus: ' + u.filesDone + ' of ' + u.files + ' files.';
+          return 'Demo: copying over SSH: ' + Math.floor(100 * u.bytesDone / Math.max(1, u.bytes)) + '% (' +
+            (u.bytesDone / 1e6).toFixed(2) + ' of ' + (u.bytes / 1e6).toFixed(2) + ' MB).';
+        case 'verifying': return 'Demo: checking the copy in the demo ARC folder.';
+        case 'placing': return 'Demo: putting the copy in its folder in the demo ARC folder.';
+        case 'verified': return 'Demo: ' + u.files + ' files in the demo ARC folder, every one checked. Nothing left this page.';
+        case 'conflict': return u.conflictAt === 'placing'
+          ? 'Demo: your copy is complete and checked in ' + incoming + '. Keep it as a new copy, or move the other folder and press Retry same request.'
+          : 'Demo: the demo ARC folder already has a folder named ' + u.session.folder + '. Nothing was sent. Keep this upload as a new copy beside it, or move the other folder and press Retry same request.';
+        case 'failed': return u.error ? u.error.message : 'Failed.';
+        case 'stopped': return copiedOnArc(u) > 0 ? 'Demo: stopped. Files already copied stay in ' + incoming + '; nothing was deleted.'
+          : 'Demo: stopped before anything was sent.';
+        default: return '';
+      }
+    }
+
+    // Globus may still run this upload's transfer (arc-list's may_run): its task runs, or its request number
+    // may have reached Globus.
+    function mayRun(u) {
+      if (u.transport !== 'globus') return false;
+      if (u.task) return !!A.tasks[u.task] && A.tasks[u.task].status === 'ACTIVE';
+      return !!u.request;
+    }
+
+    // An item in the shape of an arc-list item (design 8.4), plus what only the demo has.
+    function itemOf(u) {
+      const label = labelOf(u);
+      const incoming = base + '/_incoming/' + incomingName(u);
+      const finalPath = base + '/' + (u.placedAs || u.session.folder);
+      const ended = u.state === 'failed' || u.state === 'stopped';
+      // An upload on ARC whose newest Check status that looked failed shows check_failed, with that check's words.
+      const lastCheck = u.checks.length ? u.checks[u.checks.length - 1] : null;
+      const looks = u.checks.filter(function (entry) { return entry.looked !== false; });
+      const lastLook = looks.length ? looks[looks.length - 1] : null;
+      const checkFailed = u.state === 'verified' && lastLook !== null && lastLook.ok === false;
+      return {
+        upload_id: u.id, created_utc: iso(u.created), updated_utc: iso(u.updated),
+        session_folder: u.session.folder, session_id: u.session.session_id, sample_id: u.session.sample_id,
+        kind: 'simulated', area: 'simulated', transport: u.transport, demo: true,
+        state: u.state, state_label: label,
+        display_state: checkFailed ? 'check_failed' : u.state,
+        display_label: checkFailed ? ARC_DISPLAY_LABELS.check_failed : label,
+        final: u.state === 'verified' || ended,
+        message: checkFailed ? lastLook.message : messageOf(u, incoming),
+        progress: { files: u.files, files_done: u.filesDone, bytes: u.bytes, bytes_done: u.bytesDone },
+        destination: {
+          final_path: finalPath, globus_final_path: u.transport === 'globus' ? globusPath(finalPath) : null,
+          incoming_path: incoming, placed_as: u.placedAs, ssh_target: null, local_final_path: null
+        },
+        worker: { alive: working(u), action: working(u) ? 'send' : null, terminal: false },
+        may_run: mayRun(u),
+        identity: u.identity,
+        needs: u.state === 'conflict' || u.state === 'uncertain' ? 'decision' : null,
+        actions: actionsOf(u),
+        error: u.error ? copy(u.error) : null,
+        warnings: [], notes: [],
+        verification: u.verification ? copy(u.verification) : null,
+        last_check: lastCheck ? copy(lastCheck) : null,
+        leftover_on_arc: ended && copiedOnArc(u) > 0 ? incoming : null,
+        // The demo's own: the newest step for the strip's line, the steps so far, where an upload
+        // waited or ended, and what the stand-in for Globus was asked.
+        step: u.step,
+        events: u.events.map(copy),
+        conflict_at: u.conflictAt, ended_in: u.endedIn, attempt: u.attempt,
+        globus: u.transport === 'globus' ? { request: u.request, task: u.task, posts: u.posts.map(copy), earlier_attempts: u.earlier.map(copy) } : null
+      };
+    }
+
+    // Newest first, at most 8.
+    function uploads() { return A.uploads.slice(-ARC_LISTED).reverse().map(itemOf); }
+
+    // What the stand-ins hold: the folders in place on ARC, the _incoming folders that hold files,
+    // and the requests and tasks of the stand-in for Globus.
+    function remote() {
+      return {
+        folders: A.placed.slice(),
+        incoming: Object.keys(A.incoming).filter(function (name) { return A.incoming[name] > 0; })
+          .map(function (name) { return { name: name, files: A.incoming[name] }; }),
+        requests: Object.keys(A.submissions).length,
+        tasks: Object.keys(A.tasks).map(function (id) { return copy(A.tasks[id]); })
+      };
+    }
+
+    return {
+      upload: upload, advance: advance, retry: retry, stop: stop, check: check, keepCopy: keepCopy,
+      uploads: uploads, revision: function () { return A.rev; }, remote: remote, removeFolder: removeFolder,
+      paths: { folder: folder, base: base, collection_root: root }
+    };
+  }
+
   root.StudioEngine = {
     constants: {
       STEPS_PER_MM: STEPS_PER_MM, Z_OFFSET_AFTER_HOME: Z_OFFSET_AFTER_HOME, Z_RANGE: Z_RANGE, Z_STEP: Z_STEP, HIGH_Z: HIGH_Z,
@@ -2140,7 +2721,8 @@ globalThis.STUDIO_EMBED = {
     lineScanPositions: lineScanPositions, zSweepOffsets: zSweepOffsets, xySequence: xySequence, planFor: planFor,
     weightsAt: weightsAt, focusAt: focusAt, topMaterial: topMaterial,
     synthSpectrum: synthSpectrum, standInScores: standInScores, outcomeFor: outcomeFor,
-    createDemo: createDemo
+    createDemo: createDemo,
+    ARC_STATE_LABELS: ARC_STATE_LABELS, ARC_DISPLAY_LABELS: ARC_DISPLAY_LABELS, createArcDemo: createArcDemo
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 </script>
@@ -3564,6 +4146,7 @@ globalThis.STUDIO_EMBED = {
     const details = demo.details();
     $('scanType').value = details.scan_mode;
     $('power').value = details.power;
+    newArc(example);
     Object.keys(dirty).forEach(function (key) { dirty[key] = true; });
   }
 
@@ -3781,6 +4364,7 @@ globalThis.STUDIO_EMBED = {
     }).catch(function () { say('The server did not send the virtual sample; drawing the copy built into the page.'); });
     pollScan();
     pollPipe();
+    pollArc();
   }
 
   function stopLive() {
@@ -3830,6 +4414,11 @@ globalThis.STUDIO_EMBED = {
     clearTicker();
     clearTokens();
     shown.x = null;
+    // The strip starts over with the source: nothing of the other one is said or acted on.
+    arcUi.live = null;
+    arcUi.problem = '';
+    arcUi.note = null;
+    arcUi.liveRev++;
     if (mode === 'live') {
       model.scan = emptyScan(); model.pipe = emptyPipe(); model.plan = null; model.frame = null;
       startLive();
@@ -4027,6 +4616,415 @@ globalThis.STUDIO_EMBED = {
     say(ui.lens ? 'Showing the same run as it would be with hand-copied files and no catalog.' : 'Back to the run with DataFed and Globus.');
   }
 
+  // ---------------------------------------------------------------------------- uploads to ARC
+  // The strip under the lanes (design 15.2, 15.3). DEMO draws the engine's own uploads; LIVE draws
+  // GET /api/arc and starts demo uploads only. What happens to an upload is said in #arcLine alone,
+  // never in #status: the page's other messages live there, and its tests read it.
+  const ARC_FOLDER = '/projects/pcl_photonics/raman_globus_upload';
+  const ARC_ROOT = '/projects';
+  const ARC_FAULT = { globus: 'lose_submit_reply', ssh: 'drop_connection' };
+  const ARC_PARCELS = 6;
+  // A word about a button press stays this long before the newest upload's step is shown again.
+  const ARC_NOTE_MS = 6000;
+  // LIVE: the list is read every second while an upload works, waits for Terminal or for a sign-in, and for
+  // 2 minutes (120 reads) after a button of the strip; else every 5 s (review UI-04, as the window does).
+  const ARC_POLL_MS = { moving: 1000, idle: 5000 }, ARC_AFTER_ACTION_READS = 120;
+  const ARC_MOVING = ['queued', 'waiting_for_terminal', 'preparing', 'signing_in', 'checking', 'submitting', 'transferring', 'verifying', 'placing'];
+  const ARC_TIPS = {
+    arcAutoLabel: 'In the demo, every scan that ends is uploaded to the demo ARC folder.',
+    arcDropLabel: 'Shows what happens when the connection breaks during an upload.',
+    btnArcUpload: 'Copies the session on show to the demo ARC folder. The Studio never sends anything to ARC; uploads to ARC start in the controller window.',
+    btnArcCheck: 'Ask how this upload stands. Nothing is sent.',
+    btnArcRetry: 'Continue this upload with the same files and the same place in the demo ARC folder. After a failed transfer the files are copied again into the same _incoming folder.',
+    btnArcStop: 'Stop this upload. Files already copied stay in _incoming of the demo ARC folder; nothing is deleted.'
+  };
+  const ARC_BUTTONS = [['btnArcCheck', 'check'], ['btnArcRetry', 'retry'], ['btnArcKeep', 'keep_copy'], ['btnArcStop', 'stop']];
+  const ARC_PATHS = { check: 'api/arc/check', retry: 'api/arc/retry', keep_copy: 'api/arc/keep-copy', stop: 'api/arc/stop' };
+  // The lane: text rows, the three places and the room between parcels.
+  const AL = { rows: [26, 40], laptop: [12, 146], band: [164, 476], arc: [496, 698], split: 628, gap: 4, wide: 118 };
+  const arcUi = { engine: null, handled: new Set(), items: [], key: '', drawn: '', note: null, live: null, liveRev: 0, problem: '', busy: false, fastReads: 0 };
+
+  function arcTransport() { return $('arcTransport').value === 'ssh' ? 'ssh' : 'globus'; }
+  // `awaits`: the Check status this word is about ({upload, before}: the upload's newest check when
+  // the button was pressed). The word gives way as soon as that upload shows a newer check.
+  function arcNote(text, awaits) { arcUi.note = { text: text, until: lastTime + ARC_NOTE_MS, awaits: awaits || null }; }
+  function arcTwo(value) { return (value < 10 ? '0' : '') + value; }
+  // A time of the data layer (UTC) as this Mac's date and time, "2026-11-15 at 18:05"; '' when it is none.
+  function arcWhen(utc) {
+    const at = typeof utc === 'string' && utc ? new Date(utc) : null;
+    if (!at || !isFinite(at.getTime())) return '';
+    return at.getFullYear() + '-' + arcTwo(at.getMonth() + 1) + '-' + arcTwo(at.getDate()) + ' at ' + arcTwo(at.getHours()) + ':' + arcTwo(at.getMinutes());
+  }
+  // A message of a demo upload without its "Demo: " in front: the line says "(demo)" once instead.
+  function arcPlain(message) { const text = String(message || ''); return text.indexOf('Demo: ') === 0 ? text.slice(6) : text; }
+  // The newest Check status of an upload (arc-list's last_check), or null.
+  function arcLastCheck(item) {
+    const check = item && item.last_check;
+    return check && typeof check === 'object' && typeof check.message === 'string' && check.message ? check : null;
+  }
+  // On ARC: verified, also when its newest Check status failed (shown as check_failed).
+  function arcOnArc(item) { return item.state === 'verified' || item.display_state === 'check_failed'; }
+  // On ARC, but the newest Check status that looked found the folder missing or different. The data layer
+  // shows it as check_failed; one that still says verified with such a check is drawn the same. A check that
+  // could not look ("looked": false) says nothing about the copy (review REG-01).
+  function arcCheckFailed(item) {
+    if (item.display_state === 'check_failed') return true;
+    const check = arcLastCheck(item);
+    return arcOnArc(item) && !!check && check.ok === false && check.looked !== false;
+  }
+  // "Checked on 2026-11-15 at 18:05: <what it found>"; a check that could not look adds what to do.
+  function arcCheckText(check, capital) {
+    const when = arcWhen(check.utc);
+    const fix = check.looked === false && typeof check.fix === 'string' && check.fix ? ' ' + check.fix : '';
+    return (capital ? 'Checked' : 'checked') + (when ? ' on ' + when : '') + ': ' + arcPlain(check.message) + fix;
+  }
+  // An upload of the session already exists (arc-upload's "existing"): what it is doing.
+  function arcExistingText(item) {
+    const label = item ? String(item.display_label || item.state_label || '') : '';
+    if (!label) return 'This session has an upload already.';
+    if (item.worker && item.worker.alive === true) return 'This session is being uploaded already (' + label + ').';
+    return 'This session has an upload already that waits for you: ' + label + '.';
+  }
+  // POST /api/arc/upload refused a session with an earlier upload. The data layer's fix names what only
+  // the window has (Recent uploads, the --new option), so the Studio says it in its own words.
+  function arcEarlierText(data) {
+    const upload = data && data.upload && typeof data.upload === 'object' ? data.upload : null;
+    if (!upload || data.kind !== 'conflict' || (data.reason !== 'already_on_arc' && data.reason !== 'earlier_upload')) return '';
+    const newest = arcUi.items[0];
+    const offered = newest && newest.upload_id === upload.upload_id && Array.isArray(newest.actions) ? newest.actions : [];
+    const elsewhere = ' use ARC upload in the Data tab of the controller window.';
+    if (data.reason === 'earlier_upload') {
+      return 'This session has an earlier demo upload that ended as ' + String(upload.display_label || upload.state_label || upload.state || 'unknown') + '. ' +
+        (offered.indexOf('retry') >= 0 ? 'Press Retry same request to continue it.' : 'To start a new upload of it,' + elsewhere);
+    }
+    // When the copy was last seen as it was sent: the newest check when it found it, else the verification (a check
+    // that could not look saw nothing), as the data layer's refusal and the window's "checked on" have it.
+    const check = arcLastCheck(upload);
+    const when = arcWhen(check && check.ok === true ? check.utc : upload.verification && upload.verification.utc);
+    return String(upload.session_folder || 'This session') + ' is already in the demo ARC folder' + (when ? ' (checked on ' + when + ')' : '') +
+      ', so it is not uploaded again. ' + (offered.indexOf('check') >= 0 ? 'Press Check status to see that it is still there.'
+      : 'To check it, or to upload it again beside it,' + elsewhere);
+  }
+
+  // DEMO: a new engine with every demo, and the sessions that already ended go at once, oldest
+  // first, as a scan that ends does. The example's two sessions so open uploading.
+  function newArc(example) {
+    arcUi.engine = E.createArcDemo({ folder: ARC_FOLDER, collectionRoot: ARC_ROOT, clockMs: demo.live().demo.clock_ms });
+    arcUi.handled = new Set();
+    arcUi.note = null;
+    arcUi.key = '';
+    demo.scan().sessions.slice().reverse().forEach(function (session) {
+      arcUi.handled.add(session.folder);
+      if (example && $('arcAuto').checked) arcStart(session, false);
+    });
+  }
+
+  function arcStart(session, active) {
+    const transport = arcTransport();
+    const points = demo.pipeline().items.filter(function (item) { return item.session_folder === session.folder; }).length;
+    const result = arcUi.engine.upload({ folder: session.folder, session_id: session.session_id, scan_mode: session.scan_mode,
+      sample_id: session.sample_id, points: points, active: active }, transport, { fault: $('arcDrop').checked ? ARC_FAULT[transport] : null });
+    if (!result.ok) arcNote(result.text);
+    else if (result.existing) {
+      arcNote(arcExistingText(arcUi.engine.uploads().filter(function (item) { return item.upload_id === result.id; })[0]));
+    }
+    return result;
+  }
+
+  // DEMO: a scan that ends is uploaded once, when Upload after each scan is on.
+  function arcAutoUpload() {
+    const newest = model.scan.sessions && model.scan.sessions[0];
+    if (!newest || arcUi.handled.has(newest.folder) || (model.frame && model.frame.active)) return;
+    arcUi.handled.add(newest.folder);
+    if ($('arcAuto').checked) arcStart(newest, false);
+  }
+
+  function onArcUpload() {
+    const transport = arcTransport();
+    const session = model.scan.session;
+    if (ui.mode === 'live') {
+      if (!session || !session.folder) { arcNote('There is no session on show to upload.'); return; }
+      arcCommand('api/arc/upload', { session: String(session.folder), transport: transport }, function (data) {
+        return data.existing ? arcExistingText(data.upload) : String(data.message || 'Demo upload started. Nothing leaves this Mac.');
+      });
+      return;
+    }
+    if (!session) { arcNote('There is no session to upload yet. Press Play to record one.'); return; }
+    // The session on show is the one being scanned while a scan runs.
+    arcStart(session, !!(model.frame && model.frame.active));
+  }
+
+  // The four buttons act on the newest upload.
+  function onArcAction(action) {
+    const newest = arcUi.items[0];
+    if (!newest) return;
+    if (ui.mode === 'live') {
+      const before = arcLastCheck(newest);
+      arcCommand(ARC_PATHS[action], { upload: String(newest.upload_id) }, function (data) {
+        return String(data.message || (data.upload && data.upload.message) || 'Sent.');
+      }, action === 'check' ? { upload: String(newest.upload_id), before: before ? String(before.utc) : null } : null);
+      return;
+    }
+    const engine = arcUi.engine, id = newest.upload_id;
+    const result = action === 'check' ? engine.check(id) : action === 'retry' ? engine.retry(id)
+      : action === 'keep_copy' ? engine.keepCopy(id) : engine.stop(id);
+    if (!result.ok) arcNote(result.text);
+  }
+
+  // A failure of the server in words for #arcLine: its error and its fix (design 15.3).
+  function arcFailure(data, prefix) {
+    if (!data || typeof data !== 'object') return prefix + 'the server sent an unexpected answer.';
+    if (data.error === 'not available') return 'Uploads to ARC are not part of this installation.';
+    if (data.kind === 'not_ready' && isNum(data.retry_after_seconds)) {
+      return 'This session can go in ' + Math.max(1, Math.ceil(data.retry_after_seconds)) + ' s (the 60-second rule; the Studio cannot tell that the scan has ended).';
+    }
+    const earlier = arcEarlierText(data);
+    if (earlier) return prefix + earlier;
+    const words = [data.error, data.fix].filter(function (part) { return typeof part === 'string' && part.trim(); }).join(' ');
+    return prefix + (words || 'the command failed.');
+  }
+
+  // LIVE: a POST of the strip. Its answer goes to #arcLine; the list is read again at once.
+  function arcCommand(path, body, said, awaits) {
+    if (arcUi.busy) return;
+    arcUi.busy = true;
+    api(path, body).then(function (data) {
+      if (ui.mode !== 'live') return;
+      if (data && data.ok === true) {
+        arcNote(said(data), awaits);
+        arcUi.fastReads = ARC_AFTER_ACTION_READS;
+      } else arcNote(arcFailure(data, ''));
+    }).catch(function () {
+      if (ui.mode === 'live') arcNote('ARC uploads: the server did not answer.');
+    }).then(function () {
+      arcUi.busy = false;
+      if (live.on) schedule('arc', pollArc, 0);
+    });
+  }
+
+  // LIVE: true while the list should be read every second: a program works on an upload, an upload waits for
+  // Terminal or a sign-in in the browser (no program runs for it yet), or a button was pressed less than
+  // 120 reads (2 minutes) ago.
+  function arcMoving() {
+    if (arcUi.fastReads > 0) return true;
+    const now = arcUi.live;
+    if (!now) return false;
+    if (now.active > 0) return true;
+    return now.uploads.some(function (item) {
+      return ARC_MOVING.indexOf(String(item.display_state || item.state || '')) >= 0 || item.needs === 'terminal' || item.needs === 'browser';
+    });
+  }
+
+  // LIVE: GET /api/arc every second while arcMoving(), else every 5 s. A failed or missing
+  // answer keeps the last list and is said in #arcLine only.
+  function pollArc() {
+    if (!live.on) return;
+    api('api/arc').then(function (data) {
+      if (!live.on) return;
+      if (data && data.ok === true) {
+        arcUi.live = {
+          uploads: Array.isArray(data.uploads) ? data.uploads.filter(function (item) { return item && typeof item === 'object' && item.upload_id; }) : [],
+          active: isNum(data.active) ? data.active : 0,
+          settings: data.settings && typeof data.settings === 'object' ? data.settings : {}
+        };
+        arcUi.problem = '';
+      } else arcUi.problem = arcFailure(data, 'ARC uploads: ');
+      arcUi.liveRev++;
+    }).catch(function () {
+      if (!live.on) return;
+      arcUi.problem = 'ARC uploads: the server did not answer.';
+      arcUi.liveRev++;
+    }).then(function () {
+      if (arcUi.fastReads > 0) arcUi.fastReads--;
+      if (live.on) schedule('arc', pollArc, arcMoving() ? ARC_POLL_MS.moving : ARC_POLL_MS.idle);
+    });
+  }
+
+  // Where a parcel is drawn: on the laptop, along the band, under _incoming or in the ARC folder.
+  function arcPlace(item) {
+    const progress = item.progress || {};
+    const files = isNum(progress.files) && progress.files > 0 ? progress.files : 0;
+    const share = files && isNum(progress.files_done) ? Math.min(1, Math.max(0, progress.files_done / files)) : 0;
+    const state = String(item.display_state || item.state || '');
+    // An upload that failed or stopped stays where it was; the demo says where that was.
+    const where = state === 'failed' || state === 'stopped' ? String(item.ended_in || '') : state;
+    switch (where) {
+      case 'queued': case 'waiting_for_terminal': case 'preparing': case 'not_started': return { zone: 'laptop' };
+      case 'signing_in': return { zone: 'band', along: 0 };
+      case 'checking': return { zone: 'band', along: 0.06 };
+      case 'submitting': case 'uncertain': return { zone: 'band', along: 0.12 };
+      case 'transferring': case 'not_watched': return { zone: 'band', along: 0.18 + 0.82 * share };
+      case 'verifying': return { zone: 'incoming' };
+      case 'placing': case 'verified': case 'check_failed': return { zone: 'arc' };
+      case 'conflict': return item.conflict_at === 'placing' || share >= 1 ? { zone: 'incoming' } : { zone: 'band', along: 0.06 };
+      default: return share > 0 || item.leftover_on_arc ? { zone: 'band', along: 0.18 + 0.82 * share } : { zone: 'laptop' };
+    }
+  }
+
+  function arcLook(item) {
+    const state = String(item.display_state || item.state || '');
+    // On ARC, but its newest Check status failed: not ok, and it waits for a person (the window's Warn tone).
+    if (arcCheckFailed(item)) return 'wait';
+    if (state === 'verified') return 'ok';
+    if (state === 'failed') return 'bad';
+    return ['conflict', 'uncertain', 'stopped', 'interrupted', 'not_watched', 'not_started', 'unreadable'].indexOf(state) >= 0 ? 'wait' : 'run';
+  }
+
+  // A folder name cut in the middle to fit `room` px of 8 px text.
+  function arcCut(name, room) {
+    const fits = Math.max(4, Math.floor(room / 4.48));
+    if (name.length <= fits) return name;
+    const head = Math.max(2, Math.floor((fits - 1) * 0.45));
+    return name.slice(0, head) + '…' + name.slice(name.length - (fits - 1 - head));
+  }
+
+  // Up to two rows of equal parcels between x0 and x1, the newest top left.
+  function arcSlots(count, x0, x1) {
+    const perRow = Math.max(1, Math.ceil(count / 2));
+    const width = Math.min(AL.wide, (x1 - x0 - (perRow - 1) * AL.gap) / perRow);
+    const out = [];
+    for (let i = 0; i < count; i++) out.push({ x: x0 + (i % perRow) * (width + AL.gap), y: AL.rows[Math.floor(i / perRow)], w: width });
+    return out;
+  }
+
+  // Parcels on the band sit where their upload has got to, in two rows, moved apart where they would touch.
+  function arcBandSlots(alongs) {
+    const perRow = Math.max(1, Math.ceil(alongs.length / 2));
+    const span = AL.band[1] - AL.band[0];
+    const width = Math.min(AL.wide, (span - (perRow - 1) * AL.gap) / perRow);
+    const rows = [[], []];
+    alongs.forEach(function (along, index) { rows[index % 2].push({ index: index, x: AL.band[0] + along * (span - width) }); });
+    const out = [];
+    rows.forEach(function (row, r) {
+      row.sort(function (a, b) { return a.x - b.x || a.index - b.index; });
+      for (let i = 1; i < row.length; i++) row[i].x = Math.max(row[i].x, row[i - 1].x + width + AL.gap);
+      for (let i = row.length - 1; i >= 0; i--) row[i].x = Math.min(row[i].x, i === row.length - 1 ? AL.band[1] - width : row[i + 1].x - width - AL.gap);
+      row.forEach(function (slot) { out[slot.index] = { x: slot.x, y: AL.rows[r], w: width }; });
+    });
+    return out;
+  }
+
+  function arcTitle(liveMode) {
+    const settings = liveMode && arcUi.live ? arcUi.live.settings : {};
+    const folder = String(settings.folder || settings['arc_upload.folder'] || ARC_FOLDER).replace(/\/+$/, '');
+    const last = folder.split('/').pop() || folder;
+    return 'ARC: …/' + (last.length > 21 ? last.slice(0, 20) + '…' : last);
+  }
+
+  function arcParcel(item, slot, liveMode) {
+    const look = arcLook(item);
+    const marked = look === 'ok' || look === 'bad';
+    const name = String(item.session_folder || item.upload_id || 'upload');
+    const destination = item.destination || {};
+    let tip = name + ' · ' + String(item.display_label || item.state_label || item.state || '') + ' · ' + (item.transport === 'ssh' ? 'SSH' : 'Globus');
+    if (destination.placed_as) {
+      tip += (item.demo === false ? ' · on ARC as ' : ' · in the demo ARC folder as ') + (item.area === 'simulated' ? 'simulated/' : '') +
+        destination.placed_as;
+    }
+    // The newest Check status of an upload on ARC, after its message (which, once a check failed, is that check's).
+    const check = arcOnArc(item) ? arcLastCheck(item) : null;
+    if (item.message && !(check && String(item.message) === check.message)) tip += '\n' + String(item.message);
+    if (check) tip += '\n' + arcCheckText(check, true);
+    if (liveMode && item.demo === false) tip += '\n(from the window)';
+    const x = slot.x, y = slot.y;
+    let out = '<g class="arcparcel"><title>' + esc(tip) + '</title>';
+    out += '<rect class="arcp ' + look + '" x="' + f1(x) + '" y="' + f1(y - 8.5) + '" width="' + f1(slot.w) + '" height="11" rx="2"/>';
+    out += label(x + 3, y, arcCut(name, slot.w - 6 - (marked ? 9 : 0)), 'start', 't-tiny');
+    if (look === 'ok') out += '<path class="arcmark" d="M' + f1(x + slot.w - 9) + ' ' + f1(y - 3.2) + 'l2.2 2.4l3.8 -4.6"/>';
+    if (look === 'bad') out += '<path class="pt-cross" d="M' + f1(x + slot.w - 8.5) + ' ' + f1(y - 6) + 'l4 4m0 -4l-4 4"/>';
+    return out + '</g>';
+  }
+
+  // The lane: a box for the laptop, the band of the transport, the box of the ARC folder with
+  // _incoming beside it while a copy waits there, and one parcel for each of the newest 6 uploads.
+  function arcLane(items, liveMode) {
+    const shown = items.slice(0, ARC_PARCELS);
+    const transport = shown.length ? (shown[0].transport === 'ssh' ? 'ssh' : 'globus') : arcTransport();
+    const places = shown.map(arcPlace);
+    const incoming = places.some(function (place) { return place.zone === 'incoming'; });
+    let out = '<rect class="box" x="6.5" y="2.5" width="144" height="43" rx="4"/>';
+    out += '<rect class="arcband' + (transport === 'ssh' ? ' ssh' : '') + '" x="160.5" y="16.5" width="320" height="28" rx="4"/>';
+    out += '<rect class="box" x="490.5" y="2.5" width="210" height="43" rx="4"/>';
+    out += label(12, 12, 'Laptop', 'start', 't-strong') + label(50, 12, 'upload copy', 'start', 't-muted');
+    out += transport === 'ssh' ? label(164, 12, 'SSH', 'start', 't-strong') + label(186, 12, 'one connection, SHA-256 on ARC', 'start', 't-muted')
+      : label(164, 12, 'Globus', 'start', 't-strong') + label(204, 12, 'one task, checksums verified', 'start', 't-muted');
+    out += label(AL.arc[0], 12, arcTitle(liveMode), 'start', 't-strong');
+    if (incoming) out += line(AL.split, 17, AL.split, 43, 'arcsep') + label(AL.arc[1], 12, '_incoming', 'end', 't-muted');
+    if (!shown.length) return out + label(320, 34, 'no upload yet', 'middle', 't-muted');
+    const zones = { laptop: [], band: [], incoming: [], arc: [] };
+    places.forEach(function (place, index) { zones[place.zone].push(index); });
+    const slots = [];
+    const put = function (indexes, found) { found.forEach(function (slot, i) { slots[indexes[i]] = slot; }); };
+    put(zones.laptop, arcSlots(zones.laptop.length, AL.laptop[0], AL.laptop[1]));
+    put(zones.arc, arcSlots(zones.arc.length, AL.arc[0], incoming ? AL.split - 4 : AL.arc[1]));
+    put(zones.incoming, arcSlots(zones.incoming.length, AL.split + 4, AL.arc[1]));
+    put(zones.band, arcBandSlots(zones.band.map(function (index) { return places[index].along; })));
+    // The oldest first, so that the newest is drawn on top.
+    for (let index = shown.length - 1; index >= 0; index--) out += arcParcel(shown[index], slots[index], liveMode);
+    return out;
+  }
+
+  // A word about a Check status press gives way once that upload shows a newer check: its outcome.
+  function arcNoteAnswered(note, items) {
+    const awaits = note.awaits, newest = items[0];
+    if (!awaits || !newest || newest.upload_id !== awaits.upload) return false;
+    const check = arcLastCheck(newest);
+    return !!check && String(check.utc) !== awaits.before;
+  }
+
+  function arcLineText(items, liveMode) {
+    if (liveMode && arcUi.problem) return arcUi.problem;
+    if (arcUi.note && lastTime < arcUi.note.until && !arcNoteAnswered(arcUi.note, items)) return arcUi.note.text;
+    const newest = items[0];
+    if (!newest) {
+      return liveMode ? 'ARC: no upload yet. Upload to ARC (demo) copies the session on show to the demo ARC folder.'
+        : 'ARC: no upload yet. Turn on Upload after each scan, or press Upload to ARC (demo).';
+    }
+    if (!liveMode) return 'ARC: ' + newest.step;
+    // LIVE: the newest upload's message; for an upload on ARC, its newest Check status, or the check under way.
+    const message = String(newest.message || newest.display_label || newest.state || '');
+    const prefix = newest.demo === true || message.indexOf('Demo: ') === 0 ? 'ARC (demo): ' : 'ARC: ';
+    const worker = newest.worker && typeof newest.worker === 'object' ? newest.worker : {};
+    if (newest.state === 'verified' && worker.alive === true && worker.action === 'check') {
+      return prefix + 'checking how this upload stands ' + (newest.demo === false ? 'on ARC' : 'in the demo folder') + '. Nothing is sent.';
+    }
+    const check = arcOnArc(newest) ? arcLastCheck(newest) : null;
+    return prefix + (check ? arcCheckText(check, false) : arcPlain(message));
+  }
+
+  // Every frame: the lane when what it shows changed, the line, and the buttons of the newest upload.
+  function renderArc() {
+    const liveMode = ui.mode === 'live';
+    const key = (liveMode ? 'live ' + arcUi.liveRev : 'demo ' + arcUi.engine.revision()) + ' ' + arcTransport();
+    if (key !== arcUi.key) {
+      arcUi.key = key;
+      arcUi.items = liveMode ? (arcUi.live ? arcUi.live.uploads : []) : arcUi.engine.uploads();
+      const lane = arcLane(arcUi.items, liveMode);
+      if (lane !== arcUi.drawn) { $('arcLane').innerHTML = lane; arcUi.drawn = lane; }
+    }
+    const items = arcUi.items, newest = items[0];
+    const text = arcLineText(items, liveMode);
+    const lineEl = $('arcLine');
+    setText(lineEl, text);
+    const title = text + (liveMode && newest && newest.demo === false ? ' (from the window)' : '');
+    if (lineEl.title !== title) lineEl.title = title;
+    // An upload the window started is shown, never acted on: the server answers for demo uploads only.
+    const actions = newest && Array.isArray(newest.actions) && !(liveMode && newest.demo === false) ? newest.actions : [];
+    const waiting = liveMode && (live.lost || arcUi.busy);
+    ARC_BUTTONS.forEach(function (pair) {
+      const button = $(pair[0]);
+      const hidden = actions.indexOf(pair[1]) < 0;
+      if (button.hidden !== hidden) button.hidden = hidden;
+      button.disabled = waiting;
+    });
+    const copyTip = 'Put this upload beside the folder that already has its name, as ' +
+      (newest && newest.session_folder ? String(newest.session_folder) : 'its name') + '_copy2 or the next free name.';
+    if ($('btnArcKeep').title !== copyTip) $('btnArcKeep').title = copyTip;
+    $('btnArcUpload').disabled = waiting;
+    // The two switches belong to the demo: LIVE starts an upload only when the button is pressed.
+    ['arcAuto', 'arcAutoLabel', 'arcDrop', 'arcDropLabel'].forEach(function (id) { if ($(id).hidden !== liveMode) $(id).hidden = liveMode; });
+  }
+
   // ---------------------------------------------------------------------------- frame loop
   let lastTime = 0;
 
@@ -4057,8 +5055,12 @@ globalThis.STUDIO_EMBED = {
     if (ui.mode === 'demo') {
       demo.advance(dt * ui.speed);
       pullDemo();
+      // The uploads move with the same demo time.
+      arcUi.engine.advance(dt * ui.speed);
+      arcAutoUpload();
     }
     draw(dt);
+    renderArc();
     window.requestAnimationFrame(frame);
   }
 
@@ -4092,6 +5094,9 @@ globalThis.STUDIO_EMBED = {
     $('btnQueue').addEventListener('click', nextInQueue);
     $('btnDemo').addEventListener('click', function () { setMode('demo'); });
     $('btnLive').addEventListener('click', function () { setMode('live'); });
+    $('btnArcUpload').addEventListener('click', onArcUpload);
+    ARC_BUTTONS.forEach(function (pair) { $(pair[0]).addEventListener('click', function () { onArcAction(pair[1]); }); });
+    $('arcTransport').addEventListener('change', function () { arcUi.key = ''; });
     $('scanType').addEventListener('change', function () {
       if (ui.mode === 'demo') demo.setDetails({ scan_mode: $('scanType').value });
       dirty.picture = true;
@@ -4155,6 +5160,11 @@ globalThis.STUDIO_EMBED = {
       '<span><svg viewBox="0 0 12 12" aria-hidden="true"><path class="pt-cross" d="M3.5 3.5l5 5M3.5 8.5l5-5"/></svg>unusable</span>' +
       '<span><svg viewBox="0 0 12 12" aria-hidden="true"><path class="pt-single" d="M6 1l5 5-5 5-5-5z"/></svg>position not recorded</span>';
     $('endpointTerm').title = ENDPOINT_TIP;
+    // The strip opens as its markup says: Globus, uploads after each scan, no fault.
+    $('arcTransport').value = 'globus';
+    $('arcAuto').checked = true;
+    $('arcDrop').checked = false;
+    Object.keys(ARC_TIPS).forEach(function (id) { $(id).title = ARC_TIPS[id]; });
     renderLanesStatic();
     buildLoop();
     initProbes();

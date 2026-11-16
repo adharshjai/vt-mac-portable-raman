@@ -13,16 +13,23 @@ its own, which builds the original, not this edition.
 
 ```bash
 ./macos-native/build_macos.sh          # builds everything and assembles deploy-macos/
-./macos-native/build_macos.sh --test   # ... then runs every test suite of the edition (about 11 minutes)
+./macos-native/build_macos.sh --test   # ... then runs every test suite of the edition (about 15 minutes)
 ```
 
 When `.venv/` is missing, the build first makes it with `data_layer/setup_env.sh`, which downloads
-the data layer's packages from PyPI.
+the data layer's packages from PyPI, the Globus SDK for uploads to ARC included. The build never
+installs into an existing `.venv/`: when the Globus SDK is not in it, the build says so (only live
+Globus uploads to ARC need it) and goes on; run `./data_layer/setup_env.sh` once from this edition's
+folder to add it. When an upload to ARC is running, the build says so before it replaces the data
+layer; the upload keeps the code it loaded when it started.
 
 `--test` runs each suite with its output in `.build/test-logs/<suite>.log`, prints PASS or FAIL per
-suite and exits 1 if any failed: the data layer, the Studio page and its embedded data, the motor
-program, the backend (protocol, safety stop, virtual sample), the simulated hardware check, the
-controller's handshake, settings and window tests, the simulated runner and the end-to-end run.
+suite and exits 1 if any failed: the data layer, the Studio page, its embedded data and its upload
+strip (`studio_arc`), the motor program, the backend (protocol, safety stop, virtual sample), the
+simulated hardware check, the controller's handshake, settings and window tests and the tests of
+the window's ARC page (`arc_ui_tests`), the simulated runner and the end-to-end run. It sets
+`RAMAN_ARC_TEST_GUARD=1`, so no test of the uploads to ARC can sign in to Globus or run `ssh`,
+`open` or `caffeinate`.
 The hardware check runs in a deploy folder of its own, `.build/test-logs/hardware_check_deploy/`
 (copies of `handshake_v2/` and `virtual_sample/`), so that its `scan_sessions/_hwcheck_<time>/`
 folder is never left in `deploy-macos/`.
@@ -44,7 +51,7 @@ deploy-macos/raman_sim_runner            the controller without a window, always
 deploy-macos/studio.sh                   start the Simulation Studio for this folder
 deploy-macos/handshake_v2/backend/       SampleApl (launcher) + SampleApl.dll + wrrusb2a.dll + libwinusb_shim.dylib + System.Windows.Forms.dll
 deploy-macos/handshake_v2/motor/         RamanAutofocus (launcher) + raman_autofocus.py + apt_kdc101.py + motor_config.json
-deploy-macos/data_layer/                 raman_datafed/ (data layer), arc/ (ARC job files), requirements.txt
+deploy-macos/data_layer/                 raman_datafed/ (data layer, uploads to ARC included), arc/ (ARC job files), requirements.txt, requirements-mac.txt
 deploy-macos/models/, virtual_sample/, studio/index.html, datafed_python.txt, raman_python.txt
 deploy-macos/cnn_1.py, Portable_Raman_database/, _CNN_2class_r6g_mb/, dark_measurements/, scan_sessions/
 ```
@@ -160,6 +167,16 @@ Data layer 488 tests, Studio embedded data, engine (32) and page, motor 36, back
 ui_tests 27, simulated runner 7, end-to-end 1 (laser, dark and its `.json`, monitor, 1D 13 points,
 2D 124 points, both sessions naming the dark the run took). The device self-tests were not run in
 that session.
+
+Last full run with the uploads to ARC added (2026-11-15, before their review, in a scratch copy of
+this folder with a Python environment that has the Globus SDK): every suite PASS, in 792 s. Data
+layer 967 tests, Studio upload strip 28, arc_ui_tests 12 PASS lines, the other suites as above
+(motor 36 with 1 skipped).
+
+Last full run after the review of the uploads to ARC and the fourth round of its fixes (2026-11-16,
+in a scratch copy of this folder as above): every suite PASS, in 921 s. Data layer 1162 tests,
+Studio upload strip 37, arc_ui_tests 25 PASS lines, the other suites as above. Every run, and the
+counts of each, are in `VERIFICATION.json` at the top of this edition.
 
 Verified for the original port on 2026-10-27 (above): the controller's own hardware-free test
 suite; the motor program's unit tests (sequence identical to the C++ original, 124 points in 2D,

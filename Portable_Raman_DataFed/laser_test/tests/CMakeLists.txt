@@ -59,9 +59,10 @@ if(Python3_Interpreter_FOUND)
         COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:mock_motor>" "${UI_HOME}/handshake_v2/motor/RamanAutofocus${CMAKE_EXECUTABLE_SUFFIX}"
         DEPENDS mock_motor)
     add_custom_target(ui_home DEPENDS ${UI_HOME_FILES})
-    # ui_tests: the data-layer client, the status display and the two tabs. ui_snapshot: PNG pictures
-    # of the window in several states, in the light and the dark appearance, at two sizes.
-    foreach(program ui_tests ui_snapshot)
+    # ui_tests: the data-layer client, the status display and the two tabs. arc_ui_tests: the uploads
+    # to ARC of the Data tab, against the stand-in's arc-* answers. ui_snapshot: PNG pictures of the
+    # window in several states, in the light and the dark appearance, at two sizes.
+    foreach(program ui_tests arc_ui_tests ui_snapshot)
         add_executable(${program} ${program}.cpp "${CMAKE_BINARY_DIR}/main.moc")
         target_compile_definitions(${program} PRIVATE HANDSHAKE_TESTING "UI_TEST_PYTHON=\"${Python3_EXECUTABLE}\"")
         if(MSVC)
@@ -73,7 +74,7 @@ if(Python3_Interpreter_FOUND)
         add_dependencies(${program} ui_home settings_tests)
     endforeach()
 else()
-    message(WARNING "No Python 3 interpreter found: ui_tests and ui_snapshot, which start the stand-in data layer, are not built.")
+    message(WARNING "No Python 3 interpreter found: ui_tests, arc_ui_tests and ui_snapshot, which start the stand-in data layer, are not built.")
 endif()
 if(WIN32)
     # Compiles the Windows motor program (RamanAutofocusTest.cpp: wmain, Kinesis C API) against

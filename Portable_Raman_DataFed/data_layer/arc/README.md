@@ -8,7 +8,8 @@ spectrum.
 
 > **This job has not been run on ARC.** The job logic (`raman_datafed/job.py`,
 > `raman_datafed/arc_job.py`) is tested on a Mac against the local demo catalog and against an
-> in-memory stand-in for the DataFed server. Nothing in this folder has been tried
+> in-memory stand-in for the DataFed server, which also imitates the paths of ARC's Globus
+> collection. Nothing in this folder has been tried
 > on a cluster, against the real DataFed service, or with Globus. The cluster names, partitions,
 > module names and the Globus collection below are taken from the public ARC and DataFed
 > documentation as read on 2026-11-13 (links at the end). What could not be confirmed from the
@@ -25,8 +26,9 @@ identity is done by you, once, before the first run.
 
 ### 1. An ARC account and an allocation
 
-- An ARC account (<https://arc.vt.edu/account>). Off campus you need the Virginia Tech VPN, and
-  logging in asks for Duo.
+- An ARC account (<https://arc.vt.edu/account>). Off campus you need the Virginia Tech VPN; on
+  campus ARC refuses the VT Open WiFi network (use eduroam or a wired VT connection). Logging in
+  asks for your VT password and then Duo.
 - A compute allocation. Allocations are requested by a PI (faculty) in ColdFront,
   <https://coldfront.arc.vt.edu>; students are added to the project by their PI.
 - The **Slurm account name** of that allocation. ARC's documentation: it is shown in ColdFront as
@@ -42,6 +44,17 @@ only those whose owner has switched on **"Share via Globus"** for the project in
 
 So the job's files and its work folder live under `/projects/<your-project-directory>/`, and the
 owner of that project has to switch "Share via Globus" on.
+
+The collection shows the cluster folder `/projects` as its top `/`: what `ls` on ARC shows as
+`/projects/<your-project-directory>/raman/work` is `/<your-project-directory>/raman/work` in the
+collection. The DataFed client would put the collection's ID in front of the cluster path and ask
+for `/projects/...` inside the collection, a folder it does not have. So the batch script passes
+`COLLECTION_ROOT="/projects"` to the job (`--collection-root`), and the job names each download
+folder by its path inside the collection. The job refuses to start when its work folder is not
+inside `/projects`.
+
+Keep `RAMAN_DIR` apart from the folder that whole scan sessions are uploaded to from the instrument
+computer (the ARC folder of the edition's README, section 14).
 
 ### 3. The files on ARC
 
@@ -115,11 +128,16 @@ active:
    client is available, do not upgrade: `requirements.txt` pins datafed 5.1.0.
 2. Find the ID of ARC's collection: in the Globus web app (<https://app.globus.org>) search the
    collections for "Virginia Tech ARC Globus Projects Directories" and open its overview, which
-   shows the UUID. DataFed's documentation says a collection has to be activated before DataFed
-   can use it: open it in the Globus web app, sign in when it asks, and open your project
-   directory. It also says that such an activation runs out after a few days, so this may have
-   to be repeated before a later job.
-3. `datafed ep default set <uuid-of-the-arc-collection>`
+   shows the UUID. DataFed needs its own consent to use this collection for you. For a standard
+   mapped collection that is a one-time `data_access` consent, which does not run out; a High
+   Assurance collection asks for a recent login instead. Which kind ARC's collection is was not
+   checked. Opening the collection in the Globus web app gives consent to the web app, not to
+   DataFed. How DataFed asks for its consent was not checked either (its web portal is said to
+   offer it); step 6 shows whether it is missing.
+3. `datafed ep default set <uuid-of-the-arc-collection>`. The job builds its download paths on this
+   ID; without it, or with a name that is not a collection ID, it stops with "No Globus endpoint is
+   set for DataFed on ARC". Write the ID with its dashes, as the Globus web app shows it (36
+   characters, `8-4-4-4-12`): the DataFed client also takes it without them, but the job does not.
 4. Check:
 
 ```
@@ -135,18 +153,28 @@ datafed ls -X <p/your-datafed-project> <root>-to-classify
 
 ### 6. One transfer by hand
 
-Before the first job, fetch one waiting spectrum by hand into the job's work folder. This shows
-whether DataFed, Globus and the ARC collection work together for you, which this edition could
-not test:
+Before the first job, fetch one waiting spectrum by hand into the job's work folder, by the path
+the job uses: the collection's ID, then the folder's path inside the collection (without
+`/projects`). This shows whether DataFed, Globus and the ARC collection work together for you,
+which this edition could not test:
 
 ```
+readlink -f /projects/<your-project-directory>
 mkdir -p /projects/<your-project-directory>/raman/work/try
-datafed data get -X <p/your-datafed-project> --wait <alias-from-the-listing> /projects/<your-project-directory>/raman/work/try
+datafed data get -X <p/your-datafed-project> --wait <alias-from-the-listing> <ID of ARC's collection>/<your-project-directory>/raman/work/try
 ls /projects/<your-project-directory>/raman/work/try
 ```
 
-If the file arrives, the job has what it needs. If the transfer fails or never finishes, the job
-will fail the same way; see [Not verified](#not-verified).
+`readlink -f` must print a path that starts with what `readlink -f /projects` prints. The job
+follows links in its work folder, and a project directory that is a link to somewhere else is
+outside the collection's `/projects`: the job then refuses to start ("The work folder must be
+inside --collection-root"). Ask ARC how such a folder appears in the collection.
+
+If the file arrives, the job has what it needs: the path and DataFed's access both work. If nothing
+arrives within a few minutes, stop the command with Ctrl-C, open the transfer at
+<https://app.globus.org> under Activity and read its error: a wrong path and a missing consent look
+different there. Then cancel the transfer there; stopping the command does not stop it. See
+[Not verified](#not-verified).
 
 ## Fill in the batch script
 
@@ -156,6 +184,7 @@ Open `classify_job.slurm` and set, at the top:
 |---|---|
 | `#SBATCH --account=` | your Slurm account name (step 1) |
 | `RAMAN_DIR` | `/projects/<your-project-directory>/raman` (step 3) |
+| `COLLECTION_ROOT` | leave `/projects`: the cluster folder that ARC's Globus collection shows as its top `/` (step 2). Empty sends the paths as the cluster shows them, which this collection does not have |
 | `VENV_DIR`, `PYTHON_MODULE` | as made in step 4; the defaults match the commands above |
 | `ROOT_ALIAS` | `datafed.root_alias` of the instrument computer |
 | `CONTEXT` | `datafed.context` of the instrument computer (`p/...`), or `""` for your own space |
@@ -210,6 +239,7 @@ shows the job as `TIMEOUT`. Submit it again with a `LIMIT` or more time (see
 | `remaining` | spectra not looked at, because of `LIMIT` or because the job had to stop |
 | `errors` | one entry per spectrum that failed, with the reason (it stays in the queue for the next job); an entry without a capture id says why the whole run stopped |
 | `items` | per spectrum: label, top class, confidence, outcome, and whether a person has to review it |
+| `collection_root` | the `--collection-root` the job was given (`/projects` from the batch script), or `null` |
 | `error`, `detail`, `hint` | only when the job could not start its work: what went wrong and what to do |
 
 Typical first-run messages:
@@ -234,13 +264,22 @@ Typical first-run messages:
   lists into `MODEL_RECORD`.
 - `The model record ... has no files yet`: the instrument computer has not finished uploading the
   model; run `sync` there with Globus Connect Personal running.
-- `The download of ... did not finish within 600 s`, and after the second one in a row
-  `2 downloads in a row failed, so the run stopped`: the Globus transfers to the work folder are
-  not moving; see step 6.
+- `The download of ... did not finish within 600 s`, with the detail `Transfer ... into ... is
+  still running. Look at its error at app.globus.org > Activity, and cancel it there if it is
+  stuck.`, and after the second one in a row `2 downloads in a row failed, so the run stopped`: the
+  Globus transfers to the work folder are not moving. Globus keeps retrying such a transfer after
+  the job has given up, so cancel it at <https://app.globus.org> under Activity, where its error
+  also says why; then see step 6.
+- `No Globus endpoint is set for DataFed on ARC`: step 5.3 was not done, or the default endpoint is
+  not a collection ID written with its dashes (`datafed ep default get` shows it; the detail names
+  it). Set it again as step 5.3 says.
+- `The work folder must be inside --collection-root (/projects)`: `RAMAN_DIR` is not under
+  `/projects`, or it is a link to a folder elsewhere (step 6, `readlink -f`).
 
 Running the job twice is harmless. A spectrum leaves the queue only after its prediction is
 saved, and a job that was cancelled half-way is simply continued by the next one; no prediction
-is made twice.
+is made twice. A transfer that a job gave up on is the exception: it goes on in Globus until you
+cancel it there.
 
 ## Back on the instrument computer
 
@@ -254,19 +293,22 @@ eighth decimal; ARC was not measured. The label only changes if a score sits tha
 threshold. Each prediction record lists the library versions it was computed with
 (`job.software`).
 
+Whole scan sessions can also be uploaded to ARC from the instrument computer, with their dark
+spectrum and a checked list of their files (the edition's README, section 14). This job does not
+read those copies yet: it takes the spectra from DataFed.
+
 ## Not verified
 
 These points could not be settled from the public documentation, and nothing here was run:
 
-1. **Paths inside the Globus collection.** The DataFed client asks Globus to deliver files to
-   `<default endpoint>` + the absolute path on the cluster, for example
-   `/projects/<your-project-directory>/raman/work/...`. This only works if the ARC collection
-   shows your project directory under that same path. ARC's documentation does not say how the
-   path looks inside the collection. Compare it in the Globus web app; step 6 tests it. If the
-   paths differ, this job cannot run as it is.
+1. **Paths inside the Globus collection.** Answered: the collection shows `/projects/<dir>` as
+   `/<dir>`; the job maps its paths with `--collection-root`. This comes from transfers a teammate
+   made into that collection; no listing of the collection was seen, so step 6 confirms it for
+   you. The job was tested against a stand-in of the collection only.
 2. **DataFed and the ARC collection.** Whether DataFed is allowed to transfer to
-   "Virginia Tech ARC Globus Projects Directories" on your behalf (consents, session timeouts,
-   the collection's access rules) is not documented by either side. Step 6 tests it.
+   "Virginia Tech ARC Globus Projects Directories" on your behalf is not documented by either side:
+   DataFed needs its own consent there (step 5.2), and how it asks for it was not checked. Step 6
+   tests it.
 3. **Network access from compute nodes.** The job connects to `datafed.ornl.gov` on TCP port 7512
    from the compute node. ARC's documentation does not state whether compute nodes may open that
    connection. At start the DataFed client also asks pypi.org for its newest version; on a node
@@ -288,6 +330,8 @@ These points could not be settled from the public documentation, and nothing her
 | allocations and ColdFront | <https://www.docs.arc.vt.edu/pi_info/allocations.html> |
 | Python environments with `venv`, the Python module, where to build them | <https://www.docs.arc.vt.edu/usage/virtual_environments.html>, <https://www.docs.arc.vt.edu/usage/virtual_environments/virtual_env_pip.html> |
 | the Globus collection, `/projects` only, "Share via Globus" | <https://www.docs.arc.vt.edu/software/globus.html> |
+| the collection shows `/projects/<dir>` as `/<dir>` | not in ARC's documentation: the transfers a teammate made into the collection, as a review of the team's upload tool found them |
+| DataFed's consent for a mapped collection | <https://docs.globus.org/globus-connect-server/v5/application/>; DataFed's own tracker (issue 1116) |
 | `datatransfer.arc.vt.edu`, `/home` and `/projects` shared by the clusters | <https://www.docs.arc.vt.edu/usage/data_transfer.html> |
 | DataFed account, Globus identity, allocation, endpoint of a cluster | <https://ornl.github.io/DataFed/system/getting_started.html> |
 | `datafed setup`, key files in `~/.datafed`, default endpoint, server host and port | <https://ornl.github.io/DataFed/user/client/install.html> |

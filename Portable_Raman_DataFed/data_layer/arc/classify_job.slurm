@@ -22,7 +22,13 @@ set -eo pipefail
 
 # Folder under /projects that holds data_layer/. Its project directory must have "Share via
 # Globus" switched on in ColdFront: DataFed delivers the spectra into $RAMAN_DIR/work with Globus.
+# Keep it apart from the folder that whole scan sessions are uploaded to (the edition's README.md,
+# section 14).
 RAMAN_DIR="/projects/<your-project-directory>/raman"
+# The cluster folder that ARC's Globus collection shows as its top "/". DataFed delivers the
+# spectra through that collection, which shows /projects/<dir>/... as /<dir>/... (README.md).
+# Empty: paths are sent as the cluster shows them.
+COLLECTION_ROOT="/projects"
 # The Python environment made in README step 4, and the module it was made with.
 VENV_DIR="$HOME/venvs/raman-datafed"
 PYTHON_MODULE="Python/3.12.3-GCCcore-13.3.0"
@@ -62,6 +68,7 @@ WORK_DIR="$RAMAN_DIR/work"
 mkdir -p "$WORK_DIR"
 
 arguments=(--root-alias "$ROOT_ALIAS" --work-dir "$WORK_DIR")
+if [ -n "$COLLECTION_ROOT" ]; then arguments+=(--collection-root "$COLLECTION_ROOT"); fi
 if [ -n "$CONTEXT" ]; then arguments+=(--context "$CONTEXT"); fi
 if [ -n "$CONFIDENCE_THRESHOLD" ]; then arguments+=(--confidence-threshold "$CONFIDENCE_THRESHOLD"); fi
 if [ -n "$REPO_ID" ]; then arguments+=(--repo-id "$REPO_ID"); fi

@@ -32,6 +32,9 @@ COMMAND_MODULES = [
     "raman_datafed.review",
     "raman_datafed.studio_server",
 ]
+# Parts that add commands of their own, loaded after COMMAND_MODULES and skipped when missing:
+# the uploads of finished sessions to ARC (PROTOCOL.md 5.6).
+FEATURE_MODULES = ["raman_datafed.arc_commands"]
 
 
 class UsageError(DataLayerError):
@@ -59,10 +62,10 @@ class _Parser(argparse.ArgumentParser):
 
 
 def _command_modules():
-    """The command modules of this installation. A module is skipped only when it does not exist;
-    one that exists and fails to import is an error worth seeing."""
+    """The command modules of this installation: COMMAND_MODULES, then FEATURE_MODULES. A module is
+    skipped only when it does not exist; one that exists and fails to import is an error worth seeing."""
     modules = []
-    for name in COMMAND_MODULES:
+    for name in dict.fromkeys(list(COMMAND_MODULES) + list(FEATURE_MODULES)):
         try:
             modules.append(importlib.import_module(name))
         except ModuleNotFoundError as error:
@@ -165,9 +168,16 @@ def _with_ok(result):
 
 
 def error_payload(error):
-    """The failure object of the contract for any exception."""
+    """The failure object of the contract for any exception.
+
+    A DataLayerError may carry more keys in an `extra` dict (the arc-* commands' "reason" and
+    "fix"); they follow the four standard keys and never replace one.
+    """
     if isinstance(error, DataLayerError):
-        return {"ok": False, "error": str(error), "detail": error.detail, "kind": error.kind}
+        payload = {"ok": False, "error": str(error), "detail": error.detail, "kind": error.kind}
+        for key, value in (getattr(error, "extra", None) or {}).items():
+            payload.setdefault(key, value)
+        return payload
     text = str(error).strip().splitlines()
     summary = "%s: %s" % (type(error).__name__, text[0]) if text else type(error).__name__
     return {"ok": False, "error": summary, "detail": "The traceback is in the log on stderr.", "kind": "internal"}
@@ -236,7 +246,7 @@ def main(argv=None):
             if not isinstance(error, DataLayerError):
                 log.exception("the command failed")
             payload = error_payload(error)
-            code = 2 if isinstance(error, UsageError) else 1
+            code = 2 if isinstance(error, UsageError) else 130 if payload.get("kind") == "interrupted" else 1
         finally:
             if ctx is not None:
                 ctx.close()

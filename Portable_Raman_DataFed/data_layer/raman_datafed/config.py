@@ -37,8 +37,24 @@ MAX_ALIAS_LENGTH = 40
 MAX_ROOT_ALIAS_LENGTH = MAX_ALIAS_LENGTH - len("-needs-review")
 _PROJECT_ID_PATTERN = re.compile(r"^p/[A-Za-z0-9._-]+$")
 
+# Uploads to ARC (PROTOCOL.md 5.6). Not in DEFAULTS and never written on first use: arc_settings
+# holds their defaults and their rules, and only the arc-* commands stop on an invalid one.
+ARC_UPLOAD_KEYS = (
+    "arc_upload.demo", "arc_upload.transport", "arc_upload.folder", "arc_upload.include_simulated",
+    "arc_upload.settle_seconds", "arc_upload.demo_folder",
+    "arc_upload.globus.mac_collection", "arc_upload.globus.arc_collection", "arc_upload.globus.collection_root",
+    "arc_upload.globus.client_id", "arc_upload.globus.deadline_hours", "arc_upload.globus.force_login",
+    "arc_upload.ssh.username", "arc_upload.ssh.host", "arc_upload.ssh.known_hosts",
+)
+_ARC_UPLOAD_TEXT_KEYS = (
+    "arc_upload.transport", "arc_upload.folder", "arc_upload.demo_folder", "arc_upload.globus.mac_collection",
+    "arc_upload.globus.arc_collection", "arc_upload.globus.collection_root", "arc_upload.globus.client_id",
+    "arc_upload.ssh.username", "arc_upload.ssh.host", "arc_upload.ssh.known_hosts",
+)
+
 # `config --set` keeps these as typed, so that a value such as 2026 stays text.
-_TEXT_KEYS = ("mode", "datafed.context", "datafed.root_alias", "datafed.repo_id", "classifier.model_dir")
+_TEXT_KEYS = ("mode", "datafed.context", "datafed.root_alias", "datafed.repo_id",
+              "classifier.model_dir") + _ARC_UPLOAD_TEXT_KEYS
 
 
 class DataLayerError(Exception):
@@ -185,7 +201,7 @@ class Settings:
         self.set(dotted, value)
 
     def is_known(self, dotted):
-        return _default_at(dotted)[1]
+        return _default_at(dotted)[1] or dotted in ARC_UPLOAD_KEYS
 
     def save(self):
         atomic_write_json(self.path, self.data)

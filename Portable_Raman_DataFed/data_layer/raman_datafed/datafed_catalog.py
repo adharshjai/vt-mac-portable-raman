@@ -19,6 +19,7 @@ import re
 import sys
 from pathlib import Path
 
+from . import arc_paths
 from .catalog import (
     Catalog,
     CatalogAuthRequired,
@@ -36,6 +37,7 @@ from .catalog import (
     fit_title,
     same_identity,
 )
+from .config import CommandError
 
 log = logging.getLogger(__name__)
 
@@ -48,8 +50,16 @@ ENDPOINT_HELP = (
     "No default Globus endpoint is set, so files cannot be transferred. In a terminal, run "
     "'datafed ep default set <endpoint>' with the id of this Mac's Globus Connect Personal collection."
 )
+# For the ARC job, whose downloads go through ARC's Globus collection (collection_root set).
+ARC_ENDPOINT_HELP = (
+    "No Globus endpoint is set for DataFed on ARC. On an ARC login node, run "
+    "'datafed ep default set <ID of ARC's Projects collection>' (data_layer/arc/README.md step 5)."
+)
 
 _PAGE_SIZE = 100
+# A Globus collection ID. The datafed client also takes other endpoint names and does not check
+# what 'datafed ep default set' stores, so a download path is only built on one of these.
+_UUID = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\Z", re.I)
 
 # Names of the enum values in the reply messages of the datafed package.
 _RELATIONS = {"DEP_IS_DERIVED_FROM": "der", "DEP_IS_COMPONENT_OF": "comp", "DEP_IS_NEW_VERSION_OF": "ver"}
@@ -147,12 +157,17 @@ def _short_alias(alias):
 class DataFedCatalog(Catalog):
     name = "datafed"
 
-    def __init__(self, context="", repo_id="", api=None, download_timeout_sec=600):
+    def __init__(self, context="", repo_id="", api=None, download_timeout_sec=600, collection_root=None):
+        """`collection_root` is for the ARC job: the cluster folder that the Globus collection of the
+        default endpoint shows as its top "/" (ARC's Projects collection shows /projects/<dir> as
+        /<dir>). Downloads then go to that collection's path of the folder. None (the instrument
+        computer) sends local paths as they are."""
         self._context = context or None
         self._repo_id = repo_id or None
         self._api = api
         self._injected = api is not None
         self._download_timeout_sec = download_timeout_sec
+        self._collection_root = collection_root
 
     @property
     def label(self):
@@ -437,8 +452,37 @@ class DataFedCatalog(Catalog):
             raise CatalogNotFound("DataFed has no transfer task %s" % task_id)
         return self._transfer(reply.task[0])
 
+    def _download_target(self, dest_dir):
+        """Where dataGet is asked to deliver the files of `dest_dir`.
+
+        Without a collection root: the local path, to which the datafed client puts the current
+        endpoint in front. With one (the ARC job): the full Globus path
+        `<endpoint>/<path of dest_dir below the root>`, which the client passes on unchanged. Both
+        paths are resolved first, as arc_job resolves its work folder (review F-04).
+        """
+        if self._collection_root is None:
+            return str(dest_dir)
+        try:
+            relative = arc_paths.relative_below(dest_dir, self._collection_root)
+        except ValueError:
+            raise CommandError(
+                "The download folder %s is not inside %s, the part of the cluster that ARC's Globus collection "
+                "shows" % (dest_dir, self._collection_root)
+            ) from None
+        api = self._session()
+        # What the client itself would put in front of a local path.
+        endpoint = api.endpointGet() or api.endpointDefaultGet()
+        if not isinstance(endpoint, str) or not _UUID.match(endpoint):
+            raise CatalogAuthRequired(
+                ARC_ENDPOINT_HELP,
+                detail="The endpoint set is %r, which is not a collection ID." % endpoint if endpoint else "",
+            )
+        return endpoint + "/" + relative
+
     def get_data(self, record, dest_dir):
         dest_dir = Path(os.path.abspath(dest_dir))
+        # Checked before the folder is made and before anything is requested.
+        target = self._download_target(dest_dir)
         dest_dir.mkdir(parents=True, exist_ok=True)
         view = self._call("dataView", "RecordDataReply", record, context=self._context)
         if not view.data:
@@ -448,7 +492,7 @@ class DataFedCatalog(Catalog):
         before = set(os.listdir(dest_dir))
         try:
             reply, kind = self._request(
-                "dataGet", data.id, str(dest_dir), orig_fname=True, wait=True,
+                "dataGet", data.id, target, orig_fname=True, wait=True,
                 timeout_sec=self._download_timeout_sec, context=self._context,
             )
         except CatalogError as error:
@@ -463,10 +507,17 @@ class DataFedCatalog(Catalog):
         if transfer.status == "failed":
             raise CatalogError("The download of %s failed" % data.id, detail=transfer.message)
         if transfer.status != "succeeded":
+            if self._collection_root is None:
+                detail = "Transfer %s is still %s. Is Globus Connect Personal running?" % (
+                    transfer.task_id, transfer.status)
+            else:
+                # On ARC no Globus Connect Personal is involved; Globus keeps retrying a transfer that
+                # cannot reach its folder, and nothing here cancels it.
+                detail = ("Transfer %s into %s is still running. Look at its error at app.globus.org > Activity, "
+                          "and cancel it there if it is stuck." % (transfer.task_id, target))
             raise CatalogError(
                 "The download of %s did not finish within %d s" % (data.id, self._download_timeout_sec),
-                detail="Transfer %s is still %s. Is Globus Connect Personal running?"
-                % (transfer.task_id, transfer.status),
+                detail=detail,
             )
         if expected and (dest_dir / expected).is_file():
             return dest_dir / expected

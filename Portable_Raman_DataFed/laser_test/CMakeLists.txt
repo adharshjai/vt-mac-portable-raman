@@ -19,9 +19,10 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts)
 # ----------------------------------------
 
 # main.cpp includes the four display headers (window_theme.h, window_status.h, data_layer_client.h,
-# data_panels.h). They hold no Q_OBJECT class, so they need no moc step and the test programs that
-# include main.cpp build as before; they are listed here so that Qt Creator shows them. No header of
-# this folder may be named ui_<name>.h: AUTOUIC takes such an include for the output of <name>.ui.
+# data_panels.h), and data_panels.h includes arc_panel.h, the uploads to ARC of the Data tab. They
+# hold no Q_OBJECT class, so they need no moc step and the test programs that include main.cpp build
+# as before; they are listed here so that Qt Creator shows them. No header of this folder may be named
+# ui_<name>.h: AUTOUIC takes such an include for the output of <name>.ui.
 set(PROJECT_SOURCES
         main.cpp
         acquisition_protocol.h
@@ -29,6 +30,7 @@ set(PROJECT_SOURCES
         window_status.h
         data_layer_client.h
         data_panels.h
+        arc_panel.h
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui

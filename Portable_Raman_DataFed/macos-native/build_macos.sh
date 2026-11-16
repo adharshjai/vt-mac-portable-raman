@@ -4,7 +4,7 @@
 # missing .venv is made by data_layer/setup_env.sh, which downloads packages from PyPI (through pip's
 # cache), and that the tests use the temporary folder.
 #   ./macos-native/build_macos.sh            build + deploy
-#   ./macos-native/build_macos.sh --test     also run every test suite of the edition (about 11 minutes)
+#   ./macos-native/build_macos.sh --test     also run every test suite of the edition (about 15 minutes)
 # With --test, RAMAN_SKIP_DEVICE_SELFTESTS=1 leaves out the self-tests that open the USB stack and the
 # vendor library (they are always left out while the instruments are attached).
 set -euo pipefail
@@ -40,6 +40,27 @@ fresh_if_moved() {
     echo "   (the project folder moved: discarding the stale CMake cache in $1)"
     rm -rf "$1/CMakeCache.txt" "$1/CMakeFiles"
   fi
+}
+
+# True while an upload to ARC runs: its program holds the worker.lock of its upload's folder
+# (data_layer/PROTOCOL.md 5.6). A free lock is taken and given back at once, as arc-list does.
+arc_upload_running() {
+  [ -d "$DEPLOY/data_catalog/arc_uploads" ] || return 1
+  "$PYTHON" -I - "$DEPLOY/data_catalog/arc_uploads" <<'PY'
+import fcntl, glob, os, sys
+for path in glob.glob(os.path.join(sys.argv[1], "*", "worker.lock")):
+    try:
+        handle = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    except OSError:
+        continue
+    try:
+        fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        sys.exit(0)
+    finally:
+        os.close(handle)
+sys.exit(1)
+PY
 }
 
 echo "== 1/6 Windows-API shim (libusb) =="
@@ -108,13 +129,20 @@ if [ "$handoff_copies" -gt 0 ]; then echo "   (removed $handoff_copies hand-off 
 # training database and the CNN model folder the analysis script reads (DATA_ROOT = its own folder)
 if [ -d "$WINDEPLOY/Portable_Raman_database" ]; then rsync -a "$WINDEPLOY/Portable_Raman_database/" "$DEPLOY/Portable_Raman_database/"; fi
 if [ -d "$WINDEPLOY/_CNN_2class_r6g_mb" ]; then rsync -a "$WINDEPLOY/_CNN_2class_r6g_mb/" "$DEPLOY/_CNN_2class_r6g_mb/"; fi
-# data layer (DataFed client, local demo catalog, classifier job, its package list for ARC) + the
-# classifier model + its interpreter
+# data layer (DataFed client, local demo catalog, uploads to ARC with arc_remote.sh, classifier job, the
+# package lists: requirements.txt, which the ARC job installs, and requirements-mac.txt, which adds the
+# Globus SDK on this Mac) + the classifier model + its interpreter
 if [ -d "$ROOT/data_layer/raman_datafed" ]; then
   mkdir -p "$DEPLOY/data_layer"
+  if arc_upload_running; then
+    echo "   (note: an ARC upload is running; its program keeps the code it started with until it ends)"
+  fi
   rsync -a --delete --exclude "__pycache__/" "$ROOT/data_layer/raman_datafed/" "$DEPLOY/data_layer/raman_datafed/"
   if [ -d "$ROOT/data_layer/arc" ]; then rsync -a --delete "$ROOT/data_layer/arc/" "$DEPLOY/data_layer/arc/"; fi
   cp "$ROOT/data_layer/requirements.txt" "$DEPLOY/data_layer/requirements.txt"
+  if [ -f "$ROOT/data_layer/requirements-mac.txt" ]; then
+    cp "$ROOT/data_layer/requirements-mac.txt" "$DEPLOY/data_layer/requirements-mac.txt"
+  fi
 fi
 if [ -d "$ROOT/models" ]; then rsync -a "$ROOT/models/" "$DEPLOY/models/"; fi
 # simulation-only virtual sample and the Simulation Studio page
@@ -123,6 +151,10 @@ if [ -d "$ROOT/studio" ]; then rsync -a --delete "$ROOT/studio/" "$DEPLOY/studio
 if [ ! -x "$DATAPY" ] && [ -f "$ROOT/data_layer/setup_env.sh" ]; then bash "$ROOT/data_layer/setup_env.sh"; fi
 if [ -x "$DATAPY" ]; then printf '%s\n' "$DATAPY" > "$DEPLOY/datafed_python.txt"; else
   echo "   (note: no data-layer interpreter at $DATAPY - run data_layer/setup_env.sh; the Data and Review tabs need it)"
+fi
+# Only looked for, never imported or downloaded here: the build does not install into an existing .venv.
+if [ -x "$DATAPY" ] && ! "$DATAPY" -I -c 'import importlib.util, sys; sys.exit(importlib.util.find_spec("globus_sdk") is None)'; then
+  echo "   (note: the Globus SDK is not in .venv: live Globus uploads to ARC need it, demo and SSH uploads work without it; run data_layer/setup_env.sh)"
 fi
 cat > "$DEPLOY/run_simulated.sh" <<'RUN'
 #!/bin/bash
@@ -165,7 +197,9 @@ if [ "${1:-}" = "--test" ]; then
     echo "!! RAMAN_SKIP_DEVICE_SELFTESTS=1: shim_selftest, SampleApl --selftest and its unit test are NOT run."
   fi
   # Every helper program a suite starts runs its simulator; the device self-tests decide that themselves.
-  export RAMAN_BACKEND_SIMULATE=1 RAMAN_MOTOR_SIMULATE=1 PYTHONDONTWRITEBYTECODE=1
+  # RAMAN_ARC_TEST_GUARD=1: the data layer refuses to sign in to Globus, to run ssh, open or caffeinate, and to
+  # start any program but its own upload worker, so no test can open a browser, a Terminal or a connection.
+  export RAMAN_BACKEND_SIMULATE=1 RAMAN_MOTOR_SIMULATE=1 PYTHONDONTWRITEBYTECODE=1 RAMAN_ARC_TEST_GUARD=1
   NODE="${NODE:-$(command -v node || echo /usr/local/bin/node)}"
   TESTLOGS="$ROOT/.build/test-logs"
   rm -rf "$TESTLOGS"; mkdir -p "$TESTLOGS"
@@ -193,6 +227,7 @@ if [ "${1:-}" = "--test" ]; then
   suite studio_embedded "$PYTHON" "$ROOT/studio/embed_assets.py" --check
   suite studio_engine   "$NODE" "$ROOT/studio/test_engine.mjs"
   suite studio_page     "$NODE" "$ROOT/studio/test_page.mjs"
+  suite studio_arc      "$NODE" "$ROOT/studio/test_arc.mjs"
   suite motor           "$PYTHON" -m unittest discover -s "$NATIVE/motor/tests" -v
   if [ "$DEVICE_SELFTESTS" = 1 ]; then
     suite backend_protocol backend_test test_backend_protocol
@@ -217,6 +252,7 @@ if [ "${1:-}" = "--test" ]; then
   suite handshake_tests controller_test . handshake_tests
   suite settings_tests  controller_test . settings_tests
   suite ui_tests        controller_test ui_home ui_tests
+  suite arc_ui_tests    controller_test ui_home arc_ui_tests
   suite sim_runner      bash -c 'cd "$1/sim_runner" && RAMAN_DEPLOY_DIR="$2" "$3" -m unittest -v test_sim_runner' _ "$NATIVE" "$DEPLOY" "$PYTHON"
   fresh_if_moved "$NATIVE/e2e/build"
   "$CMAKE" -S "$NATIVE/e2e" -B "$NATIVE/e2e/build" -G Ninja -DCMAKE_MAKE_PROGRAM="$NINJA" -DCMAKE_PREFIX_PATH="$QT" > /dev/null

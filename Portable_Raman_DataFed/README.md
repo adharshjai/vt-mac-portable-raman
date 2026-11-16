@@ -3,10 +3,12 @@
 This folder is a copy of the Portable Raman controller with a data pipeline added. Every saved
 spectrum gets a catalog record. A classifier result is saved as its own record, linked to the
 spectrum, the model version and the dark spectrum it came from. Uncertain results wait for a
-person to review them. The catalog is either a local demo on this Mac or the DataFed service.
+person to review them. The catalog is either a local demo on this Mac or the DataFed service. A
+finished scan session can also be uploaded whole to the team folder on ARC, by Globus or SSH; so far
+this was tried in demo mode only ([section 14](#14-uploading-sessions-to-arc)).
 
 Everything here was built and run on this Mac **in simulation only**. No instrument was attached,
-and nothing was sent to DataFed or Globus. What was tested, with counts, is in
+and nothing was sent to DataFed, Globus or ARC. What was tested, with counts, is in
 [VERIFICATION.json](VERIFICATION.json).
 
 1. [What this edition is](#1-what-this-edition-is)
@@ -22,6 +24,7 @@ and nothing was sent to DataFed or Globus. What was tested, with counts, is in
 11. [Folder map](#11-folder-map)
 12. [Troubleshooting](#12-troubleshooting)
 13. [What was verified](#13-what-was-verified)
+14. [Uploading sessions to ARC](#14-uploading-sessions-to-arc)
 
 ## 1. What this edition is
 
@@ -50,6 +53,10 @@ the classifier model. It adds:
   the laser power and the focus, built from real measured spectra.
 - **raman_sim_runner.** The controller without a window, always simulated. The Studio uses it; you
   can also run it by hand.
+- **Uploads to ARC.** A finished scan session can go to the team folder on VT ARC by Globus or SSH:
+  a copy of the session folder, its dark spectrum, a manifest and a list of checksums, checked on
+  ARC. The Data tab's **ARC upload** button shows it. Tried in demo mode only so far
+  ([section 14](#14-uploading-sessions-to-arc)).
 
 The contract between all these pieces is [data_layer/PROTOCOL.md](data_layer/PROTOCOL.md).
 
@@ -132,9 +139,12 @@ the data layer and the data:
 ```
 
 If `.venv/` is missing, as in a fresh copy of this folder, the build first runs
-`data_layer/setup_env.sh`, which downloads the data layer's packages from PyPI (about 215 MB).
+`data_layer/setup_env.sh`, which downloads the data layer's packages from PyPI (about 230 MB),
+the Globus SDK for uploads to ARC included. An existing `.venv/` is left as it is: if the build
+says that the Globus SDK is not in `.venv`, run `./data_layer/setup_env.sh` once from this folder
+to add it. Only live Globus uploads need it.
 
-**Test** (optional, about 11 minutes):
+**Test** (optional, about 15 minutes):
 
 ```bash
 RAMAN_SKIP_DEVICE_SELFTESTS=1 ./macos-native/build_macos.sh --test
@@ -230,6 +240,23 @@ datalayer list --limit 13
 as unusable (the window's button for it is Mark unusable). `datalayer -h` lists every command;
 [PROTOCOL.md](data_layer/PROTOCOL.md) section 6 describes them.
 
+**Try an upload to ARC (demo).** Nothing leaves this Mac: a folder in `deploy-macos/` stands in for
+ARC. After a scan has ended, in the window's Data tab press **ARC upload**. Leave **Demo (no ARC, no
+account)** ticked, choose the session, and press **Upload to ARC**. Under Recent uploads the State
+goes from Waiting to start to **On ARC, checked** in a few seconds. Press **Show in Finder** to see
+the copy. The same from the command line, with `datalayer` defined as above (put a folder name from
+the first command's `items` in place of `<folder>`):
+
+```bash
+datalayer arc-sessions
+datalayer arc-upload --session <folder> --demo
+datalayer arc-list
+```
+
+The copy lands in `deploy-macos/data_catalog/arc_demo/projects/pcl_photonics/raman_globus_upload/`,
+in `simulated/` for a simulated session. [Section 14](#14-uploading-sessions-to-arc) has the real
+uploads.
+
 ## 4. Opening it in Qt Creator
 
 Qt Creator is the editor for the window's C++ code. It builds and starts **the window only**. The
@@ -297,6 +324,7 @@ or `raman_sim_runner` until you run `build_macos.sh` again.
 | Classify | Data tab: Classify now (runs on this Mac) | `job.py`, `classifier.py`; on ARC `arc_job.py` and `data_layer/arc/classify_job.slurm` | `classify` |
 | Link | Data tab: select a row; PROVENANCE (DERIVED FROM) on the right | `job.py` saves each prediction with its three links; `commands_core.py` reads the chain | `provenance --record ID` |
 | Review | Review tab: Confirm (it names the class it records), Relabel with a class, or Mark unusable; the reviewer is the Operator field | `review.py`; in the window `laser_test/data_panels.h` | `review-list`, `review-show`, `review-set` |
+| Archive: the session, its dark spectrum and a checked manifest go to the team folder on ARC ([section 14](#14-uploading-sessions-to-arc)) | Data tab: ARC upload, then Upload to ARC | `arc_commands.py`, `arc_worker.py`, `arc_globus.py`, `arc_ssh.py`, `arc_remote.sh`; in the window `laser_test/arc_panel.h` | `arc-sessions`, `arc-upload`, `arc-list` |
 
 The window starts the data layer as a separate process and never waits for it
 (`laser_test/data_layer_client.h`), so a slow catalog cannot hold up a scan. Sync now, Classify
@@ -348,7 +376,18 @@ starts ends by itself after 15 minutes without use; `studio.sh` runs until Ctrl-
    record: ids, aliases, metadata, upload task, and the provenance chain from the prediction back to
    the spectrum, the model and the dark. Here are Sync now, Run classifier, the Offline switch, the
    threshold (read-only in LIVE), Find in metadata, Next to review, and Confirm, Reject and Relabel
-   with a reviewer name.
+   with a reviewer name. Below the lanes, the **Upload to ARC** strip draws each upload as a parcel
+   that goes from the laptop through Globus or over SSH to ARC, waits in `_incoming` while it is
+   checked, and is renamed into place. In DEMO every scan that ends is uploaded to the demo ARC
+   folder (switch off Upload after each scan to stop that); Drop the connection shows what happens
+   when the connection breaks, and Retry same request finishes the upload. In LIVE the strip shows
+   this deploy folder's uploads, the window's included, and its Upload to ARC (demo) button starts
+   demo uploads only: uploads to ARC itself are made in the window. The window's uploads to ARC
+   itself are drawn read-only; demo uploads, the window's included, can be stopped, retried and
+   checked from the strip, since an upload's record does not say where it was started. An upload
+   whose last Check status did not find its copy is drawn as not checked. A Check status that could
+   not look (a sign-in that did not happen, for example) changes nothing: the line says why and what
+   to do.
 3. **The bigger picture.** The loop of an automated experiment: Plan, Move and acquire, Transfer,
    Record, Analyse, Decide, then the next Plan. Each step names the layer the project's platform
    plan gives it, and counts what has happened there: INTERSECT for planning, the Qt controller to
@@ -388,12 +427,17 @@ copies of the deploy folder, and the offline example in the demo catalog. The Da
    allocation.
 4. **Globus Connect Personal** on this Mac. Install it from
    <https://www.globus.org/globus-connect-personal>, sign in and leave it running. It makes this Mac
-   a Globus collection; its collection id (a UUID) is in its preferences and on
+   a Globus collection; its collection id (a UUID) is in its settings and on
    <https://app.globus.org>. It has to be allowed to read `deploy-macos/`, for the uploads, and to
    write `deploy-macos/data_catalog/staging/`, where Classify now and the Review tab download files
-   in DataFed mode. In its Preferences, list the deploy folder with writing allowed. macOS may ask
-   for permission when the folder is inside a protected folder such as Downloads. None of this was
-   tried.
+   in DataFed mode. In its settings, under Access, remove your home folder and add only these two
+   to the list, with Sharable left off: the deploy folder for reading, and `data_catalog/staging/`
+   inside it with writing allowed. Everything else on this Mac then stays out of reach of Globus.
+   The deploy folder is inside Downloads, which macOS protects: when Globus Connect Personal first
+   reads it, macOS may ask whether it may; allow it. If you refused, turn Globus Connect Personal on
+   in System Settings > Privacy & Security > Files and Folders; if it is not listed there, add it
+   under Full Disk Access. The same collection id goes into ARC settings for uploads to ARC
+   ([section 14](#14-uploading-sessions-to-arc)). None of this was tried.
 5. **`datafed setup`**, from this folder. It asks for your DataFed user ID and a password, once,
    and keeps key files in `~/.datafed`. Keep them private. The password is DataFed's own, not your
    Globus login: the client sends it to DataFed. How to set one in DataFed's web portal is
@@ -537,13 +581,23 @@ window looks for them within 5 minutes, Sync now at once). It downloads each spe
 through Globus: at least 4 s per spectrum, probably 10 to 30 s (not measured). The script's 30
 minutes therefore suit about 50 spectra; that README says how to set the number or the time.
 
+**The path inside ARC's Globus collection.** DataFed delivers each spectrum through ARC's Globus
+collection, and that collection shows the cluster folder `/projects/<dir>` as `/<dir>`. The job
+therefore names its download folders by their path inside the collection: the batch script sets
+`COLLECTION_ROOT="/projects"` and passes it as `--collection-root`, and the job refuses to start
+when its work folder is not inside that folder. Without this, every download would be asked for in
+`/projects/<dir>/...` inside the collection, a folder it does not have, and the first job would
+wait 10 minutes and stop with "did not finish within 600 s". Step 6 of that README checks the path
+and DataFed's access by hand before the first job.
+
 Not verified: nothing was run on ARC, under Slurm, against DataFed or with Globus. The job's logic
-was tested on this Mac against the demo catalog and an in-memory stand-in for DataFed. The batch
-script's shell logic was tried with stand-in commands only. Three things the public documentation
-does not settle: whether the ARC Globus collection shows your project directory under the same path
-as the cluster, whether DataFed may transfer files to that collection for you, and whether compute
-nodes may connect to `datafed.ornl.gov` on port 7512. Cluster, partition and module names were read
-from ARC's documentation on 2026-11-13.
+was tested on this Mac against the demo catalog and an in-memory stand-in for DataFed, with the
+collection's paths imitated by a stand-in. The batch script's shell logic was tried with stand-in
+commands only. That the collection shows `/projects/<dir>` as `/<dir>` comes from transfers a
+teammate made into it; no listing of the collection was seen. Two things the public documentation
+does not settle: whether DataFed may transfer files to that collection for you (it needs its own
+consent there), and whether compute nodes may connect to `datafed.ornl.gov` on port 7512. Cluster,
+partition and module names were read from ARC's documentation on 2026-11-13.
 
 ## 9. Real instruments
 
@@ -598,6 +652,15 @@ review of the bridges drove a scratch copy of the Mac controller through the mai
 for this edition the mailbox code would also have to move into `laser_test/main.cpp`, and the
 remote start request would have to carry Sample ID, Operator and Location, which it does not today.
 
+The team has also used a separate tool, run by hand, that copies scan folders to the team folder on
+ARC with Globus or SSH. The Data tab's ARC upload does that job inside this edition and adds what
+the tool left to the person: the session's dark spectrum goes with it; simulated sessions stay apart
+(in `simulated/`, and only when allowed); only sessions that have ended go, and the manifest says
+whether the scan finished, stopped early or failed; SSH asks for the password and Duo once per
+attempt; every file is checked on ARC before the folder gets its name; nothing on ARC is replaced;
+and every upload keeps a record on this Mac
+([section 14](#14-uploading-sessions-to-arc)).
+
 ## 11. Folder map
 
 ```
@@ -609,7 +672,8 @@ Portable_Raman_DataFed/
     window_status.h              its header and status line
     data_layer_client.h          starts the data layer
     data_panels.h                the Data and Review tabs
-    tests/                       handshake_tests, settings_tests, ui_tests, ui_snapshot, emulators
+    arc_panel.h                  the ARC page of the Data tab (uploads to ARC)
+    tests/                       handshake_tests, settings_tests, ui_tests, arc_ui_tests, ui_snapshot, emulators
   macos-native/                  build_macos.sh, README.md, hardware_check.py
                                  PORT_SPEC.md: the file protocols between the controller and the helpers
     backend/                     capture backend (C#/.NET, Hamamatsu library on a libusb shim) and its tests
@@ -617,8 +681,9 @@ Portable_Raman_DataFed/
     sim_runner/                  raman_sim_runner and its tests
     e2e/                         end-to-end test of the simulated pipeline
     tools/                       helper scripts of the Mac port
-  data_layer/                    PROTOCOL.md (the contract), requirements.txt, setup_env.sh
-    raman_datafed/               the Python package: commands, catalogs, classifier, Studio server
+  data_layer/                    PROTOCOL.md (the contract), requirements.txt, requirements-mac.txt, setup_env.sh
+    raman_datafed/               the Python package: commands, catalogs, classifier, Studio server,
+                                 uploads to ARC (arc_*.py, arc_remote.sh)
     tests/                       its tests
     arc/                         ARC batch job and its README
   models/pca_svm_pure_20260922/  the classifier (scikit-learn files and meta.json)
@@ -637,13 +702,15 @@ The deploy folder, `deploy-macos/`:
 laser_test, run_simulated.sh, run_hardware.sh   the window and its two start scripts
 raman_sim_runner, studio.sh                      the simulated runner; the Studio server for this folder
 handshake_v2/backend/, handshake_v2/motor/       the helper programs
-data_layer/                                      raman_datafed/, arc/, requirements.txt
+data_layer/                                      raman_datafed/, arc/, requirements.txt, requirements-mac.txt
 datafed_python.txt, raman_python.txt             interpreters: data layer (.venv), analysis (Anaconda)
 models/, virtual_sample/, studio/index.html      classifier, simulated plate, Studio page
 hardware_check.sh, hardware_check.py             first-contact instrument checks
 cnn_1.py, ckpts/, best_raman_1dcnn.pth, ...      copied from the original project for Analyze Latest (CNN)
 scan_sessions/, dark_measurements/               your data: one folder per scan; per dark a .txt and its .json
 data_catalog/, datafed_config.json               the ledger and demo catalog; the data-layer settings
+data_catalog/arc_uploads/                        one folder per upload to ARC: its record, log and copy
+data_catalog/arc_demo/                           the demo's stand-in for ARC
 laser_log.txt                                    the controller's log
 set_aside_<date>_<time>/                         data you set aside (Troubleshooting); nothing reads it
 ```
@@ -697,8 +764,9 @@ set_aside_<date>_<time>/                         data you set aside (Troubleshoo
   (about 1.3 MB after a 2D scan), and every hardware check a `_hwcheck_<time>` folder
   (`build_macos.sh --test` keeps its own in `.build/test-logs/hardware_check_deploy/`). Both can be
   deleted while no controller runs.
-- **Start with an empty data folder.** Quit the window, the Studio and any runner first. This moves
-  every scan, dark, catalog entry and setting of the deploy folder, and the log, into a new folder
+- **Start with an empty data folder.** Quit the window, the Studio and any runner first, and wait
+  until no upload to ARC is working (the ARC page of the Data tab shows none). This moves every scan,
+  dark, catalog entry, upload record and setting of the deploy folder, and the log, into a new folder
   `set_aside_<date>_<time>` inside `deploy-macos/`; the programs make new ones:
 
   ```bash
@@ -709,8 +777,102 @@ set_aside_<date>_<time>/                         data you set aside (Troubleshoo
 
   `mv` names any of the five that does not exist and moves the others all the same. The new folder
   stays inside `deploy-macos/`, which git ignores; the controller, the data layer, the Studio and
-  `cnn_1.py` never read it. Delete it once you are sure you do not need it. Copy a dark back into
-  `dark_measurements/` together with its `.json`: a simulated dark without one counts as real.
+  `cnn_1.py` never read it. Copy a dark back into `dark_measurements/` together with its `.json`: a
+  simulated dark without one counts as real. Delete the folder once you are sure you do not need
+  it. The copies that uploads to ARC keep (`data_catalog/arc_uploads/<upload id>/payload/`) are
+  read-only files, and `rm` asks about each of them, so give them write permission first (put the
+  folder's name in place of `set_aside_<stamp>`):
+
+  ```bash
+  chmod -R u+w set_aside_<stamp>
+  rm -r set_aside_<stamp>
+  ```
+
+Uploads to ARC ([section 14](#14-uploading-sessions-to-arc)). The State column under Recent uploads
+and the line above it say what happened and what to do; these are the cases that need more:
+
+- **"The Globus part of the data layer is not installed (the globus-sdk package)".** In Terminal, in
+  `Portable_Raman_DataFed/` (from `deploy-macos/`, `cd ..` first), run `./data_layer/setup_env.sh`
+  once; it downloads the Globus SDK from PyPI. Or send with SSH.
+- **"Globus Connect Personal on this Mac is not running or not connected".** Open it from the menu
+  bar and check that it says Connected, keep the Mac awake, then press Retry same request. Globus
+  copies from this Mac only while Globus Connect Personal runs.
+- **"Globus cannot read the upload copy on this Mac".** Globus Connect Personal may not read the
+  deploy folder. In its settings, under Access, add the deploy folder to the list (leave Sharable
+  off). The deploy folder is inside
+  Downloads, so macOS must let Globus Connect Personal read it too: when macOS asks, allow it; if
+  you refused, turn it on in System Settings > Privacy & Security > Files and Folders; if Globus
+  Connect Personal is not listed there, add it under Full Disk Access. Then press Retry same
+  request.
+- **"The Globus collection in ARC settings belongs to another Globus account".** Only the Globus
+  account that set up Globus Connect Personal on this Mac can send from it. Sign in with that
+  account (turn on Ask for the Globus sign-in every time in ARC settings), or send with SSH; then
+  start a new upload. If the collection ID in ARC settings is not this Mac's own, copy it again.
+- **"Globus sees other files in this Mac's folder than the upload holds".** The collection ID in ARC
+  settings is not this Mac's, or Globus Connect Personal shares another folder under the same path.
+  Copy the ID again from Globus Connect Personal's settings into ARC settings and start a new upload.
+- **"Your Globus account may not write into ... on ARC".** You are not in the ARC project that owns
+  the ARC folder, or a folder there was made by someone else without group write: its owner makes it
+  shared (For the team lead, once, in [section 14](#14-uploading-sessions-to-arc)). If the path it
+  names is the top of ARC's collection, the collection shows the project folder elsewhere: step 7 of
+  "First time, Globus" there checks it.
+- **Terminal says "Operation not permitted", or the upload says Not started.** macOS asks once
+  whether Terminal may open files in the Downloads folder: allow it. If it was refused, turn on
+  Terminal's Downloads Folder in System Settings > Privacy & Security > Files and Folders. Then
+  press Retry same request, or double-click `ssh_upload.command` in the upload's folder
+  (`deploy-macos/data_catalog/arc_uploads/<upload id>/`), which also works when no Terminal window
+  opened.
+- **"Signing in to ARC did not work (ssh ended with code 255)".** The Terminal window shows ssh's own
+  reason above that line. Check the VT username in ARC settings, your password and Duo, that you have
+  an ARC account in the project that owns the ARC folder, and the network: ARC refuses VT Open WiFi;
+  use eduroam, a wired VT connection or the VT VPN. Then press Retry same request. Nothing was
+  changed on ARC.
+- **ssh prints "WARNING: connection is not using a post-quantum key exchange algorithm".** That is
+  expected with ARC (ARC's FAQ explains it): continue.
+- **ssh says "REMOTE HOST IDENTIFICATION HAS CHANGED".** Stop there and ask the team: someone may
+  be answering in ARC's place. Do not delete the line from `known_hosts` to get past it. Nothing was
+  sent.
+- **"ARC's transfer host did not run the upload commands", or "ARC lacks a tool the upload needs".**
+  Use a login node instead: in ARC settings, under More, set SSH computer to
+  `tinkercliffs1.arc.vt.edu` (or run `datalayer config --set
+  arc_upload.ssh.host=tinkercliffs1.arc.vt.edu`). Then start a new upload. `/projects` is the same
+  on every ARC computer.
+- **"Your VT account may not write into ... on ARC: that shared folder is not group-writable".** A
+  folder that all uploads share (the ARC folder, `simulated/` or an `_incoming/` in them) was made
+  without group write, for example by the team's earlier upload tool or by hand. Its owner runs
+  `chmod 3770` on it on ARC, as the message says (For the team lead, once, in
+  [section 14](#14-uploading-sessions-to-arc)). Then press Retry same request. Nothing was sent.
+- **"Name already on ARC".** ARC already has a folder with the session's name in the ARC folder, and
+  nothing replaces it. Press Keep as new copy to put this upload beside it as `<folder>_copy2` (or
+  the next free name), or move the other folder on ARC and press Retry same request.
+- **"On ARC, last check failed".** Check status looked at the copy of an upload that was put on ARC
+  and found it missing or different (the State tool tip says what it found). Press Check status
+  again; to send the session again, press Upload to ARC: when no copy of the session is known to be
+  on ARC any more, the new upload takes the session's own name.
+- **"Check status could not look."** The check did not get to the copy: you did not finish the
+  Globus sign-in, the VT password or Duo did not work (ssh ended with code 255), Globus or ARC could
+  not be reached, or the upload program met an error. Nothing was changed, and the upload stays
+  **On ARC, checked**: the State tool tip, the details and the line above Recent uploads say why and
+  what to do, for example "Press Check status again and sign in when the page opens." Upload to ARC
+  still says the session is on ARC. Some causes stay until someone clears them, so another check
+  meets them again; their texts say to ask the team. "Your Globus identity may not list ... on ARC",
+  or "Your VT account may not read ... on ARC": your account may no longer read the project folder,
+  or a folder in the copy such as its `dark/` (for example after a change of the ARC project's
+  members). "ARC refused a folder on the way to the copy: ... is a link": a folder on the path was
+  replaced by a link. "The check cannot run on ...": the SSH computer saved with the upload lacks a
+  tool or runs no commands, and every check of that upload uses it, so ask the team to fix that
+  computer. A demo upload's checks run on this Mac and look in the demo folder saved with the
+  upload, so choosing another demo folder does not help them: make the folder named readable again,
+  or put a moved folder back in place of the link that replaced it.
+- **"Not sure Globus got it".** The request reached Globus or not; nobody can tell yet. Press Retry
+  same request: it asks again with the same request number, and Globus does not make a second copy
+  from it. Check status asks Globus without sending.
+- **A folder left in `_incoming` on ARC.** A stopped or failed upload leaves the files it copied in
+  `<ARC folder>/_incoming/<session folder>.<upload id>/`, and the window names that folder; nothing
+  is deleted for you. Retry same request uses it. To remove it by hand, sign in to ARC and remove
+  only that one folder, for example `rm -r '/projects/pcl_photonics/raman_globus_upload/_incoming/<session folder>.<upload id>'`
+  with the names from the window, or delete it in the Globus web app (<https://app.globus.org>, File
+  Manager). Never remove the `_incoming` folder itself while another upload may be using it.
 
 ## 13. What was verified
 
@@ -718,7 +880,11 @@ On this Mac, with nothing attached, both simulation variables at `1` and the loc
 
 - The build and every test suite of `build_macos.sh --test`, except the two device self-tests:
   every suite passed, in about 11 minutes, also in the two full runs made after the first round of
-  review fixes and in the one made after the second round and the changes that completed it.
+  review fixes and in the one made after the second round and the changes that completed it. With
+  the uploads to ARC added, every suite passed again in each of the three full runs that followed,
+  in about 13 minutes each, and in the two full runs made after their review and its fixes and the
+  ones made after the second, the third and the fourth round of those fixes, in about 15 minutes
+  each.
 - A rehearsal from `deploy-macos/`: a 1D X scan (13 spectra, 2 to review), a single capture made
   offline and registered on reconnect, a 2D scan (124 spectra, 5 to review), reviews online and
   offline, provenance, the Studio server's API, and the Studio page in a browser with the real runner,
@@ -730,26 +896,364 @@ On this Mac, with nothing attached, both simulation variables at `1` and the loc
 - The pairing of darks by kind and the holding back of simulated captures in DataFed mode, in the
   test programs of the controller, the runner, the end-to-end run and the data layer (DataFed
   against stand-ins only).
-- This README's commands, run as written, with `TMPDIR` in a scratch folder,
-  `PYTHONDONTWRITEBYTECODE=1` and `DATAFED_SERVER_HOST=127.0.0.1` also set: the instrument check,
-  the build, the tests, the runner, the data-layer commands, the offline demo, `hardware_check.sh
-  all --simulate --dark`, and `studio.sh --no-open`. The `config --set` and `doctor` commands of
-  section 7 and the move of the troubleshooting list were run in scratch copies of
-  `deploy-macos/`, so they changed nothing in the deploy folder.
+- This README's commands, run as written before the uploads to ARC were added, with `TMPDIR` in a
+  scratch folder, `PYTHONDONTWRITEBYTECODE=1` and `DATAFED_SERVER_HOST=127.0.0.1` also set: the
+  instrument check, the build, the tests, the runner, the data-layer commands, the offline demo,
+  `hardware_check.sh all --simulate --dark`, and `studio.sh --no-open`. The `config --set` and
+  `doctor` commands of section 7 and the move of the troubleshooting list were run in scratch
+  copies of `deploy-macos/`, so they changed nothing in the deploy folder.
+- The command-line examples for uploads to ARC of sections 3, 12 and 14, run as written with the
+  `datalayer` function of section 3, on 2026-11-15, after the review fixes, in a scratch folder laid
+  out like `deploy-macos/` with three test sessions, both simulation variables at 1 and
+  `RAMAN_ARC_TEST_GUARD=1`: `arc-sessions`; a demo `arc-upload` (**On ARC, checked**); `arc-list`;
+  `arc-status`; the `config --set` of the collection ID, the VT username (the tests' made-up one)
+  and the SSH computer; `arc-doctor`; `arc-upload --live --dry-run` with Globus and with SSH (a dry
+  run starts nothing and sends nothing); and the move of the troubleshooting list, with `chmod -R
+  u+w` and `rm -r` of a set-aside folder that held a kept upload copy.
 - The checks after each round of review fixes, in scratch copies of `deploy-macos/`: the
   runner's 1D X scan with sync, sync, classify and review-list (13 predictions, points 10 and 13 to
   review); a dark without a `.json`, so of the real kind, dated later than the simulated ones,
   which a new simulated session did not use; `status` in DataFed mode holding the simulated
   captures back, with the DataFed client kept from loading; and the Studio server starting a single
   capture and stopping a 1D scan.
+- Uploads to ARC ([section 14](#14-uploading-sessions-to-arc)), in demo mode and against stand-ins
+  only, in the test suites: both transports end to end in the demo; each crash-and-restart case of
+  [PROTOCOL.md](data_layer/PROTOCOL.md) section 5.6 with real processes; the Globus steps against a
+  mocked Globus SDK; the SSH steps against a stand-in ssh that runs the real remote script with
+  `/bin/bash` on this Mac; the ARC page of the window offscreen against the stand-in data layer; the
+  Studio's upload strip; and the ARC job's download paths against a stand-in of ARC's collection.
+  The answers of the window's stand-in data layer, of the Studio's engine and server, and the
+  examples and tables of [PROTOCOL.md](data_layer/PROTOCOL.md) are checked in the suite against
+  those of the real commands (`data_layer/tests/test_arc_shapes.py` and `test_arc_contract.py`).
+- Uploads to ARC from `deploy-macos/`, in demo mode and from the command line: two scans made with
+  `raman_sim_runner`, then `arc-sessions`, one demo upload with Globus and one with SSH, each **On
+  ARC, checked** about 5 seconds after `arc-upload`. In the demo folder each copy held the session's
+  files, its dark spectrum in `dark/`, the manifest and `SHA256SUMS`, which `shasum -a 256 -c
+  SHA256SUMS` confirmed, and `_incoming/` was empty. The run data was then moved out of
+  `deploy-macos/`.
+- The same after the review fixes, with three scans: a demo upload over SSH and one with Globus,
+  each **On ARC, checked**. The Globus copy was then deleted from the demo folder, and Check
+  status showed **On ARC, last check failed**, with one upload that needs you in `arc-list` and
+  `status`. Uploaded again, the session went under its own name. A folder of the third session's
+  name made by hand gave **Name already on ARC**, and Keep as new copy put the upload beside it as
+  `<folder>_copy2`. The shared folders a demo SSH run made were group-writable and sticky, and
+  3770 in a folder whose group this account is in; the upload's own folders were 0750 and its
+  files 0640. The run data was then moved out of `deploy-macos/`.
+- The same after the second round of review fixes, with three scans. Two checks could not look:
+  Globus could not list the demo copy, and the remote script refused a folder that was a link.
+  Both uploads stayed **On ARC, checked**, and each check said why and what to do. `arc-list` and
+  `status` counted no upload that needs you, and a new upload of the session was still refused as
+  already on ARC. A check that found the copy gone gave **On ARC, last check failed**. Uploaded
+  again, the session went under its own name. After **Name already on ARC**, Keep as new copy put
+  the upload beside a folder made by hand, as `<folder>_copy2`. The run data was then moved out of
+  `deploy-macos/`.
+- The same after the third round of review fixes, with three scans. Four checks could not look:
+  Globus could not list the demo copy, the remote script refused a folder that was a link, and it
+  could not read the SSH copy or the folder that holds it. Each check said why in its own words
+  and what to do, and both uploads stayed **On ARC, checked**. `arc-list` and `status` counted no
+  upload that needs you, and a new upload of each session was still refused as already on ARC. A
+  check that found the copy gone gave **On ARC, last check failed**. Uploaded again, the session
+  went under its own name. After **Name already on ARC**, Keep as new copy put the upload beside a
+  folder made by hand, as `<folder>_copy2`. No message, history line, fix or check of these demo
+  uploads said "on ARC"; only the state names did. The run data was then moved out of
+  `deploy-macos/`.
+- After the fourth round of review fixes, nothing was run from `deploy-macos/`. The cases that
+  round fixed ran in the test suites, and again from the command line with the upload program in a
+  scratch copy of the data layer, in the demo and against the stand-ins: a stopped Globus check, the
+  demo fixes of a check that could not look, a folder in an SSH copy that this account may not
+  read, and an SSH computer that cannot run a check.
 
 Before hand-over, the simulated data of the rehearsal and checks (scan folders, darks, the demo
 catalog with its ledger, and the log) was moved out of `deploy-macos/`; `status` there then
 reported an empty local demo catalog.
 
-Not verified: live DataFed, any Globus transfer, the ARC job, real instruments, Windows, the two
-device self-tests, the window started through `run_simulated.sh` or Qt Creator, and the second lock
-against the original controller. Not run from this README: `run_simulated.sh`, Qt Creator,
-`studio.sh` opening a browser, the commands that need your DataFed and Globus accounts, the
-hardware checks without `--simulate`, `run_hardware.sh` and `setup_env.sh`.
+Not verified: live DataFed, any Globus transfer, the ARC job, any upload to ARC outside the demo
+(no Globus sign-in, no ssh connection), real instruments, Windows, the two device self-tests, the
+window started through `run_simulated.sh` or Qt Creator, and the second lock against the original
+controller. Not run from this README: `run_simulated.sh`, Qt Creator, `studio.sh` opening a
+browser, the commands that need your DataFed and Globus accounts or your VT account (a live
+`arc-upload` among them), the steps in Globus Connect Personal, in the Globus web app and on ARC
+(section 14: the collection check, the consent removal, `chmod 3770` and `ls -ld`, `rm -r` of a
+folder in `_incoming`), the hardware checks without `--simulate`, `run_hardware.sh` and
+`setup_env.sh`.
 [VERIFICATION.json](VERIFICATION.json) has the counts, times and commands.
+
+## 14. Uploading sessions to ARC
+
+The Data tab's **ARC upload** button opens a page for copying a finished scan session to the team's
+folder on VT ARC. It sends a copy of the session folder with its dark spectrum and a list of every
+file with its SHA-256, checks the copy on ARC, and only then gives it the session's name there. It
+sends with Globus (the default) or SSH. The **Demo** box, ticked by default, sends to a folder on
+this Mac instead, so you can try every step without an account. How it works in detail is in
+[PROTOCOL.md](data_layer/PROTOCOL.md) section 5.6.
+
+**Not verified: nothing here was run against ARC, Globus or ssh; only the demo and the tests ran.**
+The list of what is not known yet is at the end of this section.
+
+**What goes, and where.** The ARC folder is `/projects/pcl_photonics/raman_globus_upload` unless
+you change it in ARC settings. Each session gets a folder of its own in it, named like the session:
+
+```
+/projects/pcl_photonics/raman_globus_upload/
+  1d_x_scan_20261113_101500_123/      session.json, point_0001.json ... and the other files of the session
+    dark/                             the dark spectrum the session is paired with (.txt and .json)
+    raman_upload_manifest.json        every file with its size and SHA-256, how the scan ended, simulated or not
+    SHA256SUMS                        on ARC, "sha256sum -c SHA256SUMS" in this folder checks every file
+  1d_x_scan_20261113_101500_123_copy2/  a new copy (Keep as new copy, or Upload again) when the name was taken
+  _incoming/                          uploads that are being copied, or that stopped part way
+  simulated/                          simulated sessions, only when you allow them
+```
+
+- An upload is first copied into `_incoming/<session folder>.<upload id>/` and checked there. Only
+  when every file matches does one rename give it the session's name, so nobody on ARC sees a
+  half-copied session under that name. Over SSH, ARC computes the SHA-256 of every file and this
+  Mac compares them; with Globus, Globus checks every file after copying it, and the MD5 checksums
+  it reports are compared with this Mac's.
+- **Nothing on ARC is deleted, replaced or overwritten.** When the name is taken, the upload waits as
+  "Name already on ARC": press **Keep as new copy** to put it beside the other folder as
+  `<folder>_copy2` (or the next free name), or move the other folder on ARC and press **Retry same
+  request**. A new copy always takes the first free name of `<folder>`, `<folder>_copy2`,
+  `<folder>_copy3` and so on.
+- Only sessions that have ended go: no program has the session open, and nothing in it changed for
+  60 seconds. The window knows when no scan runs, so right after a scan it does not wait. A scan
+  that was stopped early or ended with an error may go too; the confirmation and the manifest say so,
+  for example "This scan was stopped early: 8 of 124 spectra."
+- Simulated sessions are not sent to ARC unless you turn on **Also send simulated sessions** in ARC
+  settings; they then go into `simulated/`. A session whose files do not say whether it was
+  simulated (for example one added with Import scan folder) is handled like a simulated one, unless you tick
+  **Measured with the real instruments**; the manifest records that you said so. The demo takes
+  simulated sessions, into its own `simulated/` folder.
+- Both ways of sending reach the same folder. ARC's Globus collection shows `/projects/<dir>` as
+  `/<dir>`, so the page shows the Globus path beside the ARC folder, for example
+  `/pcl_photonics/raman_globus_upload`.
+
+**First time, Globus.**
+
+1. An ARC account, and membership in the ARC project that owns the ARC folder (its owner adds you
+   in ColdFront). The owner must have switched on "Share via Globus" for the project.
+2. Install Globus Connect Personal (<https://www.globus.org/globus-connect-personal>), log in with
+   your Virginia Tech identity, and give the collection a name. The Globus account that sets it up
+   is the only one that can send from this Mac with Globus ("On a Mac that several people use",
+   below).
+3. In Globus Connect Personal's settings, under Access: remove your home folder, add the deploy
+   folder (`Portable_Raman_DataFed/deploy-macos`) to the list, and leave Sharable off. If you also
+   use DataFed, allow writing in `deploy-macos/data_catalog/staging/` as well
+   ([section 7](#7-going-live-with-datafed)).
+4. The deploy folder is inside Downloads, which macOS protects. When Globus Connect Personal first
+   reads it, at the latest during the first upload, macOS may ask whether it may access files in
+   your Downloads folder: allow it. If you refused, turn Globus Connect Personal on in System
+   Settings > Privacy & Security > Files and Folders. If it is not listed there, add it under Full
+   Disk Access instead.
+5. Copy the collection ID (Globus Connect Personal's settings show it; so does
+   <https://app.globus.org> under Collections) into ARC settings: **This Mac's Globus collection
+   ID**. It is an ID, not a password. From the command line: `datalayer config --set
+   arc_upload.globus.mac_collection=<ID>`.
+6. Live Globus uploads need the Globus SDK in `.venv`. If the build said it is missing, run
+   `./data_layer/setup_env.sh` once in `Portable_Raman_DataFed/` (from `deploy-macos/`, `cd ..`
+   first); it downloads it from PyPI.
+7. Check once where ARC's collection shows the ARC folder. At <https://app.globus.org>, open File
+   Manager, search the collections for "Virginia Tech ARC Globus Projects Directories" and open it.
+   The project folder `/projects/pcl_photonics` must be listed at its top as `/pcl_photonics`: the
+   collection shows the cluster folder `/projects` as `/`. If it shows as `/projects/pcl_photonics`
+   instead, set **Folder the collection shows as its top** (ARC settings, under More) to `/`; if it
+   is not there at all, ask the project's owner about "Share via Globus" (step 1).
+8. The first upload: untick Demo, leave Globus chosen, press **Upload to ARC**, read the
+   confirmation and press **Upload**. A web page opens: sign in with Virginia Tech. A second page
+   may ask you to allow access to ARC: allow it (Check status and Retry same request may ask for
+   it right after their sign-in too). Come back to the window, and keep Globus Connect Personal
+   running and the Mac awake until the upload says **On ARC, checked**.
+
+**First time, SSH.**
+
+1. An ARC account, and membership in the ARC project that owns the ARC folder, as for Globus (step
+   1 above). Without an ARC account the sign-in fails (ssh ends with code 255); outside the
+   project, ARC does not let you write into its folder.
+2. Enter your VT username in ARC settings: **Your VT username**, the part of your VT email before
+   @vt.edu. From the command line: `datalayer config --set arc_upload.ssh.username=<name>`. Your
+   password is never kept: you type it in Terminal each time.
+3. The network: ARC refuses VT Open WiFi: use eduroam, a wired VT connection or the VT VPN. Off
+   campus, connect to the VT VPN first.
+4. Untick Demo, choose SSH, press **Upload to ARC**. Check that the confirmation's "By:" line ("By:
+   SSH as `<name>`@datatransfer.arc.vt.edu. ...") names your VT username, then press **Upload**. A
+   Terminal window opens.
+5. macOS may ask whether Terminal may access files in your Downloads folder: allow it.
+6. The Terminal window lists ssh's questions in the order ssh asks them, in these words:
+   1. The first time only: ARC's key fingerprint, then "Are you sure you want to continue
+      connecting (yes/no/[fingerprint])?". Type only yes or no here; what you type is shown on
+      screen, so never type your password at this question. Answer yes only if the fingerprint
+      matches the one under Host key below; otherwise answer no and ask the team.
+   2. Your VT password. Typing shows nothing; that is normal. Press Return.
+   3. Duo: approve the push on your phone, or type your password followed by a comma and a
+      six-digit passcode at the password question. Choose Duo Push if a numbered menu appears.
+
+   That is the only sign-in of this attempt. With the team's file of ARC's keys, ssh does not ask
+   the first question.
+7. ssh may print a WARNING that the connection is not using a post-quantum key exchange algorithm.
+   That is expected with ARC (ARC's FAQ explains it); continue.
+8. At the end Terminal says "Done: all 21 files are on ARC and match this Mac's copy." (with your
+   number of files) and the path. Press Return to close the window. What you typed while the
+   upload ran is dropped first, so a Return pressed during the upload does not close it.
+
+**Host key.** The fingerprint of `datatransfer.arc.vt.edu` is `<filled in by the team lead, from
+ARC>`. Until the team lead has filled it in, ask before you answer yes. With the team's file of
+ARC's keys (**Team file of ARC's SSH keys** in ARC settings), ssh checks the key itself and does not
+ask. If ssh warns that the REMOTE HOST IDENTIFICATION HAS CHANGED, stop: nothing is sent. Ask the
+team.
+
+**Every day.**
+
+- After a scan, open the Data tab and press **ARC upload**. The newest session that may go is
+  chosen. The Session box lists the newest 30; when there are more, its last entry, Show more
+  sessions, lists older ones. Check Send with and the Demo box, press **Upload to ARC** and confirm.
+- Recent uploads shows each upload: Waiting to start, Preparing the files, Signing in, Checking
+  ARC, Handing over to Globus, Copying with Globus (or Copying over SSH), Checking the copy on ARC,
+  Putting the copy in place, and **On ARC, checked**. While an upload is not finished, the ARC upload
+  button has the warning colour, and its tool tip says how many are not finished. When an upload of
+  the last 7 days needs you (it failed, waits for your decision, is not sure, was interrupted, did
+  not start, is not being watched, or its last check failed), the button has the danger colour
+  instead: "1 upload to ARC needs you. Press to see it." The colour follows the uploads also while
+  the ARC page is closed.
+- You can close the window: a Globus upload goes on in its own program, an SSH upload in its
+  Terminal window. When you open the page again, Recent uploads shows how it ended.
+- **Stop upload** stops it. Files already copied stay in `_incoming` on ARC; nothing is deleted.
+  Stop upload is there whenever a program works on the upload, Check status included. Stopping a
+  check ends it and leaves the upload as it was, also when Globus had finished the copy before the
+  check started and the check was checking it or putting it in place. A check that started while
+  Globus might still be copying for the upload (also for an upload that failed while its transfer
+  still ran) is stopped like any other upload, and the Stop question says so: the copy is
+  cancelled, or, when Globus has finished it in the meantime, the upload is Stopped with the
+  complete copy in `_incoming`, where Check status or Retry same request puts it in place.
+- **Retry same request** continues an upload with the same files and the same place on ARC. It uses
+  the settings saved with the upload, not the current ones. With Globus, while it is not known
+  whether Globus got the request, it asks again with the same request number, so Globus makes no
+  second copy; after a transfer that failed it makes a new request, which copies every file again
+  into the same `_incoming` folder. Over SSH you sign in again in a new Terminal window, and the
+  files are sent again into the same folder on ARC, unless ARC has them all already.
+- **Check status** asks Globus or ARC how an upload stands, without sending anything. It needs a new
+  sign-in: the browser for Globus, Terminal for SSH. The line above Recent uploads then says what it
+  found ("Checked at 16:05: ..."), and so does the Terminal window of an SSH check. When it looks and
+  does not find the copy of an upload that is on ARC as it was sent, that upload shows **On ARC, last
+  check failed** in the warning colour, with what the check found ([Troubleshooting](#12-troubleshooting)).
+  A check that could not look (a sign-in that did not happen, ARC or Globus out of reach) changes
+  nothing: it says why and what to do, and the upload stays on ARC. So does a check that may not read
+  the folder, or that cannot run on the SSH computer; where another check would meet the same
+  problem, what to do is to ask the team.
+- A Globus upload is watched for 90 minutes after you signed in. A longer one shows "Not being
+  watched": Globus keeps copying; press Check status later. Keep this Mac awake until the copy is
+  done: Globus copies from this Mac only while Globus Connect Personal runs.
+- From the command line, with `datalayer` defined as in [section 3](#3-quick-start-in-simulation):
+  `datalayer arc-sessions`, `datalayer arc-upload --session <folder> --live`, `datalayer arc-list`
+  and `datalayer arc-status --upload=<upload id>`. Add `--transport=ssh` to send with SSH, and
+  `--dry-run` to see what would go where without starting anything. A live SSH upload from the
+  command line opens Terminal the same way.
+
+**On a Mac that several people use.**
+
+- With Globus, only the Globus account that set up Globus Connect Personal on this Mac can send from
+  it: a Globus Connect Personal collection serves one account (Globus's FAQ says so). Everyone else
+  sends with SSH, or uses a macOS account of their own with their own Globus Connect Personal. An
+  upload signed in as another account ends with "The Globus collection in ARC settings belongs to
+  another Globus account".
+- Once you have signed in, the tool tip of the upload's State under Recent uploads, and **Signed in
+  as** in its details, name the Globus account that sends the files (the line above Recent uploads
+  says it only while the upload checks ARC). If it is not the one you meant, press Stop upload.
+- Turn on **Ask for the Globus sign-in every time** in ARC settings, so the browser asks for the
+  Virginia Tech sign-in even when it still knows the last person.
+- Log out at <https://app.globus.org> when you are done.
+- For SSH, check the VT username in the confirmation; change it in ARC settings first if it is not
+  yours. Retry same request and Check status sign in with the VT username saved with the upload, not
+  the one in ARC settings now: their questions, and the Terminal window, name it
+  (`<name>@datatransfer.arc.vt.edu`). If it is not yours, type no password: start a new upload with
+  your own username instead.
+
+**What goes to ARC and who sees it.**
+
+- `session.json` with Sample ID, Operator, Location, Notes, the laser power and the instrument's
+  serial number; every point file (the spectrum, the positions and times, and the same fields); the
+  dark spectrum and its description; the manifest; `SHA256SUMS`. The files go as they are, with one
+  exception: for a session added with Import scan folder, `session.json` says which folder it was
+  imported from, and the copy sent keeps only that folder's name, not this Mac's path to it (the
+  manifest's `adjusted` says so; the file on this Mac stays as it is).
+- Over SSH, everyone in the ARC project can read them: the files get mode 0640 and the session's
+  folders 0750, and the shared folders an upload makes (the ARC folder, `_incoming`, `simulated`
+  and `simulated/_incoming`) get 3770, so every member of the project can upload into them, and a
+  folder you add there can be renamed or deleted only by you and the shared folder's owner. Over
+  Globus, folders and files get what ARC's collection sets (this program sets nothing there), so
+  who can read them depends on ARC (item 4 below).
+- Not in the files: paths on this Mac, your macOS account name, your VT username, your Globus name.
+  On ARC, as every file there, they belong to the account that sent them.
+- Globus keeps the transfer's source path, with your macOS account name in it, in your Globus
+  activity (<https://app.globus.org>, Activity).
+- On this Mac every upload keeps its record in `deploy-macos/data_catalog/arc_uploads/<upload id>/`:
+  its state, the steps it took, its log, and the copy until it is on ARC (read-only files, in
+  folders you can delete). Never a password or a token. git ignores the deploy folder.
+
+**ARC settings** (the ARC settings... button of the page): This Mac's Globus collection ID, Your VT
+username, ARC folder (on the cluster), Usually send with, Also send simulated sessions, Demo by
+default, and Ask for the Globus sign-in every time; under More: ARC's Globus collection ID, the
+folder the collection shows as its top (`/projects`), the Globus app ID, the SSH computer, the team
+file of ARC's SSH keys, Wait after a scan ends (seconds), Time Globus may take (hours) and Demo
+folder (on this Mac). More opens by itself when a value there is not valid. **Check setup** says
+what each way of sending still needs. The ARC folder must be a folder inside a project directory
+under `/projects`, such as `/projects/pcl_photonics/raman_globus_upload`; its Globus path follows by
+itself. The demo folder must be new, empty or one the demo made itself, and outside
+`scan_sessions`, `dark_measurements` and `data_catalog/arc_uploads`. A value that is not valid
+stops new uploads, retries and checks, but the uploads are still listed and can be stopped. The
+command line takes the same values with `datalayer config --set arc_upload.<key>=<value>`
+([PROTOCOL.md](data_layer/PROTOCOL.md) section 5.1 lists the keys), and `datalayer arc-doctor` runs
+the same checks.
+
+**For the team lead, once.**
+
+- Register an app for the team at <https://app.globus.org> (Settings, Developers) as a thick client
+  (a native app), and enter its ID as **Globus app ID** (`arc_upload.globus.client_id`). Until then
+  the sign-in uses the Globus SDK's public example app, and Check setup says so.
+- Then remove the consent you gave the example app: open <https://app.globus.org/settings/identities>,
+  press Manage Your Consents, and press the X beside that app's consent.
+- Make the four shared folders on ARC writable for the whole project, before the first upload by
+  anyone. Every member's upload adds a folder of its own in them, and a shared folder without group
+  write lets only its owner upload. The team's earlier upload tool may have made the ARC folder
+  already, and Globus makes folders with what ARC's collection sets. Sign in to an ARC login node,
+  such as `tinkercliffs1.arc.vt.edu`, and run:
+
+  ```bash
+  d=/projects/pcl_photonics/raman_globus_upload   # the ARC folder of ARC settings
+  mkdir -p "$d/_incoming" "$d/simulated/_incoming"
+  chmod 3770 "$d" "$d/_incoming" "$d/simulated" "$d/simulated/_incoming"
+  ls -ld "$d" "$d/_incoming" "$d/simulated" "$d/simulated/_incoming"
+  ```
+
+  Each line `ls -ld` prints must start with `drwxrws--T` (the project group may write, its new
+  folders belong to that group, and a member's folder in it can be renamed or deleted only by that
+  member and the shared folder's owner) and name the project's group. Only a folder's owner may run
+  `chmod` (and `chgrp`, for a folder of another group) on it: if it answers "Operation not
+  permitted", ask whoever made that folder to run the `chmod` line. An SSH upload makes a missing
+  shared folder this way itself, and an upload that cannot write into one says which folder and
+  what to run.
+- Ask ARC for the host-key fingerprints of `datatransfer.arc.vt.edu`. Fill them in under Host key
+  above, put the keys in a known-hosts file, and set **Team file of ARC's SSH keys**
+  (`arc_upload.ssh.known_hosts`) to it: ssh then checks ARC's key itself and asks nothing.
+- If SSH uploads end with "ARC's transfer host did not run the upload commands", set the SSH
+  computer to a login node, `tinkercliffs1.arc.vt.edu`.
+- Keep the folder of the classification job ([data_layer/arc/README.md](data_layer/arc/README.md))
+  apart from the upload folder. The job does not read these copies yet.
+
+**Not known yet**, because nothing was run against ARC, Globus or ssh:
+
+1. The Globus sign-in and consent pages: how many pages the first upload opens (Check status and
+   Retry same request may ask for the consent right after their sign-in), the checksum algorithm
+   Globus reports for this path (MD5 is expected; without one the page says "Globus compared every
+   file with this Mac's copy"), whether Globus gives a user name for a VT identity, and whether
+   Globus names the owner of a Globus Connect Personal collection, so that a sign-in with another
+   account is reported as such.
+2. That ARC's Projects collection (`8e804f3a-5bac-4b6d-9836-bcd5b9c133ec`) shows `/projects/<dir>`
+   as `/<dir>`. This comes from transfers a teammate made into it; no listing of it was seen. Step
+   7 of "First time, Globus" checks it.
+3. Globus Connect Personal on macOS: that it shows the upload copy under its absolute path, the
+   Downloads permission (Files and Folders, or Full Disk Access), and whether it shows hidden files.
+4. Whether `datatransfer.arc.vt.edu` runs the commands an SSH upload needs (bash, base64, chmod,
+   tar, sha256sum), ARC's host key fingerprints, whether ARC's file system keeps mode 3770 and the
+   group of new folders as described, and the modes Globus gives the folders and files it makes.
+   The order of ssh's questions above follows ssh and ARC's FAQ; it was not seen with ARC.
+5. How Terminal on this macOS opens the upload's `ssh_upload.command`, its one-time question about
+   the Downloads folder, and where ssh's warning about post-quantum key exchange appears.

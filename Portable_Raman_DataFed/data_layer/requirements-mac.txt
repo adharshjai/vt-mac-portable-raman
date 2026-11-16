@@ -1,0 +1,4 @@
+# The instrument computer's packages: the data layer's, plus the Globus SDK for uploads to ARC.
+# The ARC job does not need globus-sdk; data_layer/arc/README.md keeps installing requirements.txt.
+-r requirements.txt
+globus-sdk==4.10.0

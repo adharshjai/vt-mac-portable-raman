@@ -7,7 +7,9 @@ this process with a bare `argparse.Namespace` holding only what matters.
 
 from __future__ import annotations
 
+import copy
 import datetime
+import importlib
 import json
 import os
 import shutil
@@ -15,7 +17,7 @@ import uuid
 from pathlib import Path
 
 from . import doctor, sync
-from .config import MODE_DATAFED, MODE_LOCAL_DEMO, CommandError, load_settings, utc_text
+from .config import MODE_DATAFED, MODE_LOCAL_DEMO, CommandError, Settings, load_settings, utc_text
 from .ledger import PENDING_STATES, STATES, item_from_row
 from .metadata import (
     LASER_POWER_LEVELS,
@@ -41,6 +43,35 @@ SLOW_UPLOAD = datetime.timedelta(minutes=10)
 
 def _option(args, name, default=None):
     return getattr(args, name, default)
+
+
+def _optional(name):
+    """A module of an optional part of the edition (the uploads to ARC), or None when it is missing."""
+    try:
+        return importlib.import_module("raman_datafed." + name)
+    except ImportError:
+        return None
+
+
+def _arc_unfinished(paths):
+    """Uploads to ARC in a working state, uncertain or in conflict (PROTOCOL.md 5.6); 0 when the ARC
+    part is missing or anything fails, so that status never fails for it."""
+    try:
+        records = _optional("arc_records")
+        return records.count_unfinished(paths) if records is not None else 0
+    except Exception:  # noqa: BLE001 - a broken record folder must not stop status
+        return 0
+
+
+def _arc_attention(paths):
+    """Uploads to ARC that wait for a person (failed, in conflict, not sure, interrupted, not started, not
+    watched, or on ARC with the last check failed) and changed in the last 7 days; 0 when the ARC part is
+    missing or anything fails."""
+    try:
+        records = _optional("arc_records")
+        return records.count_attention(paths) if records is not None else 0
+    except Exception:  # noqa: BLE001 - a broken record folder must not stop status
+        return 0
 
 
 # ---------------------------------------------------------------------- status
@@ -151,6 +182,9 @@ def build_status(ctx, ask_catalog=True, online=None):
         "reviews_queued": len(waiting_reviews),
         "last_sync_utc": ledger.get_value(sync.LAST_SYNC_KEY),
         "problems": problems,
+        # The window colours its ARC upload button from these without a process of its own.
+        "arc_unfinished": _arc_unfinished(ctx.paths),
+        "arc_attention": _arc_attention(ctx.paths),
     }
 
 
@@ -389,8 +423,11 @@ def _assignments(value):
 def cmd_config(args, ctx):
     # Read without the validity check of ctx.config: this command is how invalid settings get repaired.
     settings = load_settings(ctx.home)
+    arc = _optional("arc_settings")
+    before = Settings(copy.deepcopy(settings.data), settings.path, settings.home) if arc is not None else None
     assignments = _assignments(_option(args, "set"))
     warnings = []
+    arc_keys = []
     for text in assignments:
         key, separator, value = text.partition("=")
         key = key.strip()
@@ -399,8 +436,17 @@ def cmd_config(args, ctx):
         if not settings.is_known(key):
             warnings.append("%s is not a setting this version knows; it was stored as given." % key)
         settings.set_from_text(key, value)
+        if arc is not None and key in arc.UUID_KEYS:
+            # A collection or app ID is kept in its canonical (lowercase) form.
+            settings.set(key, arc.canonical(key, settings.get(key)))
+        if arc is not None and (key == arc.GROUP or key.startswith(arc.GROUP + ".")):
+            arc_keys.append(key)
     if assignments:
         settings.require_valid()
+        if arc_keys:
+            # The ARC values this command sets must be valid and may not bring a new problem. Values it does
+            # not touch, and core keys, are not held back by an invalid ARC value: arc_problems reports it.
+            arc.require_valid_change(before, settings, arc_keys)
         settings.save()
         ctx.reload()
     result = {"config": settings.as_dict(), "path": str(settings.path)}
@@ -409,6 +455,11 @@ def cmd_config(args, ctx):
         result["problems"] = problems
     if warnings:
         result["warnings"] = warnings
+    if arc is not None and arc.holds_group(settings):
+        arc_problems = arc.problems(settings)
+        if arc_problems:
+            # They stop only the arc-* commands; everything else works.
+            result["arc_problems"] = arc_problems
     return result
 
 

@@ -3,10 +3,17 @@
     python -m raman_datafed.arc_job --root-alias A [--context p/...] --work-dir DIR
                                     [--model-dir DIR | --model-record ID] [--limit N]
                                     [--confidence-threshold T] [--repo-id REPO]
+                                    [--collection-root DIR]
 
 It connects to DataFed with the credentials the user installed on the cluster themselves
 (`datafed setup`), classifies what waits in `<root>-to-classify`, and saves the predictions,
 exactly as `classify` does on the instrument computer. It never logs in.
+
+DataFed delivers each file through the Globus collection of the client's default endpoint.
+ARC's Projects collection shows the cluster folder /projects/<dir> as /<dir>, so the batch
+script passes `--collection-root /projects`: the download folders are then named to DataFed by
+their path inside that collection (arc_paths.relative_below). Without it, paths go as the
+cluster shows them.
 
 The last line on stdout is one JSON object, the summary of the run; the log goes to stderr. The
 exit code is 0 unless nothing could be done: an error before the first spectrum, or errors and
@@ -25,7 +32,7 @@ import socket
 import sys
 from pathlib import Path
 
-from . import job
+from . import arc_paths, job
 from .config import DEFAULTS, MODE_DATAFED, CommandError, DataLayerError, Settings, utc_now
 
 log = logging.getLogger(__name__)
@@ -58,6 +65,10 @@ def build_parser():
                         "model's own")
     parser.add_argument("--repo-id", default="", metavar="REPO",
                         help="datafed.repo_id of the instrument computer's settings, when it is not empty")
+    parser.add_argument("--collection-root", metavar="DIR",
+                        help="the cluster folder that the Globus collection of the default endpoint shows as its "
+                        "top /, such as /projects on ARC; --work-dir must be inside it. Left out, download "
+                        "folders go to DataFed as the cluster shows them")
     return parser
 
 
@@ -75,8 +86,21 @@ def job_settings(args):
         problems.append("--limit must be at least 1")
     if args.model_dir and args.model_record:
         problems.append("--model-dir and --model-record exclude each other")
+    if args.collection_root is not None and not os.path.isabs(args.collection_root):
+        problems.append("--collection-root must be an absolute folder, such as /projects")
     if problems:
         raise CommandError("The arguments cannot be used", detail="; ".join(problems))
+    if args.collection_root is not None:
+        # Both sides resolved, as get_data resolves them: a link in either leads to the same answer.
+        try:
+            arc_paths.relative_below(work_dir, args.collection_root)
+        except ValueError:
+            raise CommandError(
+                "The work folder must be inside --collection-root (%s): ARC's Globus collection reaches only "
+                "that folder" % args.collection_root,
+                detail="--work-dir is %s; --collection-root is %s." % (
+                    work_dir, Path(args.collection_root).resolve()),
+            ) from None
     return settings, work_dir
 
 
@@ -84,13 +108,15 @@ def run(args, catalog=None):
     """Run the job. Returns (summary, exit code). `catalog` replaces the DataFed connection in tests."""
     summary = {"ok": False, "runner": "arc", "host": socket.gethostname(),
                "slurm_job_id": os.environ.get("SLURM_JOB_ID"), "root_alias": args.root_alias,
-               "context": args.context, "started_utc": utc_now()}
+               "context": args.context, "collection_root": args.collection_root, "started_utc": utc_now()}
     try:
+        # Every argument is checked here, before anything is contacted.
         settings, work_dir = job_settings(args)
         if catalog is None:
             from .datafed_catalog import DataFedCatalog
 
-            catalog = DataFedCatalog(context=settings.context, repo_id=settings.repo_id)
+            catalog = DataFedCatalog(context=settings.context, repo_id=settings.repo_id,
+                                     collection_root=args.collection_root)
         log.info("classifying what waits in %s-to-classify (%s)", settings.root_alias, catalog.label)
         report = job.run_job(
             catalog, settings, Path(args.model_dir).expanduser().resolve() if args.model_dir else None, work_dir,

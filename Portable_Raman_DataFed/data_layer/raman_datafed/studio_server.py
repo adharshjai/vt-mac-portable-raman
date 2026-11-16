@@ -12,6 +12,11 @@ What the server can do is fixed here, not by the requests it gets:
 - It starts one program, HOME/raman_sim_runner: the controller without a window, which always
   simulates both instruments. A request picks the scan mode and the laser power level from the
   fixed lists and supplies three texts; it cannot name a program or add an argument.
+- Uploads to ARC (the arc-* commands): it lists them, and it starts and acts on demo uploads only.
+  The upload program of a demo upload copies the session into a folder of HOME that stands in for
+  ARC; nothing leaves this Mac. A request names a session folder, Globus or SSH and a teaching
+  fault of that transport from fixed lists, or an upload id. It cannot ask for a live upload, and
+  the commands refuse to act on one for the Studio.
 
 Standard library only, like the rest of the local-demo path.
 """
@@ -104,11 +109,22 @@ NOT_AVAILABLE = "not available"
 # With a catalog reached over the network, the pipeline answer is reused for this long: the page
 # asks every second or so, and a shared service must not be asked that often.
 REMOTE_PIPELINE_SECONDS = 10.0
+# Uploads to ARC: how many uploads GET /api/arc lists, and what a request may pick. A teaching fault
+# belongs to one transport (design section 12); the demo of the other one would ignore it.
+ARC_LIST_LIMIT = 12
+ARC_TRANSPORTS = ("globus", "ssh")
+ARC_DEMO_FAULTS = ("lose_submit_reply", "fail_task_once", "drop_connection")
+ARC_FAULTS_OF = {"globus": ("lose_submit_reply", "fail_task_once"), "ssh": ("drop_connection",)}
+# The ARC settings GET /api/arc passes on, from arc-list's: the page names the ARC folder. The VT
+# username and the collection IDs stay out; the page has no use for them.
+ARC_SETTINGS_SHOWN = ("demo", "transport", "folder", "include_simulated", "settle_seconds")
 
 _WHOLE_NUMBER = re.compile(r"-?\d{1,15}", re.ASCII)
 _CONTENT_LENGTH = re.compile(r"\d{1,12}", re.ASCII)
+_UPLOAD_ID = re.compile(r"u[0-9a-f]{12}")
 # HTTP status of a failed command, by the "kind" of its failure object; any other kind is 400.
-_STATUS_OF_KIND = {"not_found": 404, "conflict": 409, "offline": 503, "auth_required": 503, "internal": 500}
+_STATUS_OF_KIND = {"not_found": 404, "conflict": 409, "offline": 503, "auth_required": 503, "internal": 500,
+                   "not_ready": 409, "refused": 403, "not_installed": 501}
 
 
 class _Refusal(Exception):
@@ -647,6 +663,7 @@ class _Commands:
         # connection, which two threads must not use at once: there, reads take their turn too.
         self._turn = threading.Lock()
         self._slot = threading.Lock()
+        self._arc_turn = threading.Lock()
         self._catalog = None
         self._catalog_key = None
         self._kept = None
@@ -702,6 +719,17 @@ class _Commands:
                 finally:
                     if changes:
                         self._kept = None
+
+    def arc(self, arguments):
+        """The answer of an arc-* command (uploads to ARC).
+
+        These commands work on files under HOME alone and never on the catalog, so they need no
+        usable catalog settings and do not wait while another command has the catalog. Their own
+        locks keep this server, the window and the upload programs apart; in this server they also
+        run one at a time, as each first looks after the upload programs this process started.
+        """
+        with self._arc_turn, cli.Context(self._home) as ctx:
+            return cli.invoke(ctx, arguments)
 
     def pipeline(self, limit, session):
         """`status`, `list` and `review-list` in one answer (GET /api/pipeline)."""
@@ -796,6 +824,13 @@ def _count(value, name, largest):
     if not _whole(value) or not 1 <= value <= largest:
         raise _Refusal(400, "%s must be a whole number from 1 to %d" % (name, largest))
     return value
+
+
+def _only(fields, names):
+    """Refuse a body that holds a field the endpoint does not take. Left out silently, a misspelt
+    or extra field would leave the request doing something other than what was meant."""
+    if any(name not in names for name in fields):
+        raise _Refusal(400, "The body may hold only: %s" % ", ".join(names))
 
 
 class Studio:
@@ -918,6 +953,72 @@ class Studio:
         answer["ok"] = True
         return answer
 
+    # ------------------------------------------------------------------ uploads to ARC
+    def arc(self, _fields):
+        """GET /api/arc: the newest uploads and a few ARC settings, from arc-list alone.
+
+        The page asks every second while an upload works. arc-sessions is not run: it reads every
+        session folder and lists the running programs, and the page has no use for what it says.
+        """
+        uploads = self._arc(["arc-list", "--limit=%d" % ARC_LIST_LIMIT])
+        if not uploads.get("ok"):
+            return uploads
+        flat = uploads.get("settings") if isinstance(uploads.get("settings"), dict) else {}
+        return {"ok": True, "uploads": uploads.get("items", []), "active": uploads.get("active", 0),
+                "unfinished": uploads.get("unfinished", 0),
+                "settings": {name: flat.get("arc_upload." + name) for name in ARC_SETTINGS_SHOWN}}
+
+    def arc_upload(self, fields):
+        """POST /api/arc/upload: a demo upload of a session folder."""
+        _only(fields, ("session", "transport", "fault"))
+        session = _text(fields, "session")
+        if session != fields["session"] or "/" in session or session.startswith(("_", ".")):
+            raise _Refusal(400, "session must be the name of a session folder")
+        transport = fields.get("transport")
+        if not isinstance(transport, str) or transport not in ARC_TRANSPORTS:
+            raise _Refusal(400, "transport must be one of: %s" % ", ".join(ARC_TRANSPORTS))
+        fault = fields.get("fault")
+        if "fault" in fields and (not isinstance(fault, str) or fault not in ARC_DEMO_FAULTS):
+            raise _Refusal(400, "fault must be one of: %s" % ", ".join(ARC_DEMO_FAULTS))
+        if fault is not None and fault not in ARC_FAULTS_OF[transport]:
+            raise _Refusal(400, "fault with transport %s must be one of: %s"
+                           % (transport, ", ".join(ARC_FAULTS_OF[transport])))
+        # Always a demo upload: the Studio sends nothing to ARC. And never --controller-idle: the
+        # Studio cannot tell that a scan has ended, so the session must have been quiet for a while.
+        arguments = ["arc-upload", "--session=" + session, "--transport=" + transport, "--demo"]
+        if fault is not None:
+            arguments.append("--demo-fault=" + fault)
+        return self._arc(arguments)
+
+    def arc_retry(self, fields):
+        return self._arc_action("arc-retry", fields)
+
+    def arc_stop(self, fields):
+        return self._arc_action("arc-stop", fields)
+
+    def arc_check(self, fields):
+        return self._arc_action("arc-check", fields)
+
+    def arc_keep_copy(self, fields):
+        return self._arc_action("arc-keep-copy", fields)
+
+    def _arc_action(self, command, fields):
+        _only(fields, ("upload",))
+        upload = fields.get("upload")
+        if not isinstance(upload, str) or not _UPLOAD_ID.fullmatch(upload):
+            raise _Refusal(400, "upload must be an upload id: u and 12 lowercase hexadecimal digits")
+        # --demo-only: the command refuses an upload that is not a demo one (refused, HTTP 403).
+        return self._arc([command, "--upload=" + upload, "--demo-only"])
+
+    def _arc(self, arguments):
+        """Run an arc-* command; 501 "not available" when this installation has none."""
+        missing = self._commands.missing(arguments[0])
+        if missing is None:
+            return self._commands.arc(arguments)
+        if missing["error"] == NOT_AVAILABLE:
+            raise _Refusal(501, NOT_AVAILABLE, missing["detail"])
+        return missing
+
     def run_alive(self):
         return self._runs.alive()
 
@@ -932,6 +1033,7 @@ _GET = {
     "/api/scan": Studio.scan,
     "/api/pipeline": Studio.pipeline,
     "/api/provenance": Studio.provenance,
+    "/api/arc": Studio.arc,
 }
 _POST = {
     "/api/sync": Studio.sync,
@@ -940,6 +1042,11 @@ _POST = {
     "/api/offline": Studio.offline,
     "/api/run": Studio.run,
     "/api/stop": Studio.stop,
+    "/api/arc/upload": Studio.arc_upload,
+    "/api/arc/retry": Studio.arc_retry,
+    "/api/arc/stop": Studio.arc_stop,
+    "/api/arc/check": Studio.arc_check,
+    "/api/arc/keep-copy": Studio.arc_keep_copy,
 }
 
 
