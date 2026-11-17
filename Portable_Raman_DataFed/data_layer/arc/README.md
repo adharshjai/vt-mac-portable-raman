@@ -303,7 +303,8 @@ These points could not be settled from the public documentation, and nothing her
 
 1. **Paths inside the Globus collection.** Answered: the collection shows `/projects/<dir>` as
    `/<dir>`; the job maps its paths with `--collection-root`. This comes from transfers a teammate
-   made into that collection; no listing of the collection was seen, so step 6 confirms it for
+   made into that collection, and an upload to ARC from this edition (README section 14) also went
+   to `/pcl_photonics/...` in it; no listing of the collection was seen, so step 6 confirms it for
    you. The job was tested against a stand-in of the collection only.
 2. **DataFed and the ARC collection.** Whether DataFed is allowed to transfer to
    "Virginia Tech ARC Globus Projects Directories" on your behalf is not documented by either side:
