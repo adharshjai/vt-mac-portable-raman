@@ -1,0 +1,28 @@
+# Build outputs and local environments of the catalog edition (all regenerable)
+/deploy-macos/
+/build-macos-flat/
+/build-macos-qt6.12/
+/laser_test/build/
+/laser_test/tests/build-macos/
+/macos-native/e2e/build/
+/macos-native/sim_runner/build/
+/macos-native/backend/shim/libwinusb_shim.dylib
+/macos-native/backend/shim/shim_selftest
+/macos-native/backend/shim/*.o
+/macos-native/**/bin/
+/macos-native/**/obj/
+/.venv/
+/.build/
+__pycache__/
+*.pyc
+.pytest_cache/
+# DLLs: Hamamatsu's wrrusb2a.dll is not redistributable (see macos-native/backend/lib/README.md), and
+# every other DLL in this folder is made by the build.
+*.dll
+# Qt Creator's own settings for this computer (kit, run environment) and its autosave copies
+CMakeLists.txt.user
+.qtcreator/
+*.autosave
+# Local state written at run time
+controller.lock
+.DS_Store

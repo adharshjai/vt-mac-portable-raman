@@ -1,7 +1,0 @@
-# Data layer of the Portable Raman DataFed edition (Python 3.11 or newer, which numpy 2.3.4 and
-# scikit-learn 1.8.0 require; tested with 3.13 on macOS).
-# scikit-learn and joblib are pinned to the versions that saved the classifier model files.
-datafed==5.1.0
-numpy==2.3.4
-scikit-learn==1.8.0
-joblib==1.5.3

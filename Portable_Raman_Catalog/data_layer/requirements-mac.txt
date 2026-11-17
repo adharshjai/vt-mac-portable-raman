@@ -1,0 +1,3 @@
+# The instrument computer's packages: the data layer's, plus the Globus SDK for uploads to ARC.
+-r requirements.txt
+globus-sdk==4.10.0
